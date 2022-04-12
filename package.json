@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/gui-ying233/my-bot/issues"
   },
-  "homepage": "https://github.com/gui-ying233/my-bot#readme",
+  "homepage": "https://github.com/gui-ying233/my-bot",
   "dependencies": {
     "@lavgup/mediawiki.js": "^1.2.2"
   }
