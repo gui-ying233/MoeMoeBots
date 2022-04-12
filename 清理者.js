@@ -3,7 +3,7 @@ const { CronJob } = require("cron");
 const config = require('./config.js')
 const bot = new MediaWikiJS(config.zh)
 const cronJob=new CronJob({
-        cronTime: "0 0/15 * 1/1 * *",
+        cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
             try {
                 const result0 = await bot.api.get({
