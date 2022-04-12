@@ -1,0 +1,86 @@
+{
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "arrow-spacing": [
+      "error",
+      {
+        "after": true,
+        "before": true
+      }
+    ],
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": true
+      }
+    ],
+    "comma-spacing": "error",
+    "eqeqeq": [
+      "error",
+      "smart"
+    ],
+    "func-call-spacing": "error",
+    "key-spacing": [
+      "error",
+      {
+        "afterColon": true
+      }
+    ],
+    "line-comment-position": "error",
+    "no-array-constructor": "error",
+    "no-dupe-else-if": "error",
+    "no-duplicate-imports": "error",
+    "no-extra-semi": "error",
+    "no-inline-comments": "error",
+    "no-invalid-regexp": "error",
+    "no-invalid-this": "error",
+    "no-lonely-if": "error",
+    "no-new": "error",
+    "no-new-object": "error",
+    "no-new-wrappers": "error",
+    "no-return-await": "error",
+    "no-self-compare": "error",
+    "no-undef-init": "error",
+    "no-unneeded-ternary": "error",
+    "no-unreachable": "error",
+    "no-unused-vars": "off",
+    "no-useless-constructor": "error",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "prefer-const": "error",
+    "prefer-destructuring": "error",
+    "prefer-spread": "error",
+    "prefer-template": "error",
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "require-await": "error",
+    "semi": "error",
+    "semi-style": "error",
+    "space-before-blocks": "error",
+    "use-isnan": "error",
+    "valid-typeof": "error"
+  }
+}
