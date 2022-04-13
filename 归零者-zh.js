@@ -42,9 +42,20 @@ bot
 				tags: 'Bot',
 				Bot: true,
 			});
-			console.log(`${result2.edit.rusult}, 无更改：${result0.edit.nochange}`);
+			console.log(`${result2.edit.rusult}, 无更改：${result2.edit.nochange}`);
 		} catch (e2) {
 			console.error(e2);
 		}
+		try {
+			const result3 = await bot.doEdit({
+				title: 'H:沙盒/json',
+				text: '{"warning":"请删除此行"}',
+				summary: '沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/json|个人测试区]]作测试，或者翻阅历史记录。',
+				tags: 'Bot',
+				Bot: true,
+			});
+			console.log(`${result3.edit.rusult}, 无更改：${result3.edit.nochange}`);
+		} catch (e3) {
+			console.error(e3);
+		}
 	})
-
