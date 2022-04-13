@@ -17,7 +17,7 @@ bot
 					tags: 'Bot',
 					Bot: true,
 				});
-				console.log(`${result0.edit.rusult}, 无更改：${result0.edit.nochange}`);
+				console.log(`${result0.edit.result}, 无更改：${result0.edit.nochange}`);
 			} catch (e0) {
 				console.error(e0);
 			}
@@ -30,7 +30,7 @@ bot
                 tags: 'Bot',
                 Bot: true,
             });
-            console.log(`${result1.edit.rusult}, 无更改：${result1.edit.nochange}`);
+            console.log(`${result1.edit.result}, 无更改：${result1.edit.nochange}`);
         } catch (e1) {
             console.error(e1);
         }
@@ -42,7 +42,7 @@ bot
 				tags: 'Bot',
 				Bot: true,
 			});
-			console.log(`${result2.edit.rusult}, 无更改：${result2.edit.nochange}`);
+			console.log(`${result2.edit.result}, 无更改：${result2.edit.nochange}`);
 		} catch (e2) {
 			console.error(e2);
 		}
@@ -54,7 +54,7 @@ bot
 				tags: 'Bot',
 				Bot: true,
 			});
-			console.log(`${result3.edit.rusult}, 无更改：${result3.edit.nochange}`);
+			console.log(`${result3.edit.result}, 无更改：${result3.edit.nochange}`);
 		} catch (e3) {
 			console.error(e3);
 		}

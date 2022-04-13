@@ -12,7 +12,7 @@ bot
                 tags: 'Bot',
                 Bot: true,
             });
-            console.log(`${result0.edit.rusult}, 无更改：${result0.edit.nochange}`);
+            console.log(`${result0.edit.result}, 无更改：${result0.edit.nochange}`);
         } catch (e0) {
             console.error(e0);
         }
