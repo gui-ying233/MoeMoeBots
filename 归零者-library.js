@@ -17,7 +17,7 @@ bot
 					tags: 'Bot',
 					Bot: true,
 				});
-				console.log(`${result0.edit.result}, 无更改：${result0.edit.nochange}`);
+				console.log(result0.edit.result, result0.edit.nochange ? '无更改' : '有更改');
 			} catch (e0) {
 				console.error(e0);
 			}
@@ -30,7 +30,7 @@ bot
                 tags: 'Bot',
                 Bot: true,
             });
-            console.log(`${result1.edit.result}, 无更改：${result1.edit.nochange}`);
+            console.log(result1.edit.result, result1.edit.nochange ? '无更改' : '有更改');
         } catch (e1) {
             console.error(e1);
         }
