@@ -1,6 +1,5 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
-const config = require('./config.js')
-const bot = new MediaWikiJS(config.en)
+const bot = new MediaWikiJS(require('./config.json').en)
 const pageList = [
 	'Help:Sandbox',
 	'Template:Sandbox',

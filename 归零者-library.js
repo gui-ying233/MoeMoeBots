@@ -1,6 +1,5 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
-const config = require('./config.js')
-const bot = new MediaWikiJS(config.library)
+const bot = new MediaWikiJS(require('./config.json').library)
 const pageList = [
 	'模板:沙盒',
 	'帮助:沙盒',

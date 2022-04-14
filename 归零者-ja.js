@@ -1,6 +1,5 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
-const config = require('./config.js')
-const bot = new MediaWikiJS(config.ja)
+const bot = new MediaWikiJS(require('./config.json').ja)
 bot
 	.login()
 	.then(async () => {
