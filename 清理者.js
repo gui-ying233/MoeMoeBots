@@ -38,7 +38,7 @@ async function myFunc(gcmtitle, regex, replace) {
     }
 }
 const cronJob=new CronJob({
-        cronTime: "0 0/1 * 1/1 * *", // http://www.cronmaker.com/
+        cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
             myFunc('CAT:错误使用标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, '');
             myFunc('CAT:需要更换为标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}');
