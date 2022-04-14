@@ -81,7 +81,3 @@ const cronJob=new CronJob({
         }
 });
 bot.login().then(() => cronJob.start());
-
-function newFunction() {
-    const gcmtitle = '', replace = '', getmore = '';
-}
