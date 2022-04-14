@@ -1,6 +1,6 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
 const config = require('./config.js')
-const bot = new MediaWikiJS(config.zh)
+const bot = new MediaWikiJS(config.mzh)
 const pageList = [
 	'模块:Sandbox',
 	'模块:Sandbox/test',
