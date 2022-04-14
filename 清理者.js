@@ -1,10 +1,10 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
 const { CronJob } = require( "cron");
 const bot = new MediaWikiJS(require('./config.json').mzh)
+const action = 'query', prop = 'revisions', rvprop = 'content', generator = 'categorymembers', gcmnamespace = '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303', gcmlimit = 'max', tags = 'Bot', Bot = true
 const cronJob=new CronJob({
         cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
-            const action = 'query', prop = 'revisions', rvprop = 'content', generator = 'categorymembers', gcmnamespace = '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303', gcmlimit = 'max', tags = 'Bot', Bot = true
             try {
                 const result0 = await bot.api.get({
                     action,
