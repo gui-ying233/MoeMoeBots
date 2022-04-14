@@ -1,18 +1,19 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
-const { CronJob } = require("cron");
+const { CronJob } = require( "cron");
 const bot = new MediaWikiJS(require('./config.json').mzh)
 const cronJob=new CronJob({
-        cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
+        cronTime: "0 0/1 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
+            const action = 'query', prop = 'revisions', rvprop = 'content', generator = 'categorymembers', gcmnamespace = '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303', gcmlimit = 'max', tags = 'Bot', Bot = true
             try {
                 const result0 = await bot.api.get({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    generator: 'categorymembers',
-                    gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
+                    action,
+                    prop,
+                    rvprop,
+                    generator,
+                    gcmnamespace,
                     gcmtitle: 'CAT:错误使用标题格式化的页面',
-                    gcmlimit: 'max',
+                    gcmlimit,
                 })
                 if (result0.query === undefined) {
                     console.log('无页面');
@@ -25,8 +26,8 @@ const cronJob=new CronJob({
                                 title: result0.query.pages[i].title,
                                 text: result0.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, ''),
                                 summary: '自动修复[[CAT:错误使用标题格式化的页面]]中的页面',
-                                tags: 'Bot',
-                                Bot: true,
+                                tags,
+                                Bot,
                             });
                             console.log(result1.edit);
                         } catch (e1) {
@@ -39,13 +40,13 @@ const cronJob=new CronJob({
             }
             try {
                 const result2 = await bot.api.get({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    generator: 'categorymembers',
-                    gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
+                    action,
+                    prop,
+                    rvprop,
+                    generator,
+                    gcmnamespace,
                     gcmtitle: 'CAT:错误使用标题替换模板的页面',
-                    gcmlimit: 'max',
+                    gcmlimit,
                     gcmendsortkeyprefix: "CAT:需要更换为",
                 })
                 if (result2.query === undefined) {
@@ -59,8 +60,8 @@ const cronJob=new CronJob({
                                 title: result2.query.pages[i].title,
                                 text: result2.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, ''),
                                 summary: '自动修复[[CAT:错误使用标题替换模板的页面]]中的页面',
-                                tags: 'Bot',
-                                Bot: true,
+                                tags,
+                                Bot,
                             });
                             console.log(result3.edit);
                         } catch (e3) {
@@ -73,13 +74,13 @@ const cronJob=new CronJob({
             }
             try {
                 const result4 = await bot.api.get({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    generator: 'categorymembers',
-                    gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
+                    action,
+                    prop,
+                    rvprop,
+                    generator,
+                    gcmnamespace,
                     gcmtitle: 'CAT:需要更换为标题格式化的页面',
-                    gcmlimit: 'max',
+                    gcmlimit,
                 })
                 if (result4.query === undefined) {
                     console.log('无页面');
@@ -92,8 +93,8 @@ const cronJob=new CronJob({
                                 title: result4.query.pages[i].title,
                                 text: result4.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}'),
                                 summary: '自动修复[[CAT:需要更换为标题格式化的页面]]中的页面',
-                                tags: 'Bot',
-                                Bot: true,
+                                tags,
+                                Bot,
                             });
                             console.log(result5.edit);
                         } catch (e5) {
@@ -106,13 +107,13 @@ const cronJob=new CronJob({
             }
             try {
                 const result6 = await bot.api.get({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    generator: 'categorymembers',
-                    gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
+                    action,
+                    prop,
+                    rvprop,
+                    generator,
+                    gcmnamespace,
                     gcmtitle: 'CAT:需要更换为小写标题的页面',
-                    gcmlimit: 'max',
+                    gcmlimit,
                 })
                 if (result6.query === undefined) {
                     console.log('无页面');
@@ -125,8 +126,8 @@ const cronJob=new CronJob({
                                 title: result6.query.pages[i].title,
                                 text: result6.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}'),
                                 summary: '自动修复[[CAT:需要更换为小写标题的页面]]中的页面',
-                                tags: 'Bot',
-                                Bot: true,
+                                tags,
+                                Bot,
                             });
                             console.log(result7.edit);
                         } catch (e7) {
@@ -139,13 +140,13 @@ const cronJob=new CronJob({
             }
             try {
                 const result8 = await bot.api.get({
-                    action: 'query',
-                    prop: 'revisions',
-                    rvprop: 'content',
-                    generator: 'categorymembers',
-                    gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
+                    action,
+                    prop,
+                    rvprop,
+                    generator,
+                    gcmnamespace,
                     gcmtitle: 'CAT:不必要使用override参数的音乐条目',
-                    gcmlimit: 'max',
+                    gcmlimit,
                 })
                 if (result8.query === undefined) {
                     console.log('无页面');
@@ -158,8 +159,8 @@ const cronJob=new CronJob({
                                 title: result8.query.pages[i].title,
                                 text: result8.query.pages[i].revisions[0].content.replace(/\|override=1\n?/g, ''),
                                 summary: '自动修复[[CAT:不必要使用override参数的音乐条目]]中的页面',
-                                tags: 'Bot',
-                                Bot: true,
+                                tags,
+                                Bot,
                             });
                             console.log(result9.edit);
                         } catch (e9) {
