@@ -2,7 +2,7 @@ const { MediaWikiJS } = require('@lavgup/mediawiki.js')
 const { CronJob } = require("cron");
 const bot = new MediaWikiJS(require('./config.json').mzh)
 const cronJob=new CronJob({
-        cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
+        cronTime: "0 0/1 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
             try {
                 const result0 = await bot.api.get({
@@ -14,20 +14,24 @@ const cronJob=new CronJob({
                     gcmtitle: 'CAT:错误使用标题格式化的页面',
                     gcmlimit: 'max',
                 })
-                console.log(`共${result0.query.pages.length}个页面。`)
-                for (let i = 0; i < result0.query.pages.length; i++) {
-                    try {
-                        console.log(`第${i+1}个页面：${result0.query.pages[i].title}。`);
-                        const result1 = await bot.doEdit({
-                            title: result0.query.pages[i].title,
-                            text: result0.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, ''),
-                            summary: '自动修复[[CAT:错误使用标题格式化的页面]]中的页面',
-                            tags: 'Bot',
-                            Bot: true,
-                        });
-                        console.log(result1.edit);
-                    } catch (e1) {
-                        console.error(e1);
+                if (result0.query === undefined) {
+                    console.log('无页面');
+                } else {
+                    console.log(`共${result0.query.pages.length}个页面。`)
+                    for (let i = 0; i < result0.query.pages.length; i++) {
+                        try {
+                            console.log(`第${i+1}个页面：${result0.query.pages[i].title}。`);
+                            const result1 = await bot.doEdit({
+                                title: result0.query.pages[i].title,
+                                text: result0.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, ''),
+                                summary: '自动修复[[CAT:错误使用标题格式化的页面]]中的页面',
+                                tags: 'Bot',
+                                Bot: true,
+                            });
+                            console.log(result1.edit);
+                        } catch (e1) {
+                            console.error(e1);
+                        }
                     }
                 }
             } catch (e0) {
@@ -44,20 +48,24 @@ const cronJob=new CronJob({
                     gcmlimit: 'max',
                     gcmendsortkeyprefix: "CAT:需要更换为",
                 })
-                console.log(`共${result2.query.pages.length}个页面。`)
-                for (let i = 0; i < result2.query.pages.length; i++) {
-                    try {
-                        console.log(`第${i+1}个页面：${result2.query.pages[i].title}。`);
-                        const result3 = await bot.doEdit({
-                            title: result2.query.pages[i].title,
-                            text: result2.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, ''),
-                            summary: '自动修复[[CAT:错误使用标题替换模板的页面]]中的页面',
-                            tags: 'Bot',
-                            Bot: true,
-                        });
-                        console.log(result3.edit);
-                    } catch (e3) {
-                        console.error(e3);
+                if (result2.query === undefined) {
+                    console.log('无页面');
+                } else {
+                    console.log(`共${result2.query.pages.length}个页面。`)
+                    for (let i = 0; i < result2.query.pages.length; i++) {
+                        try {
+                            console.log(`第${i+1}个页面：${result2.query.pages[i].title}。`);
+                            const result3 = await bot.doEdit({
+                                title: result2.query.pages[i].title,
+                                text: result2.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, ''),
+                                summary: '自动修复[[CAT:错误使用标题替换模板的页面]]中的页面',
+                                tags: 'Bot',
+                                Bot: true,
+                            });
+                            console.log(result3.edit);
+                        } catch (e3) {
+                            console.error(e3);
+                        }
                     }
                 }
             } catch (e2) {
@@ -73,20 +81,24 @@ const cronJob=new CronJob({
                     gcmtitle: 'CAT:需要更换为标题格式化的页面',
                     gcmlimit: 'max',
                 })
-                console.log(`共${result4.query.pages.length}个页面。`)
-                for (let i = 0; i < result4.query.pages.length; i++) {
-                    try {
-                        console.log(`第${i+1}个页面：${result4.query.pages[i].title}。`);
-                        const result5 = await bot.doEdit({
-                            title: result4.query.pages[i].title,
-                            text: result4.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}'),
-                            summary: '自动修复[[CAT:需要更换为标题格式化的页面]]中的页面',
-                            tags: 'Bot',
-                            Bot: true,
-                        });
-                        console.log(result5.edit);
-                    } catch (e5) {
-                        console.error(e5);
+                if (result4.query === undefined) {
+                    console.log('无页面');
+                } else {
+                    console.log(`共${result4.query.pages.length}个页面。`)
+                    for (let i = 0; i < result4.query.pages.length; i++) {
+                        try {
+                            console.log(`第${i+1}个页面：${result4.query.pages[i].title}。`);
+                            const result5 = await bot.doEdit({
+                                title: result4.query.pages[i].title,
+                                text: result4.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}'),
+                                summary: '自动修复[[CAT:需要更换为标题格式化的页面]]中的页面',
+                                tags: 'Bot',
+                                Bot: true,
+                            });
+                            console.log(result5.edit);
+                        } catch (e5) {
+                            console.error(e5);
+                        }
                     }
                 }
             } catch (e4) {
@@ -102,20 +114,24 @@ const cronJob=new CronJob({
                     gcmtitle: 'CAT:需要更换为小写标题的页面',
                     gcmlimit: 'max',
                 })
-                console.log(`共${result6.query.pages.length}个页面。`)
-                for (let i = 0; i < result6.query.pages.length; i++) {
-                    try {
-                        console.log(`第${i+1}个页面：${result6.query.pages[i].title}。`);
-                        const result7 = await bot.doEdit({
-                            title: result6.query.pages[i].title,
-                            text: result6.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}'),
-                            summary: '自动修复[[CAT:需要更换为小写标题的页面]]中的页面',
-                            tags: 'Bot',
-                            Bot: true,
-                        });
-                        console.log(result7.edit);
-                    } catch (e7) {
-                        console.error(e7);
+                if (result6.query === undefined) {
+                    console.log('无页面');
+                } else {
+                    console.log(`共${result6.query.pages.length}个页面。`)
+                    for (let i = 0; i < result6.query.pages.length; i++) {
+                        try {
+                            console.log(`第${i+1}个页面：${result6.query.pages[i].title}。`);
+                            const result7 = await bot.doEdit({
+                                title: result6.query.pages[i].title,
+                                text: result6.query.pages[i].revisions[0].content.replace(/{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}'),
+                                summary: '自动修复[[CAT:需要更换为小写标题的页面]]中的页面',
+                                tags: 'Bot',
+                                Bot: true,
+                            });
+                            console.log(result7.edit);
+                        } catch (e7) {
+                            console.error(e7);
+                        }
                     }
                 }
             } catch (e6) {
@@ -131,20 +147,24 @@ const cronJob=new CronJob({
                     gcmtitle: 'CAT:不必要使用override参数的音乐条目',
                     gcmlimit: 'max',
                 })
-                console.log(`共${result8.query.pages.length}个页面。`)
-                for (let i = 0; i < result8.query.pages.length; i++) {
-                    try {
-                        console.log(`第${i+1}个页面：${result6.query.pages[i].title}。`);
-                        const result9 = await bot.doEdit({
-                            title: result8.query.pages[i].title,
-                            text: result8.query.pages[i].revisions[0].content.replace(/\|override=1\n?/g, ''),
-                            summary: '自动修复[[CAT:不必要使用override参数的音乐条目]]中的页面',
-                            tags: 'Bot',
-                            Bot: true,
-                        });
-                        console.log(result9.edit);
-                    } catch (e9) {
-                        console.error(e9);
+                if (result8.query === undefined) {
+                    console.log('无页面');
+                } else {
+                    console.log(`共${result8.query.pages.length}个页面。`)
+                    for (let i = 0; i < result8.query.pages.length; i++) {
+                        try {
+                            console.log(`第${i+1}个页面：${result6.query.pages[i].title}。`);
+                            const result9 = await bot.doEdit({
+                                title: result8.query.pages[i].title,
+                                text: result8.query.pages[i].revisions[0].content.replace(/\|override=1\n?/g, ''),
+                                summary: '自动修复[[CAT:不必要使用override参数的音乐条目]]中的页面',
+                                tags: 'Bot',
+                                Bot: true,
+                            });
+                            console.log(result9.edit);
+                        } catch (e9) {
+                            console.error(e9);
+                        }
                     }
                 }
             } catch (e8) {
