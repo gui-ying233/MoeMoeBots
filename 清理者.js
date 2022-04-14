@@ -40,6 +40,8 @@ async function myFunc(gcmtitle, regex, replace) {
 const cronJob=new CronJob({
         cronTime: "0 0/15 * 1/1 * *", // http://www.cronmaker.com/
         onTick: async () => {
+            var d = new Date()
+            console.log(`${d.getFullYear()}-${String(d.getMonth()).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
             myFunc('CAT:错误使用标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, '');
             myFunc('CAT:需要更换为标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}');
             myFunc('CAT:需要更换为小写标题的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}');
