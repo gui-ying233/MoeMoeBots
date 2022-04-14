@@ -2,7 +2,6 @@
   "name": "my-bot",
   "version": "1.0.0",
   "description": "npm init",
-  "main": "归零者-zh.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
