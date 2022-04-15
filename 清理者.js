@@ -42,11 +42,11 @@ const cronJob=new CronJob({
 		onTick: async () => {
 			var d = new Date()
 			console.log(`${d.getFullYear()}-${String(d.getMonth()).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
-			cleaner('CAT:错误使用标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, '');
-			cleaner('CAT:需要更换为标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}');
-			cleaner('CAT:需要更换为小写标题的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}');
-			cleaner('CAT:不必要使用override参数的音乐条目', /\|override=1\n?/g, '');
-			cleaner('CAT:错误使用标题替换模板的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, '', 'CAT:需要更换为');
+			await cleaner('CAT:错误使用标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, '');
+			await cleaner('CAT:需要更换为标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}');
+			await cleaner('CAT:需要更换为小写标题的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}');
+			await cleaner('CAT:不必要使用override参数的音乐条目', /\|override=1\n?/g, '');
+			await cleaner('CAT:错误使用标题替换模板的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, '', 'CAT:需要更换为');
 		}
 });
 bot.login().then(() => cronJob.start());
