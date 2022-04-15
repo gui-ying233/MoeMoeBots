@@ -21,18 +21,18 @@ bot
 				console.error(e0);
 			}
 		}
-        try {
-            const result1 = await bot.doEdit({
-                title: 'H:沙盒/styles.css',
-                text: '',
-                summary: '沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。',
-                tags: 'Bot',
-                Bot: true,
-            });
+		try {
+			const result1 = await bot.doEdit({
+				title: 'H:沙盒/styles.css',
+				text: '',
+				summary: '沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。',
+				tags: 'Bot',
+				Bot: true,
+			});
 				console.log(result1.edit.result, result1.edit.nochange ? '无更改' : '有更改');
-        } catch (e1) {
-            console.error(e1);
-        }
+		} catch (e1) {
+			console.error(e1);
+		}
 		try {
 			const result2 = await bot.doEdit({
 				title: 'T:沙盒/styles.css',
