@@ -1,6 +1,6 @@
-const { MediaWikiJS } = require('@lavgup/mediawiki.js')
-var bot = new MediaWikiJS(require('./config.json').prts)
-let title = '海蒂';
+const { MediaWikiJS } = require('@lavgup/mediawiki.js');
+const bot = new MediaWikiJS(require('./config.json').prts);
+const title = '假日威龙陈';
 bot
 	.login()
 	.then(async () => {
@@ -11,9 +11,15 @@ bot
 				rvprop: 'content',
                 titles: `${title}|${title}/语音记录`,
 			})
+			if (result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g) !== null) {
+				var 异格 = result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g)[0].replace(/{{异格干员\|原型=(.+?)}}\n/g, `{{明日方舟info|异格前=$1}}
+`)
+			} else {
+				var 异格 = '';
+			}
 			var wikitext0 = `{{标题格式化}}
 {{明日方舟:导航}}
-{{明日方舟info|'''<big><big>${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}</big></big>'''}}
+${异格}{{明日方舟info|'''<big><big>${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}</big></big>'''}}
 {{明日方舟人物信息
 |image=
 |图片说明=
