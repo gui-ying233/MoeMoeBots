@@ -1,6 +1,6 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
 const bot = new MediaWikiJS(require('./config.json').prts);
-const title = '海蒂';
+const title = '浊心斯卡蒂';
 bot
 	.login()
 	.then(async () => {
@@ -13,8 +13,8 @@ bot
 			})
 			var wikitext0 = `{{标题格式化}}
 {{明日方舟:导航}}
-${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g) ? result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g)[0].replace(/{{异格干员\|原型=(.+?)}}\n/g, `{{明日方舟info|异格前=$1}}
-`) : '')}{{明日方舟info|'''<big><big>${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}</big></big>'''}}
+${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)|非异格=1}}\n/g) === null ? `${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g) !== null ? result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g)[0].replace(/{{异格干员\|原型=(.+?)}}\n/g, `{{明日方舟info|异格前=$1}}
+`) : '')}` : '')}{{明日方舟info|'''<big><big>${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}</big></big>'''}}
 {{明日方舟人物信息
 |image=
 |图片说明=
@@ -47,12 +47,12 @@ ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+
 '''${title}'''是游戏'''《[[明日方舟]]》'''及其衍生作品的登场角色。
 
 == 面板 ==
-{{明日方舟干员
+{{明日方舟干员${(result0.query.pages[0].revisions[0].content.match(/{{干员异格任务\|对象干员=(.+?)}}\n/g) !== null ? result0.query.pages[0].revisions[0].content.match(/{{干员异格任务\|对象干员=(.+?)}}\n/g)[0].replace(/{{干员异格任务\|对象干员=(.+?)}}\n/g, `|异格任务=$1`) : '')}
 |中文名=${title}
 |英文名=${result0.query.pages[0].revisions[0].content.match(/\|干员外文名=(.+?)\n/g)[0].replace(/\|干员外文名=(.+?)\n/g, '$1')}
 |稀有度=${result0.query.pages[0].revisions[0].content.match(/\|稀有度=(.+?)\n/g)[0].replace(/\|稀有度=(.+?)\n/g, '$1')}
 |画师=${result0.query.pages[0].revisions[0].content.match(/\|画师=(.+?)\n/g)[0].replace(/\|画师=(.+?)\n/g, '$1')}
-|多位配音={{Cate|[[${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}]]（日语）/ [[${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}]]（汉语）|${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}}}
+${(result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g) === null ? `|配音=${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}` : `|多位配音={{Cate|[[${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}]]（日语）/ [[${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}]]（汉语）|${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}}}`)}
 |势力=维多利亚
 |差分类型=
 |差分代号=
@@ -63,9 +63,9 @@ ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+
 |精2范围=
 |站位=${result0.query.pages[0].revisions[0].content.match(/\|位置=(.+?)\n/g)[0].replace(/\|位置=(.+?)\n/g, '$1')}
 |标签=${result0.query.pages[0].revisions[0].content.match(/\|标签=(.+?)\n/g)[0].replace(/\|标签=(.+?)\n/g, '$1')}
-|生命上限=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_生命上限=(.+?)\n/g)[0].replace(/\|精英0_1级_生命上限=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_生命上限=(.+?)\n/g)[0].replace(/\|精英2_满级_生命上限=(.+?)\n/g, '$1')}<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_生命上限=(.+?)\n/g)[0].replace(/\|信赖加成_生命上限=(.+?)\n/g, '$1')}）</span>
-|攻击=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_攻击=(.+?)\n/g)[0].replace(/\|精英0_1级_攻击=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_攻击=(.+?)\n/g)[0].replace(/\|精英2_满级_攻击=(.+?)\n/g, '$1')}<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_攻击=(.+?)\n/g)[0].replace(/\|信赖加成_攻击=(.+?)\n/g, '$1')}）</span>
-|防御=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_防御=(.+?)\n/g)[0].replace(/\|精英0_1级_防御=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_防御=(.+?)\n/g)[0].replace(/\|精英2_满级_防御=(.+?)\n/g, '$1')}<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_防御=(.+?)\n/g)[0].replace(/\|信赖加成_防御=(.+?)\n/g, '$1')}）</span>
+|生命上限=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_生命上限=(.+?)\n/g)[0].replace(/\|精英0_1级_生命上限=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_生命上限=(.+?)\n/g)[0].replace(/\|精英2_满级_生命上限=(.+?)\n/g, '$1')}${(result0.query.pages[0].revisions[0].content.match(/\|信赖加成_生命上限=(.+?)\n/g)[0].replace(/\|信赖加成_生命上限=(.+?)\n/g, '$1') !== '0' ? `<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_生命上限=(.+?)\n/g)[0].replace(/\|信赖加成_生命上限=(.+?)\n/g, '$1')}）</span>` : '')}
+|攻击=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_攻击=(.+?)\n/g)[0].replace(/\|精英0_1级_攻击=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_攻击=(.+?)\n/g)[0].replace(/\|精英2_满级_攻击=(.+?)\n/g, '$1')}${(result0.query.pages[0].revisions[0].content.match(/\|信赖加成_攻击=(.+?)\n/g)[0].replace(/\|信赖加成_攻击=(.+?)\n/g, '$1') !== '0' ? `<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_攻击=(.+?)\n/g)[0].replace(/\|信赖加成_攻击=(.+?)\n/g, '$1')}）</span>` : '')}
+|防御=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_防御=(.+?)\n/g)[0].replace(/\|精英0_1级_防御=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_防御=(.+?)\n/g)[0].replace(/\|精英2_满级_防御=(.+?)\n/g, '$1')}${(result0.query.pages[0].revisions[0].content.match(/\|信赖加成_防御=(.+?)\n/g)[0].replace(/\|信赖加成_防御=(.+?)\n/g, '$1') !== '0' ? `<span class="trusttext" title="信赖加成">（+${result0.query.pages[0].revisions[0].content.match(/\|信赖加成_防御=(.+?)\n/g)[0].replace(/\|信赖加成_防御=(.+?)\n/g, '$1')}）</span>` : '')}
 |法术抗性=${result0.query.pages[0].revisions[0].content.match(/\|精英0_1级_法术抗性=(.+?)\n/g)[0].replace(/\|精英0_1级_法术抗性=(.+?)\n/g, '$1')}/${result0.query.pages[0].revisions[0].content.match(/\|精英2_满级_法术抗性=(.+?)\n/g)[0].replace(/\|精英2_满级_法术抗性=(.+?)\n/g, '$1')}
 |再部署=${result0.query.pages[0].revisions[0].content.match(/\|再部署=(.+?)s\n/g)[0].replace(/\|再部署=(.+?)s\n/g, '$1')}秒
 |部署费用=${result0.query.pages[0].revisions[0].content.match(/\|部署费用=(.+?)→(.+?)\n/g)[0].replace(/\|部署费用=(.+?)→(.+?)\n/g, '$1/$2')}
@@ -85,14 +85,14 @@ ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+
 |技能3=
 |分支=${result0.query.pages[0].revisions[0].content.match(/\|子职业=(.+?)\n/g)[0].replace(/\|子职业=(.+?)\n/g, '$1')}
 |特性=${result0.query.pages[0].revisions[0].content.match(/\|特性=(.+?)\n/g)[0].replace(/\|特性=(.+?)\n/g, '$1')}
-|天赋1=<span class="talentblock">${result0.query.pages[0].revisions[0].content.match(/\|第一天赋1=(.+?)\n/g)[0].replace(/\|第一天赋1=(.+?)\n/g, '$1')}</span>（精英阶段1）${result0.query.pages[0].revisions[0].content.match(/\|第一天赋2效果=(.+?)\n/g)[0].replace(/\|第一天赋2效果=(.+?)\n/g, '$1').replace(/{{color\|#0098DC\|\((.+?)\)}}/g, '<span class="orangetext">（$1）</span>')}<br /><span class="talentblock">${result0.query.pages[0].revisions[0].content.match(/\|第一天赋4=(.+?)\n/g)[0].replace(/\|第一天赋4=(.+?)\n/g, '$1')}</span>（精英阶段2）${result0.query.pages[0].revisions[0].content.match(/\|第一天赋4效果=(.+?)\n/g)[0].replace(/\|第一天赋4效果=(.+?)\n/g, '$1').replace(/{{color\|#0098DC\|\((.+?)\)}}/g, '<span class="orangetext">（$1）</span>')}
+|天赋1=<span class="talentblock">${result0.query.pages[0].revisions[0].content.match(/\|第一天赋1=(.+?)\n/g)[0].replace(/\|第一天赋1=(.+?)\n/g, '$1')}</span>（精英阶段1）${result0.query.pages[0].revisions[0].content.match(/\|第一天赋2效果=(.+?)\n/g)[0].replace(/\|第一天赋2效果=(.+?)\n/g, '$1').replace(/{{color\|#0098DC\|\((.+?)\)}}/g, '<span class="orangetext">（$1）</span>')}${(result0.query.pages[0].revisions[0].content.match(/\|第一天赋4=(.+?)\n/g) !== null ? `<br /><span class="talentblock">${result0.query.pages[0].revisions[0].content.match(/\|第一天赋4=(.+?)\n/g)[0].replace(/\|第一天赋4=(.+?)\n/g, '$1')}</span>（精英阶段2）${result0.query.pages[0].revisions[0].content.match(/\|第一天赋4效果=(.+?)\n/g)[0].replace(/\|第一天赋4效果=(.+?)\n/g, '$1').replace(/{{color\|#0098DC\|\((.+?)\)}}/g, '<span class="orangetext">（$1）</span>')}` :'' )}
 |天赋2=
 |后勤1图标=
 |后勤1={{明日方舟标签||${result0.query.pages[0].revisions[0].content.match(/\|后勤技能1-1=(.+?)\n/g)[0].replace(/\|后勤技能1-1=(.+?)\n/g, '$1')}}}
 |后勤2图标=
-|后勤2=
+|后勤2=${(result0.query.pages[0].revisions[0].content.match(/\|后勤技能1-2=(.+?)\n/g) !== null ? `{{明日方舟标签||${result0.query.pages[0].revisions[0].content.match(/\|后勤技能1-2=(.+?)\n/g)[0].replace(/\|后勤技能1-2=(.+?)\n/g, '$1')}}}（精英阶段2）` : '')}
 |后勤3图标=
-|后勤3={{明日方舟标签||${result0.query.pages[0].revisions[0].content.match(/\|后勤技能2-1=(.+?)\n/g)[0].replace(/\|后勤技能2-1=(.+?)\n/g, '$1')}}}（精英阶段2）
+|后勤3=${(result0.query.pages[0].revisions[0].content.match(/\|后勤技能2-1=(.+?)\n/g) !== null ? `{{明日方舟标签||${result0.query.pages[0].revisions[0].content.match(/\|后勤技能2-1=(.+?)\n/g)[0].replace(/\|后勤技能2-1=(.+?)\n/g, '$1')}}}（精英阶段2）` : '')}
 |雷达图文字1=${result0.query.pages[0].revisions[0].content.match(/\|物理强度=(.+?)\n/g)[0].replace(/\|物理强度=(.+?)\n/g, '$1')}
 |雷达图文字2=${result0.query.pages[0].revisions[0].content.match(/\|战场机动=(.+?)\n/g)[0].replace(/\|战场机动=(.+?)\n/g, '$1')}
 |雷达图文字3=${result0.query.pages[0].revisions[0].content.match(/\|生理耐受=(.+?)\n/g)[0].replace(/\|生理耐受=(.+?)\n/g, '$1')}
