@@ -16,20 +16,24 @@ async function cleaner(gcmtitle, regex, replace, gcmendsortkeyprefix) {
 		if (result1.query === undefined) {
 			console.log('无页面');
 		} else {
-			console.log(`共${result1.query.pages.length}个页面。`)
+			console.log(`${gcmtitle}中共${result1.query.pages.length}个页面。`)
 			for (let i = 0; i < result1.query.pages.length; i++) {
-				try {
-					console.log(`第${i+1}个页面：${result1.query.pages[i].title}。`);
-					const result2 = await bot.doEdit({
-						title: result1.query.pages[i].title,
-						text: result1.query.pages[i].revisions[0].content.replace(regex, replace),
-						summary: `自动修复[[${gcmtitle}]]中的页面`,
-						tags: 'Bot',
-						Bot: true, 
-					});
-					console.log(result2.edit);
-				} catch (e) {
-					console.error(e);
+				console.log(`第${i+1}个页面：${result1.query.pages[i].title}`);
+				if (result1.query.pages[i].revisions[0].content.match(/{{:?(?:Template:|[模样樣]板:|T:)?(?:施工中|[编編][辑輯]中|inuse)/gi) !== null) {
+					console.log("施工中");
+				} else {
+					try {
+						const result2 = await bot.doEdit({
+							title: result1.query.pages[i].title,
+							text: result1.query.pages[i].revisions[0].content.replace(regex, replace),
+							summary: `自动修复[[${gcmtitle}]]中的页面`,
+							tags: 'Bot',
+							Bot: true, 
+						});
+						console.log(result2.edit);
+					} catch (e) {
+						console.error(e);
+					}
 				}
 			}
 		}
@@ -42,11 +46,11 @@ const cronJob=new CronJob({
 		onTick: async () => {
 			var d = new Date()
 			console.log(`${d.getFullYear()}-${String(d.getMonth()).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
-			await cleaner('CAT:错误使用标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]格式化}}\n?/gi, '');
-			await cleaner('CAT:需要更换为标题格式化的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{标题格式化}}');
-			await cleaner('CAT:需要更换为小写标题的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}/gim, '{{小写标题}}');
+			await cleaner('CAT:错误使用标题格式化的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]格式化}}\n?/gi, '');
+			await cleaner('CAT:需要更换为标题格式化的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis, '{{标题格式化}}');
+			await cleaner('CAT:需要更换为小写标题的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis, '{{小写标题}}');
 			await cleaner('CAT:不必要使用override参数的音乐条目', /\|override=1\n?/g, '');
-			await cleaner('CAT:错误使用标题替换模板的页面', /{{:?(?:template:|模板:|[样樣]板:|t:)?[标標][题題]替[换換].*?}}\n?/gim, '', 'CAT:需要更换为');
+			await cleaner('CAT:错误使用标题替换模板的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}\n?/gis, '', 'CAT:需要更换为');
 		}
 });
 bot.login().then(() => cronJob.start());
