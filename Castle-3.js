@@ -1,6 +1,6 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
 const bot = new MediaWikiJS(require('./config.json').prts);
-const title = '浊心斯卡蒂';
+const title = '深海色';
 bot
 	.login()
 	.then(async () => {
@@ -31,13 +31,13 @@ ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+
 |生日=${result0.query.pages[0].revisions[0].content.match(/\|生日=(.+?)\n/g)[0].replace(/\|生日=(.+?)\n/g, '$1')}
 |星座=
 |血型=
-|种族=[[明日方舟/种族#${result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1')}]]
+|种族=${((result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1') === '不明') || (result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1') === '未公开') || (result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1') === '未知')) ? result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1') : `[[明日方舟/种族#${result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|种族=(.+?)\n/g)[0].replace(/\|种族=(.+?)\n/g, '$1')}]]`}
 |职业=${result0.query.pages[0].revisions[0].content.match(/\|职业=(.+?)\n/g)[0].replace(/\|职业=(.+?)\n/g, '$1')}
 |专精=
 |画师=
 |声优=
 |萌点=
-|出身地区=[[明日方舟:${result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1')}]]
+|出身地区=${((result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1') === '不明') || (result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1') === '未公开') || (result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1') === '未知')) ? result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1') : `[[明日方舟:${result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|出身地=(.+?)\n/g)[0].replace(/\|出身地=(.+?)\n/g, '$1')}]]`}
 |活动范围=${(result0.query.pages[0].revisions[0].content.match(/\|所属组织=(.+?)\n/g) ? result0.query.pages[0].revisions[0].content.match(/\|所属组织=(.+?)\n/g)[0].replace(/\|所属组织=(.+?)\n/g, '$1') : (result0.query.pages[0].revisions[0].content.match(/\|所属国家=(.+?)\n/g) ? `${result0.query.pages[0].revisions[0].content.match(/\|所属国家=(.+?)\n/g)[0].replace(/\|所属国家=(.+?)\n/g, '$1')}` : ''))}
 |所属团体=${(result0.query.pages[0].revisions[0].content.match(/\|所属团队=(.+?)\n/g) ? result0.query.pages[0].revisions[0].content.match(/\|所属团队=(.+?)\n/g)[0].replace(/\|所属团队=(.+?)\n/g, '$1') : '')}
 |个人状态=
@@ -71,15 +71,15 @@ ${(result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g) 
 |部署费用=${result0.query.pages[0].revisions[0].content.match(/\|部署费用=(.+?)→(.+?)\n/g)[0].replace(/\|部署费用=(.+?)→(.+?)\n/g, '$1/$2')}
 |阻挡数=${result0.query.pages[0].revisions[0].content.match(/\|阻挡数=(.+?)\n/g)[0].replace(/\|阻挡数=(.+?)\n/g, '$1')}
 |攻击速度=${result0.query.pages[0].revisions[0].content.match(/\|攻击速度=(.+?)s\n/g)[0].replace(/\|攻击速度=(.+?)s\n/g, '$1')}秒
-|技能1名称=${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs, '$1')}
-|技能1触发={{明日方舟标签|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能类型1=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能类型1=(.+?)\n/gs, '$1')}}}{{明日方舟标签|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能类型2=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能类型2=(.+?)\n/gs, '$1')}}}
-|技能1技力={{akspan|初始}} {{明日方舟技能条|color=blue|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能2初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能2初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能3初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能3初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能4初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能4初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能5初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能5初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能6初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能6初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能7初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能7初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精1初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精1初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精2初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精2初始=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精3初始=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精3初始=(.+?)\n/gs, '$1')}}} {{akspan|消耗}} {{明日方舟技能条|color=blue|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能2消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能2消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能3消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能3消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能4消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能4消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能5消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能5消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能6消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能6消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能7消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能7消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精1消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精1消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精2消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精2消耗=(.+?)\n/gs, '$1')}|${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精3消耗=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能专精3消耗=(.+?)\n/gs, '$1')}}}
-|技能1=${result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1描述=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能1描述=(.+?)\n/gs, '$1')}
-|技能2名称=
+|技能1名称=${(result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs) !== null ? result0.query.pages[0].revisions[0].content.match(/'''技能1（精英0开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs)[0].replace(/'''技能1（精英0开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs, '$1') : '')}
+|技能1触发=
+|技能1技力=
+|技能1=
+|技能2名称=${(result0.query.pages[0].revisions[0].content.match(/'''技能2（精英1开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs) !== null ? result0.query.pages[0].revisions[0].content.match(/'''技能2（精英1开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs)[0].replace(/'''技能2（精英1开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs, '$1') : '')}
 |技能2触发=
 |技能2技力=
 |技能2=
-|技能3名称=
+|技能3名称=${(result0.query.pages[0].revisions[0].content.match(/'''技能3（精英2开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs) !== null ? result0.query.pages[0].revisions[0].content.match(/'''技能3（精英2开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs)[0].replace(/'''技能3（精英2开放）'''\n{{技能.+?\|技能名=(.+?)\n/gs, '$1') : '')}
 |技能3触发=
 |技能3技力=
 |技能3=
@@ -164,14 +164,14 @@ ${result0.query.pages[0].revisions[0].content.match(/\|档案7文本=(.+?)\n\|/g
 | style="color:white;background:#666"|'''${result0.query.pages[0].revisions[0].content.match(/\|档案8=(.+?)\n/g)[0].replace(/\|档案8=(.+?)\n/g, '$1')}'''
 |-style="background:#f9f9f9"
 |<poem>
-${result0.query.pages[0].revisions[0].content.match(/\|档案8文本=(.+?)\n\|/gs)[0].replace(/\|档案8文本=(.+?)\n\|/gs, '$1')}
-</poem>
+${result0.query.pages[0].revisions[0].content.match(/\|档案8文本=(.+?)\n[\|}]/gs)[0].replace(/\|档案8文本=(.+?)\n[\|}]/gs, '$1')}
+</poem>${(result0.query.pages[0].revisions[0].content.match(/\|档案9=(.+?)\n/g) !== null ? `
 |-
 | style="color:white;background:#666"|'''${result0.query.pages[0].revisions[0].content.match(/\|档案9=(.+?)\n/g)[0].replace(/\|档案9=(.+?)\n/g, '$1')}'''
 |-style="background:#f9f9f9"
 |<poem>
 ${result0.query.pages[0].revisions[0].content.match(/\|档案9文本=(.+?)\n}}/gs)[0].replace(/\|档案9文本=(.+?)\n}}/gs, '$1')}
-</poem>
+</poem>` : '')}
 |}`
 var wikitext1 = `
 == 角色台词 ==
