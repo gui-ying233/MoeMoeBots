@@ -32,7 +32,7 @@ async function cleaner(gcmtitle, regex, replace, gcmendsortkeyprefix) {
 						});
 						console.log(result2.edit);
 						if (result2.edit.nochange !== true) {
-							console.info(`https://mzh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`)
+							console.info(`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`)
 						}
 					} catch (e) {
 						console.error(e);
