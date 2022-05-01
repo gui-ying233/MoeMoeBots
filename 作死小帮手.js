@@ -7,7 +7,7 @@ bot
 			const result0 = await bot.api.get({
 				action: 'query',
 				prop: 'links',
-				titles: 'User talk:TNLHK/萌百作死报',
+				titles: 'User talk:TNLHK/作死报',
 				pllimit: 'max',
 			})
 			console.log(`共${result0.query.pages[0].links.length}个页面。`);
