@@ -1,6 +1,6 @@
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
 const bot = new MediaWikiJS(require('./config.json').prts);
-const title = '深海色';
+const title = '艾丽妮';
 bot
 	.login()
 	.then(async () => {
@@ -53,7 +53,7 @@ ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+
 |稀有度=${result0.query.pages[0].revisions[0].content.match(/\|稀有度=(.+?)\n/g)[0].replace(/\|稀有度=(.+?)\n/g, '$1')}
 |画师=${result0.query.pages[0].revisions[0].content.match(/\|画师=(.+?)\n/g)[0].replace(/\|画师=(.+?)\n/g, '$1')}
 ${(result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g) === null ? `|配音=${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}` : `|多位配音={{Cate|[[${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}]]（日语）/ [[${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}]]（汉语）|${result0.query.pages[0].revisions[0].content.match(/\|日文配音=(.+?)\n/g)[0].replace(/\|日文配音=(.+?)\n/g, '$1')}|${result0.query.pages[0].revisions[0].content.match(/\|中文配音=(.+?)\n/g)[0].replace(/\|中文配音=(.+?)\n/g, '$1')}}}`)}
-|势力=维多利亚
+|势力=${(result0.query.pages[0].revisions[0].content.match(/\|所属组织=(.+?)\n/g) ? result0.query.pages[0].revisions[0].content.match(/\|所属组织=(.+?)\n/g)[0].replace(/\|所属组织=(.+?)\n/g, '$1') : (result0.query.pages[0].revisions[0].content.match(/\|所属国家=(.+?)\n/g) ? `${result0.query.pages[0].revisions[0].content.match(/\|所属国家=(.+?)\n/g)[0].replace(/\|所属国家=(.+?)\n/g, '$1')}` : ''))}
 |差分类型=
 |差分代号=
 |时装=
@@ -175,7 +175,7 @@ ${result0.query.pages[0].revisions[0].content.match(/\|档案9文本=(.+?)\n}}/g
 |}`
 var wikitext1 = `
 == 角色台词 ==
-{{Retext|N}}<br>{{Zhvoice}}
+{{Retext|N}}<br />{{Zhvoice|N}}
 {| class="wikitable  mw-collapsible mw-collapsed " style="background:#f9f9f9"
 |-
 ! colspan=4 style="color:white;background:#333333"|台词列表
@@ -364,7 +364,7 @@ var wikitext1 = `
 |-
 ! style="color:white;background:#333333"|'''新干员 — 信息录入'''
 |-
-|{{Cquote|}}
+|{{Cquote|${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}}}
 {|style="float:left;width:100%;text-indent:1em;"
 | 代号 ||style="background:#EDEFF2"| ${title}
 |-
