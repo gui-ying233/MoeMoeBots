@@ -11,7 +11,7 @@ bot
 				rvprop: 'content',
                 titles: `${title}|${title}/语音记录`,
 			})
-			var wikitext0 = `{{标题格式化}}
+			const wikitext0 = `{{标题格式化}}
 {{明日方舟:导航}}
 ${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)|非异格=1}}\n/g) === null ? `${(result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g) !== null ? result0.query.pages[0].revisions[0].content.match(/{{异格干员\|原型=(.+?)}}\n/g)[0].replace(/{{异格干员\|原型=(.+?)}}\n/g, `{{明日方舟info|异格前=$1}}
 `) : '')}` : '')}{{明日方舟info|'''<big><big>${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}</big></big>'''}}
@@ -173,7 +173,7 @@ ${result0.query.pages[0].revisions[0].content.match(/\|档案8文本=(.+?)\n[\|}
 ${result0.query.pages[0].revisions[0].content.match(/\|档案9文本=(.+?)\n}}/gs)[0].replace(/\|档案9文本=(.+?)\n}}/gs, '$1')}
 </poem>` : '')}
 |}`
-var wikitext1 = `
+const wikitext1 = `
 == 角色台词 ==
 {{Retext|N}}<br />{{Zhvoice|N}}
 {| class="wikitable  mw-collapsible mw-collapsed " style="background:#f9f9f9"
@@ -386,8 +386,11 @@ var wikitext1 = `
 <references />
 
 [[分类:明日方舟]]`
+			const materia = `['${title}']={${result0.query.pages[0].revisions[0].content.match(/==精英化材料==.+?==技能升级材料==.+?\n==/gs)[0].replace(/(==精英化材料==.+?==技能升级材料==.+?)\n==/gs,'$1').replace(/\}\} \{\{材料消耗\|/g,'+').replace(/=\{\{材料消耗\|/g,'\"]="').replace(/\|(?=\d{1,2}\")/g,'["v').replace(/\|(?=\S\d{1,2}\")/g,'["v').replace(/\|/g,'*').replace(/}}/g,'",').replace(/\n\",/g,'').replace(/\=\=\S{1,4}材料\=\=\n\{\{\S{1,4}材料/g,'').replace(/v2/g,'v1').replace(/v3/g,'v2').replace(/v4/g,'v3').replace(/v5/g,'v4').replace(/v6/g,'v5').replace(/v7/g,'v6').replace(/v精1/g,'v10').replace(/v精2/g,'v20').replace(/v一8/g,'v17').replace(/v一9/g,'v18').replace(/v一10/g,'v19').replace(/v二8/g,'v27').replace(/v二9/g,'v28').replace(/v二10/g,'v29').replace(/v三8/g,'v37').replace(/v三9/g,'v38').replace(/v三10/g,'v39')}\n},`;
 			console.info(wikitext0);
 			console.info(wikitext1);
+			console.log('---- https://zh.moegirl.org.cn/模块:明日方舟材料/data ----')
+			console.info(materia);
         } catch (e0) {
 			console.error(e0);
 		}
