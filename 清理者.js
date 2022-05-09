@@ -48,7 +48,7 @@ const cronJob=new CronJob({
 		cronTime: '0 0/15 * 1/1 * *', // http://www.cronmaker.com/
 		onTick: async () => {
 			var d = new Date()
-			console.log(`${d.getFullYear()}-${String(d.getMonth()).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
+			console.log(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
 			await cleaner('CAT:错误使用标题格式化的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]格式化}}\n?/gi, '');
 			await cleaner('CAT:需要更换为标题格式化的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis, '{{标题格式化}}');
 			await cleaner('CAT:需要更换为小写标题的页面', /{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis, '{{小写标题}}');
