@@ -1,3 +1,5 @@
+"use strict"
+
 const { MediaWikiJS } = require('@lavgup/mediawiki.js')
 const { CronJob } = require( 'cron');
 const bot = new MediaWikiJS(require('./config.json').mzh)
