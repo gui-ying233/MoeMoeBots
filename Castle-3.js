@@ -1,3 +1,5 @@
+"use strict"
+
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
 const bot = new MediaWikiJS(require('./config.json').prts);
 const title = '艾丽妮';
