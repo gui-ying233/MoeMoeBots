@@ -1,8 +1,16 @@
 "use strict"
 
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
+const pinyin = require("pinyin");
 const bot = new MediaWikiJS(require('./config.json').prts);
+
+var pinYinMing = '';
+
 const title = '艾丽妮';
+for (let i = 0; i < pinyin(title).length; i++) {
+	pinYinMing += pinyin(title, {style: pinyin.STYLE_NORMAL})[i][0][0].toUpperCase() + pinyin(title, {style: pinyin.STYLE_NORMAL})[i][0].replace(/^.(.*)$/, '$1');
+}
+
 bot
 	.login()
 	.then(async () => {
@@ -186,178 +194,178 @@ const wikitext1 = `
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题1=(.+?)\n/g)[0].replace(/\|标题1=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词1={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词1={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_001.mp3</sm2>
-| <sm2>HaiDi_zh_CN_001.mp3</sm2>
+| <sm2>${pinYinMing}_CN_001.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_001.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题2=(.+?)\n/g)[0].replace(/\|标题2=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词2={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词2={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_002.mp3</sm2>
-| <sm2>HaiDi_zh_CN_002.mp3</sm2>
+| <sm2>${pinYinMing}_CN_002.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_002.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题3=(.+?)\n/g)[0].replace(/\|标题3=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词3={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词3={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_003.mp3</sm2>
-| <sm2>HaiDi_zh_CN_003.mp3</sm2>
+| <sm2>${pinYinMing}_CN_003.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_003.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题4=(.+?)\n/g)[0].replace(/\|标题4=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词4={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词4={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_004.mp3</sm2>
-| <sm2>HaiDi_zh_CN_004.mp3</sm2>
+| <sm2>${pinYinMing}_CN_004.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_004.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题5=(.+?)\n/g)[0].replace(/\|标题5=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词5={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词5={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_005.mp3</sm2>
-| <sm2>HaiDi_zh_CN_005.mp3</sm2>
+| <sm2>${pinYinMing}_CN_005.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_005.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题6=(.+?)\n/g)[0].replace(/\|标题6=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词6={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词6={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_006.mp3</sm2>
-| <sm2>HaiDi_zh_CN_006.mp3</sm2>
+| <sm2>${pinYinMing}_CN_006.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_006.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题7=(.+?)\n/g)[0].replace(/\|标题7=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词7={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词7={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_007.mp3</sm2>
-| <sm2>HaiDi_zh_CN_007.mp3</sm2>
+| <sm2>${pinYinMing}_CN_007.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_007.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题8=(.+?)\n/g)[0].replace(/\|标题8=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词8={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词8={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_008.mp3</sm2>
-| <sm2>HaiDi_zh_CN_008.mp3</sm2>
+| <sm2>${pinYinMing}_CN_008.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_008.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题9=(.+?)\n/g)[0].replace(/\|标题9=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词9={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词9={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_009.mp3</sm2>
-| <sm2>HaiDi_zh_CN_009.mp3</sm2>
+| <sm2>${pinYinMing}_CN_009.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_009.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题10=(.+?)\n/g)[0].replace(/\|标题10=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词10={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词10={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_010.mp3</sm2>
-| <sm2>HaiDi_zh_CN_010.mp3</sm2>
+| <sm2>${pinYinMing}_CN_010.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_010.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题11=(.+?)\n/g)[0].replace(/\|标题11=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_011.mp3</sm2>
-| <sm2>HaiDi_zh_CN_011.mp3</sm2>
+| <sm2>${pinYinMing}_CN_011.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_011.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题12=(.+?)\n/g)[0].replace(/\|标题12=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词12={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词12={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_012.mp3</sm2>
-| <sm2>HaiDi_zh_CN_012.mp3</sm2>
+| <sm2>${pinYinMing}_CN_012.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_012.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题13=(.+?)\n/g)[0].replace(/\|标题13=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词13={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词13={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_013.mp3</sm2>
-| <sm2>HaiDi_zh_CN_013.mp3</sm2>
+| <sm2>${pinYinMing}_CN_013.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_013.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题14=(.+?)\n/g)[0].replace(/\|标题14=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词14={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词14={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_014.mp3</sm2>
-| <sm2>HaiDi_zh_CN_014.mp3</sm2>
+| <sm2>${pinYinMing}_CN_014.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_014.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题17=(.+?)\n/g)[0].replace(/\|标题17=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词17={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词17={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_017.mp3</sm2>
-| <sm2>HaiDi_zh_CN_017.mp3</sm2>
+| <sm2>${pinYinMing}_CN_017.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_017.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题18=(.+?)\n/g)[0].replace(/\|标题18=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词18={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词18={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_018.mp3</sm2>
-| <sm2>HaiDi_zh_CN_018.mp3</sm2>
+| <sm2>${pinYinMing}_CN_018.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_018.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题19=(.+?)\n/g)[0].replace(/\|标题19=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词19={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词19={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_019.mp3</sm2>
-| <sm2>HaiDi_zh_CN_019.mp3</sm2>
+| <sm2>${pinYinMing}_CN_019.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_019.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题20=(.+?)\n/g)[0].replace(/\|标题20=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词20={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词20={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_020.mp3</sm2>
-| <sm2>HaiDi_zh_CN_020.mp3</sm2>
+| <sm2>${pinYinMing}_CN_020.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_020.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题21=(.+?)\n/g)[0].replace(/\|标题21=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词21={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词21={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_021.mp3</sm2>
-| <sm2>HaiDi_zh_CN_021.mp3</sm2>
+| <sm2>${pinYinMing}_CN_021.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_021.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题22=(.+?)\n/g)[0].replace(/\|标题22=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词22={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词22={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_022.mp3</sm2>
-| <sm2>HaiDi_zh_CN_022.mp3</sm2>
+| <sm2>${pinYinMing}_CN_022.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_022.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题23=(.+?)\n/g)[0].replace(/\|标题23=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词23={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词23={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_023.mp3</sm2>
-| <sm2>HaiDi_zh_CN_023.mp3</sm2>
+| <sm2>${pinYinMing}_CN_023.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_023.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题24=(.+?)\n/g)[0].replace(/\|标题24=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词24={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词24={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_024.mp3</sm2>
-| <sm2>HaiDi_zh_CN_024.mp3</sm2>
+| <sm2>${pinYinMing}_CN_024.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_024.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题25=(.+?)\n/g)[0].replace(/\|标题25=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词25={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词25={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_025.mp3</sm2>
-| <sm2>HaiDi_zh_CN_025.mp3</sm2>
+| <sm2>${pinYinMing}_CN_025.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_025.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题26=(.+?)\n/g)[0].replace(/\|标题26=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词26={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词26={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_026.mp3</sm2>
-| <sm2>HaiDi_zh_CN_026.mp3</sm2>
+| <sm2>${pinYinMing}_CN_026.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_026.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题27=(.+?)\n/g)[0].replace(/\|标题27=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词27={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词27={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_027.mp3</sm2>
-| <sm2>HaiDi_zh_CN_027.mp3</sm2>
+| <sm2>${pinYinMing}_CN_027.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_027.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题28=(.+?)\n/g)[0].replace(/\|标题28=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词28={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词28={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_028.mp3</sm2>
-| <sm2>HaiDi_zh_CN_028.mp3</sm2>
+| <sm2>${pinYinMing}_CN_028.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_028.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题29=(.+?)\n/g)[0].replace(/\|标题29=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词29={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词29={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_029.mp3</sm2>
-| <sm2>HaiDi_zh_CN_029.mp3</sm2>
+| <sm2>${pinYinMing}_CN_029.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_029.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题30=(.+?)\n/g)[0].replace(/\|标题30=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词30={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词30={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_030.mp3</sm2>
-| <sm2>HaiDi_zh_CN_030.mp3</sm2>
+| <sm2>${pinYinMing}_CN_030.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_030.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题31=(.+?)\n/g)[0].replace(/\|标题31=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词31={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词31={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_031.mp3</sm2>
-| <sm2>HaiDi_zh_CN_031.mp3</sm2>
+| <sm2>${pinYinMing}_CN_031.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_031.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题32=(.+?)\n/g)[0].replace(/\|标题32=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词32={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词32={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_032.mp3</sm2>
-| <sm2>HaiDi_zh_CN_032.mp3</sm2>
+| <sm2>${pinYinMing}_CN_032.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_032.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题33=(.+?)\n/g)[0].replace(/\|标题33=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词33={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词33={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_033.mp3</sm2>
-| <sm2>HaiDi_zh_CN_033.mp3</sm2>
+| <sm2>${pinYinMing}_CN_033.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_033.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题34=(.+?)\n/g)[0].replace(/\|标题34=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词34={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词34={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_034.mp3</sm2>
-| <sm2>HaiDi_zh_CN_034.mp3</sm2>
+| <sm2>${pinYinMing}_CN_034.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_034.mp3</sm2>
 |- 
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题36=(.+?)\n/g)[0].replace(/\|标题36=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词36={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词36={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_036.mp3</sm2>
-| <sm2>HaiDi_zh_CN_036.mp3</sm2>
+| <sm2>${pinYinMing}_CN_036.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_036.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题37=(.+?)\n/g)[0].replace(/\|标题37=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词37={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词37={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_037.mp3</sm2>
-| <sm2>HaiDi_zh_CN_037.mp3</sm2>
+| <sm2>${pinYinMing}_CN_037.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_037.mp3</sm2>
 |-
 | ${result0.query.pages[1].revisions[0].content.match(/\|标题42=(.+?)\n/g)[0].replace(/\|标题42=(.+?)\n/g, '$1')}
 | ${result0.query.pages[1].revisions[0].content.match(/\|台词42={{[Vv]oiceData\/word\|中文\|(.+?)}}/g)[0].replace(/\|台词42={{[Vv]oiceData\/word\|中文\|(.+?)}}/g, '$1')}
-| <sm2>HaiDi_CN_042.mp3</sm2>
-| <sm2>HaiDi_zh_CN_042.mp3</sm2>
+| <sm2>${pinYinMing}_CN_042.mp3</sm2>
+| <sm2>${pinYinMing}_zh_CN_042.mp3</sm2>
 |-
 |}
 
@@ -391,7 +399,7 @@ const wikitext1 = `
 			const materia = `['${title}']={${result0.query.pages[0].revisions[0].content.match(/==精英化材料==.+?==技能升级材料==.+?\n==/gs)[0].replace(/(==精英化材料==.+?==技能升级材料==.+?)\n==/gs,'$1').replace(/\}\} \{\{材料消耗\|/g,'+').replace(/=\{\{材料消耗\|/g,'\"]="').replace(/\|(?=\d{1,2}\")/g,'["v').replace(/\|(?=\S\d{1,2}\")/g,'["v').replace(/\|/g,'*').replace(/}}/g,'",').replace(/\n\",/g,'').replace(/\=\=\S{1,4}材料\=\=\n\{\{\S{1,4}材料/g,'').replace(/v2/g,'v1').replace(/v3/g,'v2').replace(/v4/g,'v3').replace(/v5/g,'v4').replace(/v6/g,'v5').replace(/v7/g,'v6').replace(/v精1/g,'v10').replace(/v精2/g,'v20').replace(/v一8/g,'v17').replace(/v一9/g,'v18').replace(/v一10/g,'v19').replace(/v二8/g,'v27').replace(/v二9/g,'v28').replace(/v二10/g,'v29').replace(/v三8/g,'v37').replace(/v三9/g,'v38').replace(/v三10/g,'v39')}\n},`;
 			console.info(wikitext0);
 			console.info(wikitext1);
-			console.log('---- https://zh.moegirl.org.cn/模块:明日方舟材料/data ----')
+			console.log('<!---- https://zh.moegirl.org.cn/模块:明日方舟材料/data ---->')
 			console.info(materia);
         } catch (e0) {
 			console.error(e0);
