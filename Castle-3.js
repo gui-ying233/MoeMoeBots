@@ -8,7 +8,7 @@ var pinYinMing = '';
 
 const title = '艾丽妮';
 for (let i = 0; i < pinyin(title).length; i++) {
-	pinYinMing += pinyin(title, {style: pinyin.STYLE_NORMAL})[i][0][0].toUpperCase() + pinyin(title, {style: pinyin.STYLE_NORMAL})[i][0].replace(/^.(.*)$/, '$1');
+	pinYinMing += pinyin(title, {style: pinyin.STYLE_FIRST_LETTER})[i].toUpperCase() + pinyin(title, {style: pinyin.STYLE_NORMAL})[i][0].replace(/^.(.*)$/, '$1');
 }
 
 bot
