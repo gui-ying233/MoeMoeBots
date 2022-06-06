@@ -20,7 +20,7 @@ async function cleaner(gcmtitle, regex, replace = '', skipTitle = /^$/) {
 			console.log(`${gcmtitle}中共${result1.query.pages.length}个页面。`)
 			for (let i = 0; i < result1.query.pages.length; i++) {
 				console.log(`第${i+1}个页面：${result1.query.pages[i].title}`);
-				if(! new RegExp(/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//).test(result1.query.pages[i].title) && ! new RegExp(skipTitle).test(result1.query.pages[i].title)) {
+				if (new RegExp(/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//).test(result1.query.pages[i].title) || new RegExp(skipTitle).test(result1.query.pages[i].title)) {
 					console.log("跳过页面");
 				} else if (result1.query.pages[i].revisions[0].content.match(/{{:?(?:Template:|[模样樣]板:|T:)?(?:施工中|[编編][辑輯]中|inuse)/gi) !== null) {
 					console.log("施工中");
