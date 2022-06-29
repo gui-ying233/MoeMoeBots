@@ -26,7 +26,7 @@ bot
 		try {
 			const result1 = await bot.doEdit({
 				title: 'H:沙盒/styles.css',
-				text: '',
+				text: '._addText {\n\tcontent: "{{:H:沙盒}}";\n}',
 				summary: '沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。',
 				tags: 'Bot',
 				Bot: true,
@@ -38,7 +38,7 @@ bot
 		try {
 			const result2 = await bot.doEdit({
 				title: 'T:沙盒/styles.css',
-				text: '/* [[Category:在模板名字空间下的CSS页面]] */',
+				text: '._addText {\n\tcontent: "{{:T:沙盒}}";\n}\n\n/* [[Category:在模板名字空间下的CSS页面]] */',
 				summary: '沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。',
 				tags: 'Bot',
 				Bot: true,
