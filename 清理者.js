@@ -48,7 +48,7 @@ async function cleaner(gcmtitle, regex, replace = '', skipTitle = /^$/) {
 	}
 }
 const cronJob=new CronJob({
-		cronTime: '0 0/15 * 1/1 * *', // http://www.cronmaker.com/
+		cronTime: '0 0/30 * 1/1 * *', // http://www.cronmaker.com/
 		onTick: async () => {
 			var d = new Date()
 			console.log(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,0)}-${String(d.getDate()).padStart(2,0)} ${String(d.getHours()).padStart(2,0)}:${String(d.getMinutes()).padStart(2,0)}:${String(d.getSeconds()).padStart(2,0)}`);
