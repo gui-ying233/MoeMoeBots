@@ -2,7 +2,7 @@
 
 const { MediaWikiJS } = require('@lavgup/mediawiki.js');
 const pinyin = require("pinyin");
-const bot = new MediaWikiJS(require('./config.json').prts);
+const bot = new MediaWikiJS(require('./config.json').mprts);
 
 var pinYinMing = '';
 
