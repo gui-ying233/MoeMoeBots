@@ -1,7 +1,8 @@
 import requests
-from json import load
+from json import load, dumps
 from datetime import datetime
 from time import sleep
+from subprocess import call
 
 while True:
     print(str(datetime.now())[:-7])
@@ -38,15 +39,19 @@ while True:
         dataNew.update({result[_]["title"]: int(result[_]["revisions"][0]["timestamp"][:4] + result[_]["revisions"][0]["timestamp"][5:7] + result[_]["revisions"][0]
                                                 ["timestamp"][8:10] + result[_]["revisions"][0]["timestamp"][11:13] + result[_]["revisions"][0]["timestamp"][14:16] + result[_]["revisions"][0]["timestamp"][17:19])})
     open("/Users/emmm/Desktop/明日方舟/讨论监视.json",
-         "w").write(str(dataNew).replace('"', '\"').replace("'", '"'))
+         "w").write(dumps(dataNew, indent=4, ensure_ascii=False))
 
     for k, v in dataNew.items():
         if k not in dataOld:
             noChange = False
-            print('新讨论页：【' + k + '】')
+            print('新讨论页：', k)
+            cmd = 'display notification \"' + k + '\" with title \"新讨论页\"'
+            call(["osascript", "-e", cmd])
         elif v > dataOld[k]:
             noChange = False
-            print('有新讨论更改：【' + k + '】')
+            print('有新讨论更改：', k)
+            cmd = 'display notification \"' + k + '\" with title \"有新讨论更改\"'
+            call(["osascript", "-e", cmd])
     if noChange:
         print('无新讨论更改')
 
