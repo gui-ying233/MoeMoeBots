@@ -55,4 +55,4 @@ while True:
     if noChange:
         print('无新讨论更改')
 
-    sleep(3600)
+    sleep(1800)
