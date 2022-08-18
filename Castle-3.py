@@ -430,7 +430,9 @@ output1 = '''{{标题格式化}}
 |}
 
 == 档案 ==
-{| class="wikitable mw-collapsible mw-collapsed "'''+档案+'''
+{| class="wikitable mw-collapsible mw-collapsed "
+! colspan=3 style="color:white;background:#333333"|'\''人员档案'\''
+|-'''+档案+'''
 |}
 '''
 output2 = '''
