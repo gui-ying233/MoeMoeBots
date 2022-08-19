@@ -474,3 +474,5 @@ output2 = '''
 '''
 
 open(f".{sep}明日方舟:{代号}.wikitext", "w").write(output1+output2)
+
+print('已生成。')
