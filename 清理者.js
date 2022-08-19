@@ -7,8 +7,9 @@ async function cleaner(gcmtitle, regex, replace = '', skipTitle = /^$/) {
 	try {
 		const result1 = await bot.api.get({
 			action: 'query',
+			curtimestamp: 1,
 			prop: 'revisions',
-			rvprop: 'content',
+			rvprop: 'content|timestamp',
 			generator: 'categorymembers',
 			gcmnamespace: '-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303',
 			gcmlimit: 'max',
@@ -32,6 +33,8 @@ async function cleaner(gcmtitle, regex, replace = '', skipTitle = /^$/) {
 							summary: `自动修复[[${gcmtitle}]]中的页面`,
 							tags: 'Bot',
 							Bot: true, 
+							basetimestamp: result1.query.pages[i].revisions[0].timestamp,
+							starttimestamp: result1.curtimestamp,
 						});
 						console.log(result2.edit);
 						if (result2.edit.nochange !== true) {
