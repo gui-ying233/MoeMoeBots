@@ -1,10 +1,11 @@
 import requests
+from hashlib import sha1
 
 urlTitleList = []
 urlList = []
 title = ''
 
-titles = 'File:头像 敌人 自走车.png'
+titles = 'File:LT-1 借道 地图.png|File:LT-2 有备而来 地图.png|File:LT-3 军容整肃 地图.png|File:LT-4 “乌萨斯竞技” 地图.png|File:LT-5 “乌合之众” 地图.png|File:LT-6 工程检查 地图.png|File:LT-7 突然造访 地图.png|File:LT-8 漫长的旅行 地图.png|File:IC-S-1 复工之前 地图.png|File:IC-S-2 障碍清理 地图.png|File:IC-S-3 越帮越忙 地图.png|File:IC-S-4 简化工程 地图.png|File:IC-MO-1 狂欢之巅 地图.png'
 
 while 1:
     try:
@@ -13,7 +14,7 @@ while 1:
                                    'action': 'query',
                                    'prop': 'imageinfo',
                                    'titles': titles,
-                                   'iiprop': 'url',
+                                   'iiprop': 'url|sha1',
                                    'format': 'json',
                                    'formatversion': 'latest'
                                })
@@ -39,10 +40,15 @@ for _ in range(len(result)):
         elif title[:5] == '情报处理室':
             title = '明日方舟剧情 ' + title[6:]
         try:
-            print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中...')
-            open('/Users/emmm/Desktop/明日方舟/图片/'+title, "wb").write(
-                requests.get(result[_]['imageinfo'][0]['url']).content)
-            print('\t下载完成')
+            while 1:
+                print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中...')
+                open('/Users/emmm/Desktop/明日方舟/图片/'+title, "wb").write(
+                    requests.get(result[_]['imageinfo'][0]['url']).content)
+                if result[_]['imageinfo'][0]['sha1'] == sha1(open('/Users/emmm/Desktop/明日方舟/图片/'+title, "rb").read()).hexdigest():
+                    print('\t下载完成')
+                    break
+                else:
+                    print("SHA-1验证失败，重新下载…")
         except Exception as e:
             print(str(e), "下载失败")
 print('进程结束')
