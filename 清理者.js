@@ -36,7 +36,7 @@ async function cleaner(gcmtitle, regex, replace = '', skipTitle = /^$/) {
 							basetimestamp: result1.query.pages[i].revisions[0].timestamp,
 							starttimestamp: result1.curtimestamp,
 						});
-						console.log(result2.edit);
+						console.table(result2.edit);
 						if (result2.edit.nochange !== true) {
 							console.info(`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`)
 						}
