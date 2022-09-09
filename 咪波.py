@@ -5,7 +5,7 @@ urlTitleList = []
 urlList = []
 title = ''
 
-titles = 'File:LT-1 借道 地图.png|File:LT-2 有备而来 地图.png|File:LT-3 军容整肃 地图.png|File:LT-4 “乌萨斯竞技” 地图.png|File:LT-5 “乌合之众” 地图.png|File:LT-6 工程检查 地图.png|File:LT-7 突然造访 地图.png|File:LT-8 漫长的旅行 地图.png|File:IC-S-1 复工之前 地图.png|File:IC-S-2 障碍清理 地图.png|File:IC-S-3 越帮越忙 地图.png|File:IC-S-4 简化工程 地图.png|File:IC-MO-1 狂欢之巅 地图.png'
+titles = ''
 
 while 1:
     try:
@@ -39,6 +39,8 @@ for _ in range(len(result)):
             title = '明日方舟 tx' + title[2:]
         elif title[:5] == '情报处理室':
             title = '明日方舟剧情 ' + title[6:]
+        elif title[:6] == '职业分支图标':
+            title = '明日方舟职业_分支' + title[6:]
         try:
             while 1:
                 print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中...')
