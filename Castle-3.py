@@ -1,7 +1,8 @@
-import requests
-from re import findall, S
-from pypinyin import pinyin, Style
 from os import sep
+from re import S, findall
+
+import requests
+from pypinyin import Style, pinyin
 
 output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初始范围 = 精1范围 = 精2范围 = 生命上限加成 = 攻击加成 = 防御加成 = 潜能 = 技能1触发 = 技能2触发 = 技能3触发 = 技能1持续 = 技能2持续 = 技能3持续 = 技能1初始 = 技能2初始 = 技能3初始 = 技能1技力 = 技能2技力 = 技能3技力 = 天赋1 = 天赋2 = 后勤2 = 后勤3 = 档案 = 语音 = ''
 
@@ -116,33 +117,33 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
 while 1:
     try:
-        result0 = requests.get('https://m.prts.wiki/api.php',
-                               params={
-                                   'action': 'query',
-                                   'prop': 'revisions',
-                                   'rvprop': 'content',
-                                   'titles': f'{代号}|{代号}/语音记录|后勤技能一览',
-                                   'format': 'json',
-                                   'formatversion': 'latest'
-                               })
+        result0: requests.models.Response = requests.get('https://m.prts.wiki/api.php',
+                                                         params={
+                                                             'action': 'query',
+                                                             'prop': 'revisions',
+                                                             'rvprop': 'content',
+                                                             'titles': f'{代号}|{代号}/语音记录|后勤技能一览',
+                                                             'format': 'json',
+                                                             'formatversion': 'latest'
+                                                         })
         break
     except Exception as e:
         print(str(e), "重新尝试获取页面...")
 
 for _ in result0.json()['query']['pages']:
     if _['title'] == 代号:
-        result1 = _['revisions'][0]['content']
+        result1: str = _['revisions'][0]['content']
     elif _['title'] == 代号+'/语音记录':
-        result2 = _['revisions'][0]['content']
+        result2: str = _['revisions'][0]['content']
     elif _['title'] == '后勤技能一览':
-        result3 = _['revisions'][0]['content']
+        result3: str = _['revisions'][0]['content']
 
 
-def r(regex, result=result1, flags=S):
+def r(regex, result: str = result1, flags=S) -> str:
     return ''.join(findall(regex, result, flags))
 
 
-def get(keyword) -> str:
+def get(keyword: str) -> str:
     return r('\|' + keyword + '=(.+?)\n')
 
 
