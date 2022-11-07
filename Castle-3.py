@@ -399,13 +399,13 @@ if search("(\=\=模组\=\=[\S\s]*)\=\=相关道具\=\=", result1):
     feature = sub("#FF6237", "red", feature)
     feature = sub("变动数值lite\|(up|down)\|蓝", "color|blue", feature)
     talent1 = search("\|天赋2=(.*\n)", modtext).group(1) if search("\|天赋2=(.*\n)", modtext) else ""
-    talent1 = sub("(<br>|<br/>|<br\s/>)※.*", "", talent1)
-    talent1 = sub("<br>|<br/>|<br\s/>", "：", talent1)
-    talent1 = sub("{{.*?\|[蓝|橙]\||}}", "", talent1)
+    talent1 = sub("<br(\s?/)?>※.*", "", talent1)
+    talent1 = sub("<br(\s?/)?>", "：", talent1)
+    talent1 = sub("{{.*?\|[蓝橙]\||}}", "", talent1)
     talent2 = search("\|天赋3=(.*\n)", modtext).group(1) if search("\|天赋3=(.*\n)", modtext) else ""
-    talent2 = sub("(<br>|<br/>|<br\s/>)※.*", "", talent2)
-    talent2 = sub("<br>|<br/>|<br\s/>", "：", talent2)
-    talent2 = sub("{{.*?\|[蓝|橙]\||}}", "", talent2)
+    talent2 = sub("<br(\s?/)?>※.*", "", talent2)
+    talent2 = sub("<br(\s?/)?>", "：", talent2)
+    talent2 = sub("{{.*?\|[蓝橙]\||}}", "", talent2)
     mod = "".join(["""\n== 模组 ==\n{{明日方舟模组\n|干员名=""" , 代号 , """\n|职业分支=""" , branch , """|模组名=""" , name , """|模组类型=""" , mtype , """|证章信息=""" , info1 , """|模组信息=""" , info2 , """|模组任务-1=①：""" , task1 , """|模组任务-2=②：""" , task2 , """|解锁需求=精英阶段2 """ , level , """级，信赖值达到100%，完成该模组所有模组任务\n""" , """|解锁消耗={{#invoke:明日方舟材料|calc|""" , unlock , """}}\n""" , """|升级消耗-1={{#invoke:明日方舟材料|calc|""" , upgrade1 , """}}\n""" , """|升级消耗-2={{#invoke:明日方舟材料|calc|""" , upgrade2 , """}}\n""" , """|基础数值变化-1="""])
     if hp1:
         mod += """生命""" + ' ' + """{{color|blue|+""" + hp1 + """}}<br />"""
