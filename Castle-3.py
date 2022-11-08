@@ -495,7 +495,7 @@ for _ in result0.json()['query']['pages']:
         result3:str = _['revisions'][0]['content']
 
 
-def r(regex, result=result1, flags=S) -> str:
+def r(regex, result:str=result1, flags=S) -> str:
     return ''.join(findall(regex, result, flags))
 
 
@@ -999,6 +999,7 @@ pattern = (r"(?<=\>)（(?![\u4e00-\u9fa5])",
            r'(\d+|\</span\>|秒)\s?({{color\|skyblue\|)(（|\()(\+\d+|\-\d+秒)(）|\))(}})',
            r'#0098DC|#00B0FF',
            r'#F49800',
+           r'#FF6237',
            r'变动数值lite\|(up|down)\|蓝',
            r'{{\*+\|.*?\|(.*?)}}',
            r'{{akspan\|初始}}\s?{{color\|blue\|0}}\s?'
@@ -1012,6 +1013,7 @@ string = (r"(",
           r'\1 <span class="bluetext" title="模组加成">(\4)</span>',
           r'blue',
           r'orange',
+          r'red',
           r'color|#00B0FF',
           r'\1',
           r''
