@@ -488,18 +488,18 @@ while 1:
 
 for _ in result0.json()['query']['pages']:
     if _['title'] == 代号:
-        result1 = _['revisions'][0]['content']
+        result1:str = _['revisions'][0]['content']
     elif _['title'] == 代号+'/语音记录':
-        result2 = _['revisions'][0]['content']
+        result2:str = _['revisions'][0]['content']
     elif _['title'] == '后勤技能一览':
-        result3 = _['revisions'][0]['content']
+        result3:str = _['revisions'][0]['content']
 
 
-def r(regex, result=result1, flags=S):
+def r(regex, result=result1, flags=S) -> str:
     return ''.join(findall(regex, result, flags))
 
 
-def get(keyword) -> str:
+def get(keyword:str) -> str:
     return r('\|' + keyword + '=(.+?)\n')
 
 #技能描述相关
