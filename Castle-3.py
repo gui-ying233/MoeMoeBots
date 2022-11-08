@@ -512,6 +512,8 @@ def getSkillInfo(description:str):
     return attrib
 def getDescription(serial, level) -> str:
     return r('\|技能' + level + '描述=(.+?)\n', getSkillInfo(serial))
+def getScale(serial) -> str:
+    return r('\|技能范围=(.+?)\n', getSkillInfo(str(serial)))
 attribTable=[[] for i in range(3)]
 variable=[]
 for skil in range(0,3):
@@ -529,7 +531,7 @@ for skil in range(0,3):
                 attribTable[skil][_]=sub("(.*?){{color\|#0098DC\|.*?}}", r"\1{{明日方舟技能条|color=blue|"+"|".join(variable) + "}}", attribTable[skil][_], 1)
         else:
             for _ in range(0,10):
-                attribTable[skil][_]=attribTable[skil][_].replace("#0098DC", "blue")
+                attribTable[skil][_]=sub("(.*?{{color\|)#0098DC(\|.*?}})", r"\1blue\2", attribTable[skil][_], 1)
         del variable
         variable=[]
     while(match(".*?{{color\|#F49800\|(.*?)}}", attribTable[skil][0])):
@@ -543,7 +545,10 @@ for skil in range(0,3):
                 attribTable[skil][_]=attribTable[skil][_].replace("#F49800", "orange")
         del variable
         variable=[]
-技能描述=[attribTable[i][0] for i in range(3)]
+技能范围=[[],[],[]]
+for i in range(3):
+    技能范围[i]="<br />技能持续期间攻击范围为：{{akrange|" + 攻击范围[getScale(i+1)] + "}}" if getScale(i+1) else ""
+技能描述=[attribTable[i][0]+技能范围[i] for i in range(3)]
 
 if (r('\{\{异格干员\|原型=([^{]+?)}}')):
     异格 = '\n{{明日方舟info|异格前=' + r('\{\{异格干员\|原型=([^{]+?)}}') + '}}'
@@ -962,6 +967,7 @@ output1 = '''{{标题格式化}}
 ! {{Akitem|mat|'''+代号+'''的信物|size=50|unit=px}}
 | '''+get('信物用途')+'''<br />\'\''''+get('信物描述')+'''\'\'
 |}
+
 == 档案 ==
 {| class="wikitable mw-collapsible mw-collapsed "
 ! colspan=3 style="color:white;background:#333333"|'\''人员档案'\''
@@ -1010,9 +1016,12 @@ pattern = (r"(?<=\>)（(?![\u4e00-\u9fa5])",
            r'#0098DC|#00B0FF',
            r'#F49800',
            r'#FF6237',
-           r'变动数值lite\|(up|down)\|蓝',
-           r'{{\*+\|.*?\|(.*?)}}',
-           r'{{akspan\|初始}}\s?{{color\|blue\|0}}\s?'
+           r'变动数值lite\|(up|down)?\|蓝',
+           r'{{[+,-,*]+?\|.*?\|([^}]*?)}}',
+           r'{{akspan\|初始}}\s?{{color\|blue\|0}}\s?|{{fa\|.*?}}|{{±\|.*?\|.*?}}',
+           r'{{修正\|([^|]*?)\|name=修正\d}}',   #aktypo
+           r'{{修正\|(.*?)\|原文=(.*?)\|原因=\d\|name=修正\d}}',
+           r'{{修正\|(.*?)\|原文=(.*?)\|name=修正\d\|原因=\d\|group=.*?}}'
            )
 string = (r"(",
           r")",
@@ -1024,9 +1033,12 @@ string = (r"(",
           r'blue',
           r'orange',
           r'red',
-          r'color|#00B0FF',
+          r'color|blue',
           r'\1',
-          r''
+          r'',
+          r'{{aktypo|\1}}',
+          r'\2{{aktypo|\1}}',
+          r'\2{{aktypo|\1}}',
           )
 key = 0
 while key < len(pattern):
