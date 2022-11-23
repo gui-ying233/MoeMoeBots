@@ -1015,9 +1015,9 @@ elif modtext:
         特性 = '<span class="talentblock">' + 代号 + '证章</span><br />' + 特性 +'<br /><span class="talentblock">' + name.rstrip('\n') + '</span><br />' + 特性 + '<br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature)
     else:
         特性 = '<span class="talentblock">' + 代号 + '证章</span><br />' + 特性 +'<br /><span class="talentblock">' + name.rstrip('\n') + '</span><br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature)
-elif modtext2:
+if modtext2:
     if search("特性追加=yes", modtext):
-        特性 += '<br />' + '<span class="talentblock">' + name2.rstrip('\n') + '</span><br />' + 特性 + '<br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature2)
+        特性 += '<br />' + '<span class="talentblock">' + name2.rstrip('\n') + '</span><br />' + sub(r'{{color\|#00B0FF\|(.*?)}}',r'<span class="bluetext">\1</span>',r(r'\|特性=(.+?)\n\|稀有度=\d+?\n\|职业=.+?\n\|分支=.+?\n')) + '<br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature2)
     else:
         特性 += '<br />' + '<span class="talentblock">' + name2.rstrip('\n') + '</span><br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature2)
 output1 = '''{{标题格式化}}
