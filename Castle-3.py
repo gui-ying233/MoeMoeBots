@@ -547,9 +547,19 @@ for skil in range(0,3):
         variable=[]
 技能范围=[[],[],[]]
 for i in range(3):
-    技能范围[i]="<br />技能持续期间攻击范围为：{{akrange|" + 攻击范围[getScale(i+1)] + "}}" if getScale(i+1) else ""
+    技能范围[i]="<br />'''技能持续期间攻击范围为：'''{{akrange|" + 攻击范围[getScale(i+1)] + "}}" if getScale(i+1) else ""
 技能描述=[attribTable[i][0]+技能范围[i] for i in range(3)]
 
+if float(get('攻击速度').rstrip('s'))  < 0.8:
+    攻击间隔 = '非常快'
+elif float(get('攻击速度').rstrip('s'))  >= 0.8 and float(get('攻击速度').rstrip('s'))  <= 1.0:
+    攻击间隔 = '快'
+elif float(get('攻击速度').rstrip('s'))  > 1.0 and float(get('攻击速度').rstrip('s'))  <= 1.2:
+    攻击间隔 = '中等'
+elif float(get('攻击速度').rstrip('s'))  > 1.2 and float(get('攻击速度').rstrip('s'))  <= 1.6:
+    攻击间隔 = '较慢'
+elif float(get('攻击速度').rstrip('s'))  > 1.6:
+    攻击间隔 = '慢'
 if (r('\{\{异格干员\|原型=([^{]+?)}}')):
     异格 = '\n{{明日方舟info|异格前=' + r('\{\{异格干员\|原型=([^{]+?)}}') + '}}'
 if (get('种族')) == '不明' or (get('种族')) == '未公开' or (get('种族')) == '未知':
@@ -562,17 +572,19 @@ else:
     出身地区 = '[[明日方舟:'+get('出身地')+'|'+get('出身地')+']]'
 if (r('{{干员异格任务\|对象干员=(.+?)[}\n\|]')):
     异格任务 = '|异格任务='+r('{{干员异格任务\|对象干员=(.+?)[}\n\|]')
-if len([_ for _ in findall('\|[中英韩日]文配音=(.+?)\n', result1) if _ != '']) > 1:
+if len([_ for _ in findall('\|(?:[日中英韩]文|意大利语)配音=(.+?)\n', result1) if _ != '']) > 1:
     配音 = '\n|多位配音={{Cate|'
     if (get('日文配音')):
-        配音 += '[['+get('日文配音')+']]' + '（日语）/ '
+        配音 += '[['+get('日文配音')+']]' + '（日语）<br />'
     if (get('中文配音')):
-        配音 += '[['+get('中文配音')+']]' + '（汉语）/ '
+        配音 += '[['+get('中文配音')+']]' + '（汉语）<br />'
     if (get('英文配音')):
-        配音 += '[['+get('英文配音')+']]' + '（英语）/ '
+        配音 += '[['+get('英文配音')+']]' + '（英语）<br />'
     if (get('韩文配音')):
-        配音 += '[['+get('韩文配音')+']]' + '（韩语）/ '
-    配音 = 配音.rstrip('/ ')
+        配音 += '[['+get('韩文配音')+']]' + '（韩语）<br />'
+    if (get('意大利语配音')):
+        配音 += '[['+get('意大利语配音')+']]' + '（意大利语）<br />'
+    配音 = 配音.rstrip('<br />')
     if (get('日文配音')):
         配音 += '|' + get('日文配音')
     if (get('中文配音')):
@@ -581,6 +593,8 @@ if len([_ for _ in findall('\|[中英韩日]文配音=(.+?)\n', result1) if _ !=
         配音 += '|' + get('英文配音')
     if (get('韩文配音')):
         配音 += '|' + get('韩文配音')
+    if (get('意大利语配音')):
+        配音 += '|' + get('意大利语配音')
     配音 += '}}'
 else:
     配音 = '\n|配音='+get('[中英韩日]文配音')
@@ -694,11 +708,29 @@ if (r(r"'''技能3（精英2开放）'''.+?\|技能1消耗=(\d*?)\n\|技能1持�
     else:
         技能3技力 += '{{akspan|消耗}} {{明日方舟技能条|color=blue|' + \
             '|'.join(技能3消耗)+'}} '
-天赋1 = '<span class="talentblock">' + \
-    get('第一天赋1')+'</span>（精英阶段1）'+get('第一天赋1效果')
-if (get('第一天赋2') and get('第一天赋2效果') != get('第一天赋1效果')):
+特性 = sub(r'{{color\|#00B0FF\|(.*?)}}',r'<span class="bluetext">\1</span>',r(r'\|特性=(.+?)\n\|稀有度=\d+?\n\|职业=.+?\n\|分支=.+?\n'))
+t_dict={'精英0':'初始', '精英1':'精英阶段1', '精英2':'精英阶段2'}
+if get('第一天赋2') and get('第一天赋2效果') != get('第一天赋1效果') and get('第一天赋2条件')[:3] == get('第一天赋1条件')[:3]:
+    天赋1 += '<span class="talentblock">' + \
+        get('第一天赋2')+'</span>（'+t_dict[get('第一天赋2条件')[:3]]+'）'+get('第一天赋2效果')
+else:
+    天赋1 = '<span class="talentblock">' + \
+        get('第一天赋1')+'</span>（'+t_dict[get('第一天赋1条件')[:3]]+'）'+get('第一天赋1效果')
+if get('第一天赋2') and get('第一天赋2效果') != get('第一天赋1效果') and get('第一天赋2条件')[:3] != get('第一天赋1条件')[:3]:
     天赋1 += '<br /><span class="talentblock">' + \
-        get('第一天赋2')+'</span>（精英阶段2）'+get('第一天赋2效果')
+        get('第一天赋2')+'</span>（'+t_dict[get('第一天赋2条件')[:3]]+'）'+get('第一天赋2效果')
+if (get('第一天赋4') and get('第一天赋4效果') != get('第一天赋1效果')) and search("潜能\d",get('第一天赋4条件')) and get('第一天赋4条件')[:3] != get('第一天赋2条件')[:3]:
+    天赋1 += '<br /><span class="talentblock">' + \
+        get('第一天赋4')+'</span>（'+t_dict[get('第一天赋4条件')[:3]]+'）'+get('第一天赋4效果')
+if (get('第一天赋3') and get('第一天赋3效果') != get('第一天赋1效果')) and search("潜能\d",get('第一天赋3条件')) and get('第一天赋3条件')[:3] != get('第一天赋4条件')[:3]:
+    天赋1 += '<br /><span class="talentblock">' + \
+        get('第一天赋3')+'</span>（'+t_dict[get('第一天赋3条件')[:3]]+'）'+get('第一天赋3效果')
+if (get('第一天赋6') and get('第一天赋6效果') != get('第一天赋1效果')) and search("潜能\d",get('第一天赋6条件')) and get('第一天赋6条件')[:3] != get('第一天赋4条件')[:3]:
+    天赋1 += '<br /><span class="talentblock">' + \
+        get('第一天赋6')+'</span>（'+t_dict[get('第一天赋6条件')[:3]]+'）'+get('第一天赋6效果')
+if (get('第一天赋5') and get('第一天赋5效果') != get('第一天赋1效果')) and search("潜能\d",get('第一天赋5条件')) and get('第一天赋5条件')[:3] != get('第一天赋6条件')[:3]:
+    天赋1 += '<br /><span class="talentblock">' + \
+        get('第一天赋5')+'</span>（'+t_dict[get('第一天赋5条件')[:3]]+'）'+get('第一天赋5效果')
 if (get('第二天赋2')):
     天赋2 = '<span class="talentblock">' + \
         get('第二天赋2')+'</span>（精英阶段2）'+get('第二天赋2效果')
@@ -752,23 +784,34 @@ for _ in range(len(get('潜能类型').split(','))):
         潜能 += get('潜能').split(',')[_]+';'
 潜能 = 潜能[:-1]
 
-modtext=search("(\=\=模组\=\=[\S\s]*)\=\=相关道具\=\=", result1).group(1) if search("(\=\=模组\=\=[\S\s]*)\=\=相关道具\=\=", result1) else ""
+#模组信息相关
+
+modtext=search("\=\=模组\=\=\n([\S\s]*?)\<section end=专属模组\s/\>", result1).group(1) if search("(\=\=模组\=\=[\S\s]*)\=\=相关道具\=\=", result1) else ""
+modtext2=search("\<section end=专属模组\s/\>\n([\S\s]*?)\<section end=专属模组\s/\>", result1).group(1) if search("\<section end=专属模组\s/\>\n([\S\s]*?)\<section end=专属模组\s/\>", result1) else ""
 material = "{{材料消耗\|([\u4e00-\u9fa5]+|RMA70-12|RMA70-24|D32钢)\|(\d+)}}"
 cost = "{{材料消耗\|(龙门币)\|(\d+|\d\.\d)万}}"
 branch = search("\|分支=(.*\n)", modtext).group(1) if search("\|分支=(.*\n)", modtext) else ""
 info1 = search("\|分支=.*\n\|基础信息=(.*\n)", modtext).group(1) if search("\|分支=.*\n\|基础信息=(.*\n)", modtext) else ""
 info1 = "<poem>\n" + sub("<br(\s?/)?>", "\n", info1).strip("\n\"") + "\n</poem>\n" if info1 else ""
 name = search("\|名称=(.*\n)(?=\|类型)", modtext).group(1) if search("\|名称=(.*\n)(?=\|类型)", modtext) else ""
+name2 =search("\|名称=(.*\n)(?=\|类型)", modtext2).group(1) if search("\|名称=(.*\n)(?=\|类型)", modtext2) else ""
 mtype = search("\|类型=(.*\n)", modtext).group(1) if search("\|类型=(.*\n)", modtext) else ""
+mtype2 = search("\|类型=(.*\n)", modtext2).group(1) if search("\|类型=(.*\n)", modtext2) else ""
 info2 = search("材料消耗3=.*\n\|基础信息=(.*\n)", modtext).group(1) if search("材料消耗3=.*\n\|基础信息=(.*\n)", modtext) else ""
 info2 = "<poem>\n" + sub("<br(\s?/)?>", "\n", info2).strip("\n\"") + "\n</poem>\n" if info2 else ""
+info3 = search("材料消耗3=.*\n\|基础信息=(.*\n)", modtext2).group(1) if search("材料消耗3=.*\n\|基础信息=(.*\n)", modtext2) else ""
+info3 = "<poem>\n" + sub("<br(\s?/)?>", "\n", info3).strip("\n\"") + "\n</poem>\n" if info3 else ""
 task1 = search("\|任务1=(.*\n)", modtext).group(1) if search("\|任务1=(.*\n)", modtext) else ""
 task2 = search("\|任务2=(.*\n)", modtext).group(1) if search("\|任务2=(.*\n)", modtext) else ""
 task2 = sub("\[\[关卡一览.*?]]", "", task2)
 task2 = sub("\[\[|]]", "", task2)
+task3 = search("\|任务1=(.*\n)", modtext2).group(1) if search("\|任务1=(.*\n)", modtext2) else ""
+task4 = search("\|任务2=(.*\n)", modtext2).group(1) if search("\|任务2=(.*\n)", modtext2) else ""
+task4 = sub("\[\[关卡一览.*?]]", "", task4)
+task4 = sub("\[\[|]]", "", task4)
 level = search("\|解锁等级=(\d{2})", modtext).group(1) if search("\|解锁等级=(\d{2})", modtext) else ""
 time = 1
-unlock = ""
+unlock = unlock2 = ""
 while time < 7 and search("\|材料消耗=" + material + "\s?" + material + "\s?" + cost, modtext):
     unlock += search("\|材料消耗=" + material + "\s?" + material + "\s?" + cost, modtext).group(time)
     if time % 2 == 1:
@@ -778,8 +821,19 @@ while time < 7 and search("\|材料消耗=" + material + "\s?" + material + "\s?
     else:
         unlock += "w"
     time += 1
-upgrade1 = ""
-upgrade2 = ""
+time=1
+if (modtext2):
+    while time < 7 and search("\|材料消耗=" + material + "\s?" + material + "\s?" + cost, modtext2):
+        unlock2 += search("\|材料消耗=" + material + "\s?" + material + "\s?" + cost, modtext2).group(time)
+        if time % 2 == 1:
+            unlock2 += "*"
+        elif time < 6:
+            unlock2 += "+"
+        else:
+            unlock2 += "w"
+        time += 1
+upgrade1 = upgrade3 =""
+upgrade2 = upgrade4 =""
 time = 1
 while time < 9 and search("\|材料消耗2=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext) and search("\|材料消耗3=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext):
     upgrade1 += search("\|材料消耗2=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext).group(time)
@@ -794,6 +848,21 @@ while time < 9 and search("\|材料消耗2=" + material + "\s?" + material + "\s
         upgrade1 += "w"
         upgrade2 += "w"
     time += 1
+time=1
+if (modtext2):
+    while time < 9 and search("\|材料消耗2=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext2) and search("\|材料消耗3=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext2):
+        upgrade3 += search("\|材料消耗2=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext2).group(time)
+        upgrade4 += search("\|材料消耗3=" + material + "\s?" + material + "\s?" + material + "\s?" + cost, modtext2).group(time)
+        if time % 2 == 1:
+            upgrade3 += "*"
+            upgrade4 += "*"
+        elif time < 8:
+            upgrade3 += "+"
+            upgrade4 += "+"
+        else:
+            upgrade3 += "w"
+            upgrade4 += "w"
+        time += 1
 hp1 = search("\|生命=(.*)\n", modtext).group(1) if search("\|生命=(.*)\n", modtext) else ""
 hp2 = search("\|生命2=(.*)\n", modtext).group(1) if search("\|生命2=(.*)\n", modtext) else ""
 hp3 = search("\|生命3=(.*)\n", modtext).group(1) if search("\|生命3=(.*)\n", modtext) else ""
@@ -809,7 +878,7 @@ res3 = search("\|法术抗性3=(.*)\n", modtext).group(1) if search("\|法术抗
 spd1 = search("\|攻击速度=(.*)\n", modtext).group(1) if search("\|攻击速度(.*)\n", modtext) else ""
 spd2 = search("\|攻击速度2=(.*)\n", modtext).group(1) if search("\|攻击速度2=(.*)\n", modtext) else ""
 spd3 = search("\|攻击速度3=(.*)\n", modtext).group(1) if search("\|攻击速度3=(.*)\n", modtext) else ""
-feature = search("\|特性=(.*)", modtext).group(1) if search("\|特性=(.*)", modtext) else ""
+feature = search("\|特性=(.*)", modtext).group(1).rstrip("|特性追加=yes").rstrip("|特性追加=no") if search("\|特性=(.*)", modtext) else ""
 feature = sub("(<br(\s?/)?>).*", "", feature)
 feature = sub("#00B0FF|#0098DC", "blue", feature)
 feature = sub("#FF6237", "red", feature)
@@ -822,7 +891,38 @@ talent2 = search("\|天赋3=(.*\n)", modtext).group(1) if search("\|天赋3=(.*\
 talent2 = sub("<br(\s?/)?>※.*", "", talent2)
 talent2 = sub("<br(\s?/)?>", "：", talent2)
 talent2 = sub("{{.*?\|[蓝橙]\||}}", "", talent2)
-mod = "".join(["""== 模组 ==\n{{明日方舟模组\n|干员名=""" , 代号 , """\n|职业分支=""" , branch , """|模组名=""" , name , """|模组类型=""" , mtype , """|证章信息=""" , info1 , """|模组信息=""" , info2 , """|模组任务-1=①：""" , task1 , """|模组任务-2=②：""" , task2 , """|解锁需求=精英阶段2 """ , level , """级，信赖值达到100%，完成该模组所有模组任务\n""" , """|解锁消耗={{#invoke:明日方舟材料|calc|""" , unlock , """}}\n""" , """|升级消耗-1={{#invoke:明日方舟材料|calc|""" , upgrade1 , """}}\n""" , """|升级消耗-2={{#invoke:明日方舟材料|calc|""" , upgrade2 , """}}\n""" , """|基础数值变化-1="""])
+
+if(modtext2):
+    hp4 = search("\|生命=(.*)\n", modtext2).group(1) if search("\|生命=(.*)\n", modtext2) else ""
+    hp5 = search("\|生命2=(.*)\n", modtext2).group(1) if search("\|生命2=(.*)\n", modtext2) else ""
+    hp6 = search("\|生命3=(.*)\n", modtext2).group(1) if search("\|生命3=(.*)\n", modtext2) else ""
+    atk4 = search("\|攻击=(.*)\n", modtext2).group(1) if search("\|攻击=(.*)\n", modtext2) else ""
+    atk5 = search("\|攻击2=(.*)\n", modtext2).group(1) if search("\|攻击2=(.*)\n", modtext2) else ""
+    atk6 = search("\|攻击3=(.*)\n", modtext2).group(1) if search("\|攻击3=(.*)\n", modtext2) else ""
+    defence4 = search("\|防御=(.*)\n", modtext2).group(1) if search("\|防御=(.*)\n", modtext2) else ""
+    defence5 = search("\|防御2=(.*)\n", modtext2).group(1) if search("\|防御2=(.*)\n", modtext2) else ""
+    defence6 = search("\|防御3=(.*)\n", modtext2).group(1) if search("\|防御3=(.*)\n", modtext2) else ""
+    res4 = search("\|法术抗性=(.*)\n", modtext2).group(1) if search("\|法术抗性=(.*)\n", modtext2) else ""
+    res5 = search("\|法术抗性2=(.*)\n", modtext2).group(1) if search("\|法术抗性2=(.*)\n", modtext2) else ""
+    res6 = search("\|法术抗性3=(.*)\n", modtext2).group(1) if search("\|法术抗性3=(.*)\n", modtext2) else ""
+    spd4 = search("\|攻击速度=(.*)\n", modtext2).group(1) if search("\|攻击速度(.*)\n", modtext2) else ""
+    spd5 = search("\|攻击速度2=(.*)\n", modtext2).group(1) if search("\|攻击速度2=(.*)\n", modtext2) else ""
+    spd6 = search("\|攻击速度3=(.*)\n", modtext2).group(1) if search("\|攻击速度3=(.*)\n", modtext2) else ""
+    feature2 = search("\|特性=(.*)", modtext2).group(1).rstrip("|特性追加=yes").rstrip("|特性追加=no") if search("\|特性=(.*)", modtext2) else ""
+    feature2 = sub("(<br(\s?/)?>).*", "", feature2)
+    feature2 = sub("#00B0FF|#0098DC", "blue", feature2)
+    feature2 = sub("#FF6237", "red", feature2)
+    feature2 = sub("变动数值lite\|(up|down)\|蓝", "color|blue", feature2)
+    talent3 = search("\|天赋2=(.*\n)", modtext2).group(1) if search("\|天赋2=(.*\n)", modtext2) else ""
+    talent3 = sub("<br(\s?/)?>※.*", "", talent3)
+    talent3 = sub("<br(\s?/)?>", "：", talent3)
+    talent3 = sub("{{.*?\|[蓝橙]\||}}", "", talent3)
+    talent4 = search("\|天赋3=(.*\n)", modtext2).group(1) if search("\|天赋3=(.*\n)", modtext2) else ""
+    talent4 = sub("<br(\s?/)?>※.*", "", talent4)
+    talent4 = sub("<br(\s?/)?>", "：", talent4)
+    talent4 = sub("{{.*?\|[蓝橙]\||}}", "", talent4)
+
+mod = "".join(["""== 模组 ==\n{{明日方舟模组\n|干员名=""" , 代号 , """\n|职业分支=""" , branch , """|模组名=""" , name , """|模组类型=""" , mtype , """|证章信息=""", info1, """|模组信息=""" , info2 , """|模组任务-1=①：""" , task1 , """|模组任务-2=②：""" , task2 , """|解锁需求=精英阶段2 """ , level , """级，信赖值达到100%，完成该模组所有模组任务\n""" , """|解锁消耗={{#invoke:明日方舟材料|calc|""" , unlock , """}}\n""" , """|升级消耗-1={{#invoke:明日方舟材料|calc|""" , upgrade1 , """}}\n""" , """|升级消耗-2={{#invoke:明日方舟材料|calc|""" , upgrade2 , """}}\n""" , """|基础数值变化-1="""])
 if hp1:
     mod += """生命""" + ' ' + """{{color|blue|+""" + hp1 + """}}<br />"""
 if atk1:
@@ -861,11 +961,65 @@ if search("特性追加=yes", modtext):
     mod += """特性追加：""" + feature + '\n'
 else:
     mod += """特性更新：""" + feature + '\n'
-mod += """|分支特性更新-2=""" + talent1 + """|分支特性更新-3=""" + talent2 + """}}"""
+mod += """|分支特性更新-2=""" + talent1 + """|分支特性更新-3=""" + talent2 + """}}\n\n"""
+
+#第二模组
+
+if(modtext2):
+    mod = mod.rstrip("}}\n\n")
+    mod += "".join(["""\n\n|模组名2=""" , name2 , """|模组类型2=""" , mtype2 , """|模组信息2=""" , info3 , """|模组任务2-1=①：""" , task3 , """|模组任务2-2=②：""" , task4 , """|解锁需求2=精英阶段2 """ , level , """级，信赖值达到100%，完成该模组所有模组任务\n""" , """|解锁消耗2={{#invoke:明日方舟材料|calc|""" , unlock2 , """}}\n""" , """|升级消耗2-1={{#invoke:明日方舟材料|calc|""" , upgrade3 , """}}\n""" , """|升级消耗2-2={{#invoke:明日方舟材料|calc|""" , upgrade4 , """}}\n""" , """|基础数值变化2-1="""])
+    if hp4:
+        mod += """生命""" + ' ' + """{{color|blue|+""" + hp4 + """}}<br />"""
+    if atk4:
+        mod += """攻击""" + ' ' + """{{color|blue|+""" + atk4 + """}}<br />"""
+    if defence1:
+        mod += """防御""" + ' ' + """{{color|blue|+""" + defence4 + """}}<br />"""
+    if spd4:
+        mod += """攻击速度""" + ' ' + """{{color|blue|+""" + spd4 + """}}<br />"""
+    if res4:
+        mod += """法术抗性""" + ' ' + """{{color|blue|+""" + res4 + """}}<br />"""
+    mod = mod.strip("<br />") + """\n|基础数值变化2-2="""
+    if hp5:
+        mod += """生命""" + ' ' + """{{color|blue|+""" + hp5 + """}}<br />"""
+    if atk5:
+        mod += """攻击""" + ' ' + """{{color|blue|+""" + atk5 + """}}<br />"""
+    if defence5:
+        mod += """防御""" + ' ' + """{{color|blue|+""" + defence5 + """}}<br />"""
+    if spd5:
+        mod += """攻击速度""" + ' ' + """{{color|blue|+""" + spd5 + """}}<br />"""
+    if res2:
+        mod += """法术抗性""" + ' ' + """{{color|blue|+""" + res5 + """}}<br />"""
+    mod = mod.strip("<br />") + """\n|基础数值变化2-3="""
+    if hp6:
+        mod += """生命""" + ' ' + """{{color|blue|+""" + hp6 + """}}<br />"""
+    if atk6:
+        mod += """攻击""" + ' ' + """{{color|blue|+""" + atk6 + """}}<br />"""
+    if defence3:
+        mod += """防御""" + ' ' + """{{color|blue|+""" + defence6 + """}}<br />"""
+    if spd6:
+        mod += """攻击速度""" + ' ' + """{{color|blue|+""" + spd6 + """}}<br />"""
+    if res6:
+        mod += """法术抗性""" + ' ' + """{{color|blue|+""" + res6 + """}}<br />"""
+    mod = mod.strip("<br />") + "\n"
+    mod += "|分支特性更新2-1="
+    if search("特性追加=yes", modtext2):
+        mod += """特性追加：""" + feature + '\n'
+    else:
+        mod += """特性更新：""" + feature + '\n'
+    mod += """|分支特性更新2-2=""" + talent3 + """|分支特性更新2-3=""" + talent4 + """}}\n\n"""
 
 if search("\|模组名\=\|模组类型", mod):
     mod=""
-
+elif modtext:
+    if search("特性追加=yes", modtext):
+        特性 = '<span class="talentblock">' + 代号 + '证章</span><br />' + 特性 +'<br /><span class="talentblock">' + name.rstrip('\n') + '</span><br />' + 特性 + '<br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature)
+    else:
+        特性 = '<span class="talentblock">' + 代号 + '证章</span><br />' + 特性 +'<br /><span class="talentblock">' + name.rstrip('\n') + '</span><br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature)
+if modtext2:
+    if search("特性追加=yes", modtext):
+        特性 += '<br />' + '<span class="talentblock">' + name2.rstrip('\n') + '</span><br />' + sub(r'{{color\|#00B0FF\|(.*?)}}',r'<span class="bluetext">\1</span>',r(r'\|特性=(.+?)\n\|稀有度=\d+?\n\|职业=.+?\n\|分支=.+?\n')) + '<br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature2)
+    else:
+        特性 += '<br />' + '<span class="talentblock">' + name2.rstrip('\n') + '</span><br />' + sub(r'{{color\|blue\|(.*?)}}',r'<span class="bluetext">\1</span>',feature2)
 output1 = '''{{标题格式化}}
 {{明日方舟:导航}}'''+异格+'''
 {{明日方舟info|'\''<big><big>'''+r('\|台词11={{[Vv]oiceData\/word\|中文\|(.+?)}}{{[Vv]oiceData', result2) + '''</big></big>'\''}}
@@ -920,13 +1074,13 @@ output1 = '''{{标题格式化}}
 |防御='''+get('精英0_1级_防御')+'/'+(get('精英2_满级_防御') or get('精英1_满级_防御'))+防御加成+'''
 |法术抗性='''+get('精英0_1级_法术抗性')+'/'+(get('精英2_满级_法术抗性') or get('精英1_满级_法术抗性'))+'''
 |再部署='''+r('\|再部署=(.+?)s\n')+'''秒
-|部署费用='''+r('\|部署费用=(.+?)→.+?\n')+'/'+r('\|部署费用=.+?→(.+?)\n')+'''
-|阻挡数='''+get('阻挡数')+'''
-|攻击速度='''+r('\|攻击速度=(.+?)s\n')+'''秒
+|部署费用='''+get('部署费用').replace('→','/')+'''
+|阻挡数='''+get('阻挡数').replace('→','/')+'''
+|攻击速度='''+攻击间隔+' '+r('\|攻击速度=(.+?)s\n')+'''秒
 |分支='''+r('\|职业=.+?\n\|分支=(.+?)\n')+'''
-|特性='''+sub(r'{{color\|#00B0FF\|(.*?)}}',r'<span class="bluetext">\1</span>',get('特性'))+'''
-|天赋1='''+sub(r'{{color\|#0098DC\|（(.*?)）}}',r' <span class="orangetext" title="潜能加成">(\1)</span> ',天赋1)+'''
-|天赋2='''+sub(r'{{color\|#0098DC\|（(.*?)）}}',r' <span class="orangetext" title="潜能加成">(\1)</span> ',天赋2)+'''
+|特性='''+ 特性 +'''
+|天赋1='''+sub(r'{{color\|(#0098DC|#F49800)\|（(.*?)）}}',r' <span class="orangetext" title="潜能加成">(\2)</span> ',天赋1)+'''
+|天赋2='''+sub(r'{{color\|(#0098DC|#F49800)\|（(.*?)）}}',r' <span class="orangetext" title="潜能加成">(\2)</span> ',天赋2)+'''
 |雷达图文字1='''+get('物理强度')+'''
 |雷达图文字2='''+get('战场机动')+'''
 |雷达图文字3='''+get('生理耐受')+'''
@@ -954,9 +1108,7 @@ output1 = '''{{标题格式化}}
 |后勤3='''+后勤3+'''
 }}
 
-'''+mod+'''
-
-== 招聘合同与信物 ==
+'''+mod+'''== 招聘合同与信物 ==
 {| class="wikitable" style="background-color:#F9F9F9;"
 |-
 ! 招聘合同
@@ -976,7 +1128,7 @@ output1 = '''{{标题格式化}}
 '''
 output2 = '''
 == 角色台词 ==
-{{Retext|N}}<!--<br />{{Zhvoice}}-->
+{{Retext|N}}<br />{{Zhvoice}}
 {| class="wikitable  mw-collapsible mw-collapsed " style="background:#f9f9f9"
 |-
 ! colspan=4 style="color:white;background:#333333"|台词列表
@@ -1003,7 +1155,13 @@ output2 = '''
 |<poem>
 </poem>
 |}
+
 {{明日方舟|干员}}
+
+== 注释与外部链接 ==
+<references />
+
+[[分类:明日方舟]]
 '''
 #标点格式化
 pattern = (r"(?<=\>)（(?![\u4e00-\u9fa5])",
@@ -1021,7 +1179,8 @@ pattern = (r"(?<=\>)（(?![\u4e00-\u9fa5])",
            r'{{akspan\|初始}}\s?{{color\|blue\|0}}\s?|{{fa\|.*?}}|{{±\|.*?\|.*?}}',
            r'{{修正\|([^|]*?)\|name=修正\d}}',   #aktypo
            r'{{修正\|(.*?)\|原文=(.*?)\|原因=\d\|name=修正\d}}',
-           r'{{修正\|(.*?)\|原文=(.*?)\|name=修正\d\|原因=\d\|group=.*?}}'
+           r'{{修正\|(.*?)\|原文=(.*?)\|name=修正\d\|原因=\d\|group=.*?}}',
+           r'{{明日方舟标签\|办公室'
            )
 string = (r"(",
           r")",
@@ -1039,6 +1198,7 @@ string = (r"(",
           r'{{aktypo|\1}}',
           r'\2{{aktypo|\1}}',
           r'\2{{aktypo|\1}}',
+          r'{{明日方舟标签|人力办公室'
           )
 key = 0
 while key < len(pattern):
@@ -1054,4 +1214,4 @@ for _ in 术语字典:
 
 open(f".{sep}{代号}.wikitext", "w", encoding="utf-8").write(output1+output2)
 
-print("已生成"+代号+".wikitext")
+print("已生成" + 代号 + ".wikitext")
