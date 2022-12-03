@@ -1,4 +1,6 @@
 from hashlib import sha1
+from os import mkdir
+from shutil import rmtree
 
 import requests
 
@@ -27,6 +29,11 @@ def 新技能(new: str) -> list[str]:
     for _ in new.split('|'):
         titles.append('技能_'+_)
     return titles
+
+
+def 清除() -> None:
+    rmtree('./图片/')
+    mkdir('./图片')
 
 
 def main() -> None:
@@ -78,9 +85,9 @@ def main() -> None:
             try:
                 while 1:
                     print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中…')
-                    open('/Users/emmm/Desktop/明日方舟/图片/'+title, "wb").write(
+                    open('./图片/'+title, "wb").write(
                         requests.get(result[_]['imageinfo'][0]['url']).content)
-                    if result[_]['imageinfo'][0]['sha1'] == sha1(open('/Users/emmm/Desktop/明日方舟/图片/'+title, "rb").read()).hexdigest():
+                    if result[_]['imageinfo'][0]['sha1'] == sha1(open('./图片/'+title, "rb").read()).hexdigest():
                         print('\t下载完成')
                         break
                     else:
@@ -90,10 +97,9 @@ def main() -> None:
     print('进程结束')
 
 
-# 新时装('爱丽丝|老鲤|风丸')
-# 新干员('白铁|达格达|明椒|铅踝')
-# 新技能('贯日|破虹|反制技巧|精准捕杀|极致火力|高效补给|铁钳号·原型机|掩护作战·γ型|同伴意识')
-
-titles += ''.split('|')
-
+清除()
+# 新时装('')
+# 新干员('')
+# 新技能('')
+# titles += ''.split('|')
 main()
