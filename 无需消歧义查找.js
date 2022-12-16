@@ -19,7 +19,6 @@ bot
 				if (result0.query.pages[i].title.match(':') === null && result0.query.pages[i].title.match('/') === null) {
 					try {
 						const result1 = await bot.api.get({
-							action: "parse",
 							action: "query",
 							prop: "info",
 							titles: result0.query.pages[i].title.replace(/^(.+)\(.+?\)$/g, '$1'),
