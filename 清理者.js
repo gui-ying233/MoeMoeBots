@@ -37,9 +37,9 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					console.log("施工中");
 				} else {
 					try {
+						let replaceText = "";
 						if (typeof regex === "object" && regex.toString().split("")[1] === "{") {
 							let symbolCounter = 0;
-							let replaceText = "";
 							for (const word of result1.query.pages[i].revisions[0].content.slice(result1.query.pages[i].revisions[0].content.search(regex)).split("")) {
 								replaceText += word;
 								switch (word) {
@@ -55,7 +55,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 								}
 							}
 						} else {
-							replaceText = regex
+							replaceText = regex;
 						}
 						const result2 = await bot.doEdit({
 							title: result1.query.pages[i].title,
