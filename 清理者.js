@@ -37,21 +37,25 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					console.log("施工中");
 				} else {
 					try {
-						let symbolCounter = 0;
-						let replaceText = "";
-						for (const word of result1.query.pages[i].revisions[0].content.slice(result1.query.pages[i].revisions[0].content.search(regex)).split("")) {
-							replaceText += word;
-							switch (word) {
-								case "{":
-									symbolCounter--;
+						if (typeof regex === "object" && regex.toString().split("")[1] === "{") {
+							let symbolCounter = 0;
+							let replaceText = "";
+							for (const word of result1.query.pages[i].revisions[0].content.slice(result1.query.pages[i].revisions[0].content.search(regex)).split("")) {
+								replaceText += word;
+								switch (word) {
+									case "{":
+										symbolCounter--;
+										break;
+									case "}":
+										symbolCounter++;
+										break;
+								}
+								if (!symbolCounter) {
 									break;
-								case "}":
-									symbolCounter++;
-									break;
+								}
 							}
-							if (!symbolCounter) {
-								break;
-							}
+						} else {
+							replaceText = regex
 						}
 						const result2 = await bot.doEdit({
 							title: result1.query.pages[i].title,
@@ -88,28 +92,28 @@ const cronJob = new CronJob({
 		console.log(
 			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, 0)}-${String(
 				d.getDate()
-			).padStart(2, 0)} ${String(d.getHours()).padStart(2, 0)}:${String(
+			).padStart(2, 0)} ${(String((d.getHours() - 5) % 24)).padStart(2, 0)}:${String(
 				d.getMinutes()
 			).padStart(2, 0)}:${String(d.getSeconds()).padStart(2, 0)}`
 		);
 		await cleaner(
 			"CAT:错误使用标题格式化的页面",
-			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]格式化.*?}}\n?/gi
+			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]格式化.*}}\n?/gi
 		);
 		await cleaner(
 			"CAT:需要更换为标题格式化的页面",
-			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis,
+			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}/gis,
 			"{{标题格式化}}"
 		);
 		await cleaner(
 			"CAT:需要更换为小写标题的页面",
-			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}/gis,
+			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}/gis,
 			"{{小写标题}}"
 		);
 		await cleaner("CAT:不必要使用override参数的音乐条目", /\|override=1\n?/g);
 		await cleaner(
 			"CAT:错误使用标题替换模板的页面",
-			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*?}}\n?/gis,
+			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}\n?/gis,
 			"",
 			/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
 		);
