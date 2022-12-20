@@ -37,10 +37,26 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					console.log("施工中");
 				} else {
 					try {
+						let symbolCounter = 0;
+						let replaceText = "";
+						for (const word of result1.query.pages[i].revisions[0].content.slice(result1.query.pages[i].revisions[0].content.search(regex)).split("")) {
+							replaceText += word;
+							switch (word) {
+								case "{":
+									symbolCounter--;
+									break;
+								case "}":
+									symbolCounter++;
+									break;
+							}
+							if (!symbolCounter) {
+								break;
+							}
+						}
 						const result2 = await bot.doEdit({
 							title: result1.query.pages[i].title,
 							text: result1.query.pages[i].revisions[0].content.replace(
-								regex,
+								replaceText,
 								replace
 							),
 							summary: `自动修复[[${gcmtitle}]]中的页面`,
