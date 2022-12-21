@@ -511,7 +511,7 @@ def getSkillInfo(description:str):
         attrib="".join(findall(f"(?='''技能{skill}（精英{skill-1}开放）''')([\s\S]*)(?<=\=\=后勤技能\=\=)", result1, flags=S))
     return attrib
 def getDescription(serial, skLv) -> str:
-    return r('\|技能' + level + '描述=(.+?)\n', getSkillInfo(serial))
+    return r('\|技能' + skLv + '描述=(.+?)\n', getSkillInfo(serial))
 def getScale(serial) -> str:
     return r('\|技能范围=(.+?)\n', getSkillInfo(str(serial)))
 attribTable=[[] for i in range(3)]
