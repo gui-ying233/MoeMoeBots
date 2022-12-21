@@ -510,7 +510,7 @@ def getSkillInfo(description:str):
     elif(skill==3):
         attrib="".join(findall(f"(?='''技能{skill}（精英{skill-1}开放）''')([\s\S]*)(?<=\=\=后勤技能\=\=)", result1, flags=S))
     return attrib
-def getDescription(serial, level) -> str:
+def getDescription(serial, skLv) -> str:
     return r('\|技能' + level + '描述=(.+?)\n', getSkillInfo(serial))
 def getScale(serial) -> str:
     return r('\|技能范围=(.+?)\n', getSkillInfo(str(serial)))
@@ -522,7 +522,7 @@ for skil in range(0,3):
             lv = "专精" + str(i-6)
         else:
             lv = str(i+1)
-        attribTable[skil].append(getDescription(serial="技能" + str(skil+1), level=lv))
+        attribTable[skil].append(getDescription(serial="技能" + str(skil+1), skLv=lv))
     while(match(".*?{{color\|#0098DC\|(.*?)}}", attribTable[skil][0])):
         for a in range(0,10):
             variable.append(search(".*?{{color\|#0098DC\|(.*?)}}", attribTable[skil][a]).group(1))
@@ -1206,11 +1206,10 @@ while key < len(pattern):
     key += 1
 
 #添加术语释义
-for _ in 术语字典:
-    term=术语字典[_]
-    output1 = sub(r"{{术语\|"+_.replace(".", "\.")+r"\|({{color\|(blue|orange)\|"+术语字典[_]+"}}|"+术语字典[_]+")}}", r'<span style="border-bottom:1px solid;">\1</span><ref name="'+术语字典[_]+'">'+术语释义["{{术语|"+_+"|"+术语字典[_]+"}}"]+'</ref>',output1,1)
-    #output1 = output1.replace(_, f'<span style="border-bottom:1px solid;">{term}</span><ref name="{term}">' + 术语释义[_] + '</ref>', 1)
-    output1 = sub(r"{{术语\|"+_.replace(".", "\.")+r"\|({{color\|(blue|orange)\|"+术语字典[_]+"}}|"+术语字典[_]+")}}", r'<span style="border-bottom:1px solid;">\1</span><ref name="'+术语字典[_]+'" />',output1)
+for k, v in 术语字典.items():
+    output1 = sub(r"{{术语\|"+k.replace(".", "\.")+r"\|({{color\|(blue|orange)\|"+v+"}}|"+v+")}}", r'<span style="border-bottom:1px solid;">\1</span><ref name="'+v+'">'+术语释义["{{术语|"+k+"|"+v+"}}"]+'</ref>',output1,1)
+    #output1 = output1.replace(k, f'<span style="border-bottom:1px solid;">{v}</span><ref name="{v}">' + 术语释义[k] + '</ref>', 1)
+    output1 = sub(r"{{术语\|"+k.replace(".", "\.")+r"\|({{color\|(blue|orange)\|"+v+"}}|"+v+")}}", r'<span style="border-bottom:1px solid;">\1</span><ref name="'+v+'" />',output1)
 
 open(f".{sep}{代号}.wikitext", "w", encoding="utf-8").write(output1+output2)
 
