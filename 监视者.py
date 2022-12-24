@@ -18,12 +18,10 @@ while True:
             result0 = requests.get("https://mzh.moegirl.org.cn/api.php",
                                    params={
                                        "action": "query",
-                                       "format": "json",
                                        "prop": "revisions",
                                        "titles": "明日方舟",
                                        "generator": "prefixsearch",
                                        "utf8": "1",
-                                       "formatversion": "latest",
                                        "rvprop": "timestamp|ids",
                                        "gpssearch": "明日方舟",
                                        "gpsnamespace": "1|5|11|13|9|15|275|829",
