@@ -2,7 +2,7 @@
 
 const { MediaWikiJS } = require("@lavgup/mediawiki.js");
 const { CronJob } = require("cron");
-const bot = new MediaWikiJS(require("./config.json").mobile);
+const bot = new MediaWikiJS(require("./config.json").mzh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	try {
 		const result1 = await bot.api.get({
