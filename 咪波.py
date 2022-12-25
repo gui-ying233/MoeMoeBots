@@ -11,8 +11,8 @@ def 新干员(new: str) -> list[str]:
     global titles
     for _ in new.split('|'):
         titles += [
-         '头像_' + _, '头像_' + _ + '_2', '半身像_' + _ + '_1', '半身像_' + _ + '_2',
-         '立绘_' + _ + '_1', '立绘_' + _ + '_2', '道具_带框_' + _ + '的信物'
+            '头像_' + _, '头像_' + _ + '_2', '半身像_' + _ + '_1', '半身像_' + _ + '_2',
+            '立绘_' + _ + '_1', '立绘_' + _ + '_2', '道具_带框_' + _ + '的信物'
         ]
     return titles
 
@@ -22,8 +22,8 @@ def 新时装(new: str, id: int = 1) -> list[str]:
     id = str(id)
     for _ in new.split('|'):
         titles += [
-         '头像_' + _ + '_skin' + id, '半身像_' + _ + '_skin' + id,
-         '立绘_' + _ + '_skin' + id + ''
+            '头像_' + _ + '_skin' + id, '半身像_' + _ + '_skin' + id,
+            '立绘_' + _ + '_skin' + id + ''
         ]
     return titles
 
@@ -41,13 +41,13 @@ def 新关卡(new: str) -> list[str]:
         try:
             result1 = requests.get('https://mzh.moegirl.org.cn/api.php',
                                    params={
-                                    "action": "query",
-                                    "format": "json",
-                                    "titles": new,
-                                    "generator": "images",
-                                    "utf8": 1,
-                                    "formatversion": 2,
-                                    "gimlimit": "max"
+                                       "action": "query",
+                                       "format": "json",
+                                       "titles": new,
+                                       "generator": "images",
+                                       "utf8": 1,
+                                       "formatversion": 2,
+                                       "gimlimit": "max"
                                    })
             break
         except Exception as e:
@@ -85,12 +85,12 @@ def main() -> None:
         try:
             result0 = requests.get('https://m.prts.wiki/api.php',
                                    params={
-                                    'action': 'query',
-                                    'prop': 'imageinfo',
-                                    'titles': '|'.join(titles),
-                                    'iiprop': 'url|sha1',
-                                    'format': 'json',
-                                    'formatversion': 'latest'
+                                       'action': 'query',
+                                       'prop': 'imageinfo',
+                                       'titles': '|'.join(titles),
+                                       'iiprop': 'url|sha1',
+                                       'format': 'json',
+                                       'formatversion': 'latest'
                                    })
             break
         except Exception as e:
@@ -132,7 +132,7 @@ def main() -> None:
                     open('./图片/' + title,
                          "wb").write(requests.get(result[_]['imageinfo'][0]['url']).content)
                     if result[_]['imageinfo'][0]['sha1'] == sha1(
-                      open('./图片/' + title, "rb").read()).hexdigest():
+                            open('./图片/' + title, "rb").read()).hexdigest():
                         print('\t下载完成')
                         break
                     else:
