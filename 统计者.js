@@ -32,19 +32,21 @@ bot.login().then(async () => {
 						format: "json",
 						list: "usercontribs",
 						uclimit: "max",
-						ucstart: `2022-${String(m).padStart(2, 0)}-${String(d).padStart(
-							2,
-							0
-						)}T16:00:00.000Z`,
+						ucstart: `2022-${String(m).padStart(2, 0)}-${String(
+							d
+						).padStart(2, 0)}T16:00:00.000Z`,
 						ucend: `${
 							d - 1 == 0
-								? `2022-${String(m - 1).padStart(2, 0)}-${String(
-										days[m - 1]
-								  ).padStart(2, 0)}T16:00:00.000Z`
-								: `2022-${String(m).padStart(2, 0)}-${String(d - 1).padStart(
+								? `2022-${String(m - 1).padStart(
+										2,
+										0
+								  )}-${String(days[m - 1]).padStart(
 										2,
 										0
 								  )}T16:00:00.000Z`
+								: `2022-${String(m).padStart(2, 0)}-${String(
+										d - 1
+								  ).padStart(2, 0)}T16:00:00.000Z`
 						}`,
 						ucuser: "鬼影233",
 						ucprop: "",

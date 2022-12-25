@@ -21,11 +21,13 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 		} else {
 			console.log(`${gcmtitle}中共${result1.query.pages.length}个页面。`);
 			for (let i = 0; i < result1.query.pages.length; i++) {
-				console.log(`第${i + 1}个页面：${result1.query.pages[i].title}`);
+				console.log(
+					`第${i + 1}个页面：${result1.query.pages[i].title}`
+				);
 				if (
-					new RegExp(/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//).test(
-						result1.query.pages[i].title
-					) ||
+					new RegExp(
+						/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//
+					).test(result1.query.pages[i].title) ||
 					new RegExp(skipTitle).test(result1.query.pages[i].title)
 				) {
 					console.log("跳过页面");
@@ -38,9 +40,20 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 				} else {
 					try {
 						let replaceText = "";
-						if (typeof regex === "object" && regex.toString().split("")[1] === "{") {
+						if (
+							typeof regex === "object" &&
+							regex.toString().split("")[1] === "{"
+						) {
 							let symbolCounter = 0;
-							for (const word of result1.query.pages[i].revisions[0].content.slice(result1.query.pages[i].revisions[0].content.search(regex)).split("")) {
+							for (const word of result1.query.pages[
+								i
+							].revisions[0].content
+								.slice(
+									result1.query.pages[
+										i
+									].revisions[0].content.search(regex)
+								)
+								.split("")) {
 								replaceText += word;
 								switch (word) {
 									case "{":
@@ -59,14 +72,17 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 						}
 						const result2 = await bot.doEdit({
 							title: result1.query.pages[i].title,
-							text: result1.query.pages[i].revisions[0].content.replace(
+							text: result1.query.pages[
+								i
+							].revisions[0].content.replace(
 								replaceText,
 								replace
 							),
 							summary: `自动修复[[${gcmtitle}]]中的页面`,
 							tags: "Bot",
 							Bot: true,
-							basetimestamp: result1.query.pages[i].revisions[0].timestamp,
+							basetimestamp:
+								result1.query.pages[i].revisions[0].timestamp,
 							starttimestamp: result1.curtimestamp,
 						});
 						console.table(result2.edit);
@@ -90,11 +106,14 @@ const cronJob = new CronJob({
 	onTick: async () => {
 		var d = new Date();
 		console.log(
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, 0)}-${String(
-				d.getDate()
-			).padStart(2, 0)} ${(String((d.getHours() - 5) % 24)).padStart(2, 0)}:${String(
-				d.getMinutes()
-			).padStart(2, 0)}:${String(d.getSeconds()).padStart(2, 0)}`
+			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+				2,
+				0
+			)}-${String(d.getDate()).padStart(2, 0)} ${String(
+				(d.getHours() - 5) % 24
+			).padStart(2, 0)}:${String(d.getMinutes()).padStart(2, 0)}:${String(
+				d.getSeconds()
+			).padStart(2, 0)}`
 		);
 		await cleaner(
 			"CAT:错误使用标题格式化的页面",
@@ -110,7 +129,10 @@ const cronJob = new CronJob({
 			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}/gis,
 			"{{小写标题}}"
 		);
-		await cleaner("CAT:不必要使用override参数的音乐条目", /\|override=1\n?/g);
+		await cleaner(
+			"CAT:不必要使用override参数的音乐条目",
+			/\|override=1\n?/g
+		);
 		await cleaner(
 			"CAT:错误使用标题替换模板的页面",
 			/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}\n?/gis,
