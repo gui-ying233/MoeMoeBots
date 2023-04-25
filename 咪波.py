@@ -75,6 +75,7 @@ def 清除() -> None:
 
 def main() -> None:
     global titles
+    titles = list(tuple(titles))
     title = ''
     for _ in range(len(titles)):
         if titles[_][:3] != '文件:' and titles[_][:5] != 'File:':
@@ -114,7 +115,7 @@ def main() -> None:
                                                                                                                                2] == '模组' or title[:
                                                                                                                                                    2] == '图标':
                 title = '明日方舟' + title
-            elif title[:2] == '道具' or title[:2] == '主题' and title[-6:-4] == '总览':
+            elif title[:2] == '道具' or title[:2] == '主题' and title[-6:-4] != '总览':
                 title = '明日方舟 ' + title
             elif title[:2] == '头像':
                 title = '明日方舟 tx' + title[2:]
@@ -129,23 +130,27 @@ def main() -> None:
             try:
                 while 1:
                     print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中…')
-                    open('./图片/' + title,
-                         "wb").write(requests.get(result[_]['imageinfo'][0]['url']).content)
-                    if result[_]['imageinfo'][0]['sha1'] == sha1(
-                            open('./图片/' + title, "rb").read()).hexdigest():
-                        print('\t下载完成')
-                        break
-                    else:
-                        print("SHA-1验证失败，重新下载…")
+                    try:
+                        open('./图片/' + title,
+                             "wb").write(requests.get(result[_]['imageinfo'][0]['url']).content)
+                    except Exception as e:
+                        print(e)
+                    finally:
+                        if sha1(open('./图片/' + title, "rb").read()).hexdigest() == result[_]['imageinfo'][0]['sha1']:
+                            print('\t下载完成')
+                            break
+                        else:
+                            print("SHA-1验证失败，重新下载…")
             except Exception as e:
                 print(str(e), "下载失败")
     print('进程结束')
 
 
-# 清除()
-# 新时装('')
+清除()
 # 新干员('')
+# 新时装('')
 # 新技能('')
-新关卡("明日方舟/照我以火/活动关卡")
-# titles += ''.split('|')
+# 新关卡('')
+titles += '情报处理室_好久不见'.split(
+    '|')
 main()

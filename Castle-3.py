@@ -17,7 +17,7 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     '{{术语|ba.stun|晕眩}}': '无法移动、阻挡、攻击及使用技能',
 
-    '{{术语|ba.buffres|链接=可抵抗状态|抵抗}}': '<span style="border-bottom:1px solid;">晕眩</span>、<span style="border-bottom:1px solid;">寒冷</span>、<span style="border-bottom:1px solid;">冻结</span>等负面状态的持续时间减半（同名效果不叠加）',
+    '{{术语|ba.buffres|抵抗}}': '<span style="border-bottom:1px solid;">晕眩</span>、<span style="border-bottom:1px solid;">寒冷</span>、<span style="border-bottom:1px solid;">冻结</span>等负面状态的持续时间减半（同名效果不叠加）',
 
     '{{术语|ba.invisible|隐匿}}': '不阻挡时不成为敌方攻击的目标',
 
@@ -30,6 +30,12 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     '{{术语|ba.dying|重伤}}': '移速下降且无法被阻挡，10秒后自然死亡，被击杀后使击杀者回复数点技力',
 
     '{{术语|ba.barrier|屏障}}': '可以吸收一定数值的伤害',
+
+    '{{术语|ba.weightless|失重}}': '重量下降一个等级（同名效果不可叠加）',
+
+    '{{术语|ba.berserk|坚忍}}': '根据已损失的生命值获得相应比例的属性加成，损失一定比例时达最大加成（同类属性取最高）',
+
+    '{{术语|ba.steal|偷取}}': '减少目标的基础属性作为自身加成，目标减少和自身加成的属性不超过指定上限（同类属性取最高）',
 
     '{{术语|ba.shield|护盾}}': '每层护盾可以抵挡一次伤害',
 
@@ -99,11 +105,11 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     '{{术语|cc.bd_tachanka|乌萨斯特饮}}': '由以下干员提供<br>战车',
 
-    '{{术语|cc.bd_a1_a1|记忆碎片}}': '可影响{{color|orange|感知信息}}相关变量<br>由以下干员的基建技能提供<br>絮雨',
+    '{{术语|cc.bd_a1_a1|记忆碎片}}': '可影响<span style="border-bottom:1px solid;">{{color|orange|感知信息}}</span>相关变量<br>由以下干员的基建技能提供<br>絮雨',
 
-    '{{术语|cc.bd_a1_a2|梦境}}': '可影响{{color|orange|感知信息}}相关变量<br>由以下干员的基建技能提供<br>爱丽丝',
+    '{{术语|cc.bd_a1_a2|梦境}}': '可影响<span style="border-bottom:1px solid;">{{color|orange|感知信息}}</span>相关变量<br>由以下干员的基建技能提供<br>爱丽丝',
 
-    '{{术语|cc.bd_a1_a3|小节}}': '可影响{{color|orange|感知信息}}相关变量<br>由以下干员的基建技能提供<br>车尔尼',
+    '{{术语|cc.bd_a1_a3|小节}}': '可影响<span style="border-bottom:1px solid;">{{color|orange|感知信息}}</span>相关变量<br>由以下干员的基建技能提供<br>车尔尼',
 
     '{{术语|cc.w.ncdeer1|因果}}': '每当加工心情消耗{{color|blue|4}}以下的配方未产出副产品时，所消耗的每{{color|blue|1}}点心情转化为{{color|blue|1}}点{{color|blue|因果}}',
 
@@ -112,6 +118,12 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     '{{术语|cc.bd_malist|工程机器人}}': '由以下干员的基建技能提供<br>至简',
 
     '{{术语|cc.bd.costdrop|心情落差}}': '干员自身心情上限与当前心情值的差值',
+
+    '{{术语|cc.bd_C|巫术结晶}}': '拥有该基建技能的干员<br>截云',
+
+    '{{术语|cc.bd_felyne|木天蓼}}': '可影响{{color|orange|可爱的艾露猫}}、{{color|orange|可靠的随从们}}相关技能',
+
+
 
     # 技能
 
@@ -134,6 +146,10 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     '{{术语|cc.sk.manu2|莱茵科技类技能}}': '包含以下技能<br>莱茵科技·α、莱茵科技·β',
 
     '{{术语|cc.sk.manu3|红松骑士团类技能}}': '包含以下技能<br>红松骑士团·α、红松骑士团·β',
+
+    '{{术语|cc.bd_felyne_1|可爱的艾露猫}}': '拥有该基建技能的干员<br>泰拉大陆调查团}}',
+
+    '{{术语|cc.bd_felyne_2|可爱的随从们': '拥有该基建技能的干员<br>泰拉大陆调查团}}',
 
     # 设施
 
@@ -167,15 +183,21 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     '{{术语|cc.gvial|嘉维尔}}': '包含以下干员<br>百炼嘉维尔、嘉维尔',
 
+    '{{术语|cc.tag.mh|怪物猎人小队}}': '包含以下干员<br>火龙S黑角、麒麟X夜刀、泰拉大陆调查团',
+
+    '{{术语|cc.g.glasgow|格拉斯哥帮}}': '包含以下干员<br>推进之王，摩根，达格达，因陀罗',
+
     # 特殊
 
-    '{{术语|cc.c.abyssal2_1|特殊加成}}': '每有1个{{术语|cc.g.abyssal|{{color|blue|深海猎人}}}}干员进驻制造站，则控制中枢给每个进驻{{术语|cc.g.abyssal|{{color|blue|深海猎人}}}}的制造站提供{{color|blue|5%}}生产力，最多给单个制造站提供{{color|blue|45%}}生产力',
+    '{{术语|cc.c.abyssal2_1|特殊加成}}': '每有1个{{color|blue|深海猎人}}干员进驻制造站，则控制中枢给每个进驻{{color|blue|深海猎人}}的制造站提供{{color|blue|5%}}生产力，最多给单个制造站提供{{color|blue|45%}}生产力',
 
-    '{{术语|cc.c.abyssal2_2|特殊加成}}': '每有1个{{术语|cc.g.abyssal|{{color|blue|深海猎人}}}}干员进驻制造站，则控制中枢给每个进驻{{术语|cc.g.abyssal|{{color|blue|深海猎人}}}}的制造站提供{{color|blue|10%}}生产力，最多给单个制造站提供{{color|blue|90%}}生产力',
+    '{{术语|cc.c.abyssal2_2|特殊加成}}': '每有1个{{color|blue|深海猎人}}干员进驻制造站，则控制中枢给每个进驻{{color|blue|深海猎人}}的制造站提供{{color|blue|10%}}生产力，最多给单个制造站提供{{color|blue|90%}}生产力',
 
-    '{{术语|cc.c.abyssal2_3|特殊叠加规则}}': '无法与{{术语|cc.m.var2|{{color|orange|配合意识}}}}进行叠加，且优先生效<br>无法与{{术语|cc.m.pow1|{{color|orange|自 动 化·α}}}}、{{术语|cc.m.pow2|{{color|orange|自动化·β}}}}、{{术语|cc.m.pow3|{{color|orange|仿生海龙}}}}进行叠加，且清零效果优先生效',
+    '{{术语|cc.c.abyssal2_3|特殊叠加规则}}': '无法与{{color|orange|配合意识}}进行叠加，且优先生效<br>无法与{{color|orange|自 动 化·α}}、{{color|orange|自动化·β}}、{{color|orange|仿生海龙}}进行叠加，且清零效果优先生效',
 
-    '{{术语|cc.t.strong2|特殊叠加规则}}': '无法单独与{{术语|cc.t.snsant1|{{color|orange|天道酬勤·α}}}}、{{术语|cc.t.snsant2|{{color|orange|天道酬勤·β}}}}进行叠加，且优先生效<br>当{{术语|cc.t.snsant1|{{color|orange|天道酬勤·α}}}}、{{术语|cc.t.snsant2|{{color|orange|天道酬勤·β}}}}与其他技能进行叠加时，该技能会对此叠加效果进行叠加',
+    '{{术语|cc.t.strong2|特殊叠加规则}}': '无法单独与{{color|orange|天道酬勤·α}}、{{color|orange|天道酬勤·β}}进行叠加，且优先生效<br>当{{color|orange|天道酬勤·α}}、{{color|orange|天道酬勤·β}}与其他技能进行叠加时，该技能会对此叠加效果进行叠加',
+
+    '{{术语|id=cc.c.sui2_1|特殊比较规则}}': '与控制中枢内其他干员技能提供的{{color|orange|其他设施}}每小时心情恢复值总和进行对比，取最高生效',
 
     '{{术语|cc.c.room1|部分设施}}': '包含以下设施<br>发电站、人力办公室、会客室',
 
@@ -194,7 +216,7 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     'ba.stun': '晕眩',
 
-    'ba.buffres': '链接=可抵抗状态|抵抗',
+    'ba.buffres': ' 抵抗',
 
     'ba.invisible': '隐匿',
 
@@ -207,6 +229,12 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     'ba.dying': '重伤',
 
     'ba.barrier': '屏障',
+
+    'ba.weightless': '失重',
+
+    'ba.berserk': '坚忍',
+
+    'ba.steal': '偷取',
 
     'ba.shield': '护盾',
 
@@ -290,6 +318,10 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     'cc.bd.costdrop': '心情落差',
 
+    'cc.bd_C': '巫术结晶',
+
+    'cc.bd_felyne': '木天蓼',
+
     # 技能
 
     'cc.m.var1': '回收利用',
@@ -311,6 +343,10 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     'cc.sk.manu2': '莱茵科技类技能',
 
     'cc.sk.manu3': '红松骑士团类技能',
+
+    'cc.bd_felyne_1': '可爱的艾露猫',
+
+    'cc.bd_felyne_2': '可爱的随从们',
 
     # 设施
 
@@ -344,6 +380,10 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 
     'cc.gvial': '嘉维尔',
 
+    'cc.tag.mh': '怪物猎人小队',
+
+    'cc.g.glasgow': '格拉斯哥帮',
+
     # 特殊
 
     'cc.c.abyssal2_1': '特殊加成',
@@ -353,6 +393,8 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
     'cc.c.abyssal2_3': '特殊叠加规则',
 
     'cc.t.strong2': '特殊叠加规则',
+
+    'cc.c.sui2_1': '特殊比较规则',
 
     'cc.c.room1': '部分设施',
 

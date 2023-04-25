@@ -70,26 +70,31 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 						} else {
 							replaceText = regex;
 						}
-						const result2 = await bot.doEdit({
-							title: result1.query.pages[i].title,
-							text: result1.query.pages[
-								i
-							].revisions[0].content.replace(
-								replaceText,
-								replace
-							),
-							summary: `自动修复[[${gcmtitle}]]中的页面`,
-							tags: "Bot",
-							Bot: true,
-							basetimestamp:
-								result1.query.pages[i].revisions[0].timestamp,
-							starttimestamp: result1.curtimestamp,
-						});
-						console.table(result2.edit);
-						if (result2.edit.nochange !== true) {
-							console.info(
-								`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`
-							);
+						try {
+							const result2 = await bot.doEdit({
+								title: result1.query.pages[i].title,
+								text: result1.query.pages[
+									i
+								].revisions[0].content.replace(
+									replaceText,
+									replace
+								),
+								summary: `自动修复[[${gcmtitle}]]中的页面`,
+								tags: "Bot",
+								Bot: true,
+								basetimestamp:
+									result1.query.pages[i].revisions[0]
+										.timestamp,
+								starttimestamp: result1.curtimestamp,
+							});
+							console.table(result2.edit);
+							if (result2.edit.nochange !== true) {
+								console.info(
+									`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`
+								);
+							}
+						} catch (e) {
+							console.error(e);
 						}
 					} catch (e) {
 						console.error(e);
