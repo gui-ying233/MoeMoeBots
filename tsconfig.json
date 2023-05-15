@@ -12,12 +12,5 @@
             "DOM"
         ],
         "ignoreDeprecations": "5.0"
-    },
-    "include": [
-        "gadgets",
-        "common.ts",
-    ],
-    "exclude": [
-        "gadgets/build",
-    ],
+    }
 }
