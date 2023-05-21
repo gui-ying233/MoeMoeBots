@@ -4,3 +4,7 @@ config.json
 监视者.json
 图片
 .DS_Store
+test.py
+test.js
+__pycache__
+unity.py
