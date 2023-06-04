@@ -123,16 +123,16 @@ const cronJob = new CronJob({
 		await bot.login().then(async () => {
 			await cleaner(
 				"CAT:错误使用标题格式化的页面",
-				/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]格式化.*}}\n?/gi
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
 			);
 			await cleaner(
 				"CAT:需要更换为标题格式化的页面",
-				/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}/gis,
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
 				"{{标题格式化}}"
 			);
 			await cleaner(
 				"CAT:需要更换为小写标题的页面",
-				/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}/gis,
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
 				"{{小写标题}}"
 			);
 			await cleaner(
@@ -141,13 +141,13 @@ const cronJob = new CronJob({
 			);
 			await cleaner(
 				"CAT:错误使用标题替换模板的页面",
-				/{{:?(?:Template:|[模样樣]板:|T:)?[标標][题題]替[换換].*}}\n?/gis,
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}\n?/gis,
 				"",
 				/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
 			);
 			// await cleaner(
 			// 	"CAT:错误使用NoSubpage的页面",
-			// 	/{{:?(?:Template:|[模样樣]板:|T:)?NoSubpage.*?}}\n?/gi
+			// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
 			// );
 		});
 		await bot.logout();
