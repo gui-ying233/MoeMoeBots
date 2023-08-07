@@ -60,12 +60,16 @@ def 新关卡(new: str) -> list[str]:
                     pass
             except:
                 if _["title"][10:12] == "tx" and _["title"][13:15] == "敌人":
-                    titles.append("File:头像 敌人" + _["title"][15:])
-                elif _["title"][-6:-4] == "地图":
-                    titles.append(_["title"])
+                    titles += ["File:头像 敌人" + _["title"][15:]]
                 else:
-                    print("非预期图片：" + _["title"])
+                    titles += [_["title"]]
     return titles
+
+
+def 批量前缀(prefix: str, new: str) -> list[str]:
+    global titles
+    titles += [prefix + _ for _ in new.split('|')]
+    return [prefix + _ for _ in new.split('|')]
 
 
 def 清除() -> None:
@@ -75,7 +79,7 @@ def 清除() -> None:
 
 def main() -> None:
     global titles
-    titles = list(tuple(titles))
+    titles = list(set(titles))
     title = ''
     for _ in range(len(titles)):
         if titles[_][:3] != '文件:' and titles[_][:5] != 'File:':
@@ -147,10 +151,10 @@ def main() -> None:
 
 
 清除()
-# 新干员('')
+新干员('空构|隐现|圣约送葬人')
 # 新时装('')
 # 新技能('')
-# 新关卡('')
-titles += '情报处理室_好久不见'.split(
-    '|')
+新关卡('明日方舟/空想花庭/活动关卡')
+# 批量前缀("", "")
+# titles += "".split('|')
 main()
