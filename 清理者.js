@@ -63,9 +63,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 										symbolCounter++;
 										break;
 								}
-								if (!symbolCounter) {
-									break;
-								}
+								if (!symbolCounter) break;
 							}
 						} else {
 							replaceText = regex;
@@ -109,49 +107,55 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 const cronJob = new CronJob({
 	cronTime: "0 0 0/1 1/1 * *", // http://www.cronmaker.com/
 	onTick: async () => {
-		var d = new Date();
-		console.log(
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
-				2,
-				0
-			)}-${String(d.getDate()).padStart(2, 0)} ${String(
-				d.getHours()
-			).padStart(2, 0)}:${String(d.getMinutes()).padStart(2, 0)}:${String(
-				d.getSeconds()
-			).padStart(2, 0)}`
-		);
-		await bot.login().then(async () => {
-			await cleaner(
-				"CAT:错误使用标题格式化的页面",
-				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
+		try {
+			var d = new Date();
+			console.log(
+				`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+					2,
+					0
+				)}-${String(d.getDate()).padStart(2, 0)} ${String(
+					d.getHours()
+				).padStart(2, 0)}:${String(d.getMinutes()).padStart(
+					2,
+					0
+				)}:${String(d.getSeconds()).padStart(2, 0)}`
 			);
-			await cleaner(
-				"CAT:需要更换为标题格式化的页面",
-				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
-				"{{标题格式化}}"
-			);
-			await cleaner(
-				"CAT:需要更换为小写标题的页面",
-				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
-				"{{小写标题}}"
-			);
-			await cleaner(
-				"CAT:不必要使用override参数的音乐条目",
-				/\|override=1\n?/g
-			);
-			await cleaner(
-				"CAT:错误使用标题替换模板的页面",
-				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}\n?/gis,
-				"",
-				/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
-			);
-			// await cleaner(
-			// 	"CAT:错误使用NoSubpage的页面",
-			// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
-			// );
-		});
-		await bot.logout();
-		console.log("───────────────");
+			await bot.login().then(async () => {
+				await cleaner(
+					"CAT:错误使用标题格式化的页面",
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
+				);
+				await cleaner(
+					"CAT:需要更换为标题格式化的页面",
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
+					"{{标题格式化}}"
+				);
+				await cleaner(
+					"CAT:需要更换为小写标题的页面",
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
+					"{{小写标题}}"
+				);
+				await cleaner(
+					"CAT:不必要使用override参数的音乐条目",
+					/\|override=1\n?/g
+				);
+				await cleaner(
+					"CAT:错误使用标题替换模板的页面",
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}\n?/gis,
+					"",
+					/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
+				);
+				// await cleaner(
+				// 	"CAT:错误使用NoSubpage的页面",
+				// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
+				// );
+			});
+			await bot.logout();
+		} catch (e) {
+			console.error(e);
+		} finally {
+			console.log("───────────────");
+		}
 	},
 });
 cronJob.start();
