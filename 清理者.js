@@ -44,6 +44,14 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 							typeof regex === "object" &&
 							regex.toString().split("")[1] === "{"
 						) {
+							if (
+								result1.query.pages[
+									i
+								].revisions[0].content.search(regex) === -1
+							) {
+								console.warn("未找到匹配");
+								continue;
+							}
 							let symbolCounter = 0;
 							for (const word of result1.query.pages[
 								i
@@ -127,12 +135,12 @@ const cronJob = new CronJob({
 				);
 				await cleaner(
 					"CAT:需要更换为标题格式化的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
 					"{{标题格式化}}"
 				);
 				await cleaner(
 					"CAT:需要更换为小写标题的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}/gis,
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
 					"{{小写标题}}"
 				);
 				await cleaner(
@@ -141,7 +149,7 @@ const cronJob = new CronJob({
 				);
 				await cleaner(
 					"CAT:错误使用标题替换模板的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]替[换換].*}}\n?/gis,
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
 					"",
 					/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
 				);
