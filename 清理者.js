@@ -53,7 +53,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 								continue;
 							}
 							let symbolCounter = 0;
-							for (const word of result1.query.pages[
+							const obj = result1.query.pages[
 								i
 							].revisions[0].content
 								.slice(
@@ -61,7 +61,9 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 										i
 									].revisions[0].content.search(regex)
 								)
-								.split("")) {
+								.split("");
+							for (let j = 0; j < obj.length; j++) {
+								const word = obj[j];
 								replaceText += word;
 								switch (word) {
 									case "{":
@@ -71,7 +73,10 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 										symbolCounter++;
 										break;
 								}
-								if (!symbolCounter) break;
+								if (!symbolCounter && obj[j + 1] === "\n") {
+									replaceText += "\n";
+									break;
+								} else if (!symbolCounter) break;
 							}
 						} else {
 							replaceText = regex;
