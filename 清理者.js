@@ -33,7 +33,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					console.log("跳过页面");
 				} else if (
 					result1.query.pages[i].revisions[0].content.match(
-						/{{:?(?:Template:|[模样樣]板:|T:)?(?:施工中|[编編][辑輯]中|inuse)/gi
+						/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:施工中|[编編][辑輯]中|inuse.*}})/gi
 					) !== null
 				) {
 					console.log("施工中");
