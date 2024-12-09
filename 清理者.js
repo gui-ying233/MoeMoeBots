@@ -5,7 +5,7 @@ const { CronJob } = require("cron");
 const bot = new MediaWikiJS(require("./config.json").mzh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	try {
-		const result1 = await bot.api.get({
+		const result1 = await bot.api.post({
 			action: "query",
 			curtimestamp: 1,
 			prop: "revisions",
