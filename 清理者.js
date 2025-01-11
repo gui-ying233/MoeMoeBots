@@ -1,11 +1,11 @@
 "use strict";
 
-const { MediaWikiJS } = require("@lavgup/mediawiki.js");
+const { mw } = require("./MediaWiki");
 const { CronJob } = require("cron");
-const bot = new MediaWikiJS(require("./config.json").mzh);
+const api = new mw.Api(require("./config.json").zh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	try {
-		const result1 = await bot.api.post({
+		const result1 = await api.post({
 			action: "query",
 			curtimestamp: 1,
 			prop: "revisions",
@@ -82,7 +82,8 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 							replaceText = regex;
 						}
 						try {
-							const result2 = await bot.doEdit({
+							const result2 = await api.post({
+								action: edit,
 								title: result1.query.pages[i].title,
 								text: result1.query.pages[
 									i
@@ -92,11 +93,12 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 								),
 								summary: `自动修复[[${gcmtitle}]]中的页面`,
 								tags: "Bot",
-								Bot: true,
+								bot: true,
 								basetimestamp:
 									result1.query.pages[i].revisions[0]
 										.timestamp,
 								starttimestamp: result1.curtimestamp,
+								token: await api.getToken("csrf"),
 							});
 							console.table(result2.edit);
 							if (result2.edit.nochange !== true) {
@@ -133,37 +135,36 @@ const cronJob = new CronJob({
 					0
 				)}:${String(d.getSeconds()).padStart(2, 0)}`
 			);
-			await bot.login().then(async () => {
-				await cleaner(
-					"CAT:错误使用标题格式化的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
-				);
-				await cleaner(
-					"CAT:需要更换为标题格式化的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
-					"{{标题格式化}}"
-				);
-				await cleaner(
-					"CAT:需要更换为小写标题的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
-					"{{小写标题}}"
-				);
-				await cleaner(
-					"CAT:不必要使用override参数的音乐条目",
-					/\|override=1\n?/g
-				);
-				await cleaner(
-					"CAT:错误使用标题替换模板的页面",
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
-					"",
-					/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
-				);
-				// await cleaner(
-				// 	"CAT:错误使用NoSubpage的页面",
-				// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
-				// );
-			});
-			await bot.logout();
+			await api.login();
+			await cleaner(
+				"CAT:错误使用标题格式化的页面",
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
+			);
+			await cleaner(
+				"CAT:需要更换为标题格式化的页面",
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+				"{{标题格式化}}"
+			);
+			await cleaner(
+				"CAT:需要更换为小写标题的页面",
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+				"{{小写标题}}"
+			);
+			await cleaner(
+				"CAT:不必要使用override参数的音乐条目",
+				/\|override=1\n?/g
+			);
+			await cleaner(
+				"CAT:错误使用标题替换模板的页面",
+				/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+				"",
+				/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
+			);
+			// await cleaner(
+			// 	"CAT:错误使用NoSubpage的页面",
+			// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
+			// );
+			await api.logout();
 		} catch (e) {
 			console.error(e);
 		} finally {
