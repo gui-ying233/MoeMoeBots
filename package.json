@@ -13,7 +13,6 @@
 	},
 	"homepage": "https://github.com/gui-ying233/my-bot",
 	"dependencies": {
-		"@lavgup/mediawiki.js": "^1.2.2",
 		"cron": "^2.1.0",
 		"open": "^10.1.0"
 	}
