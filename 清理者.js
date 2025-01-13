@@ -128,8 +128,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	}
 }
 const cronJob = new CronJob({
-	// cronTime: "0 0 0/1 1/1 * *", // http://www.cronmaker.com/
-	cronTime: "0 0/1 * 1/1 * *",
+	cronTime: "0 0 0/1 1/1 * *", // http://www.cronmaker.com/
 	onTick: async () => {
 		try {
 			var d = new Date();
