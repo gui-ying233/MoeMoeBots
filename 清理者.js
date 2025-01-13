@@ -83,7 +83,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 						}
 						try {
 							const result2 = await api.post({
-								action: edit,
+								action: "edit",
 								title: result1.query.pages[i].title,
 								text: result1.query.pages[
 									i
