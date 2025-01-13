@@ -82,30 +82,38 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 							replaceText = regex;
 						}
 						try {
-							const result2 = await api.post({
-								action: "edit",
-								title: result1.query.pages[i].title,
-								text: result1.query.pages[
-									i
-								].revisions[0].content.replace(
-									replaceText,
-									replace
-								),
-								summary: `自动修复[[${gcmtitle}]]中的页面`,
-								tags: "Bot",
-								bot: true,
-								basetimestamp:
-									result1.query.pages[i].revisions[0]
-										.timestamp,
-								starttimestamp: result1.curtimestamp,
-								token: await api.getToken("csrf"),
-							});
-							console.table(result2.edit);
-							if (result2.edit.nochange !== true) {
-								console.info(
-									`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`
-								);
-							}
+							const edit = async () => {
+								const result2 = await api.post({
+									action: "edit",
+									title: result1.query.pages[i].title,
+									text: result1.query.pages[
+										i
+									].revisions[0].content.replace(
+										replaceText,
+										replace
+									),
+									summary: `自动修复[[${gcmtitle}]]中的页面`,
+									tags: "Bot",
+									bot: true,
+									basetimestamp:
+										result1.query.pages[i].revisions[0]
+											.timestamp,
+									starttimestamp: result1.curtimestamp,
+									token: await api.getToken("csrf"),
+								});
+								if (result2?.error?.code === "badtoken") {
+									console.error("badtoken");
+									await api.getToken("csrf", true);
+									return await edit();
+								}
+								console.table(result2.edit);
+								if (result2.edit.nochange !== true) {
+									console.info(
+										`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`
+									);
+								}
+							};
+							return await edit();
 						} catch (e) {
 							console.error(e);
 						}
@@ -120,7 +128,8 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	}
 }
 const cronJob = new CronJob({
-	cronTime: "0 0 0/1 1/1 * *", // http://www.cronmaker.com/
+	// cronTime: "0 0 0/1 1/1 * *", // http://www.cronmaker.com/
+	cronTime: "0 0/1 * 1/1 * *",
 	onTick: async () => {
 		try {
 			var d = new Date();
