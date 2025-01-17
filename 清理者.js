@@ -1,6 +1,6 @@
 "use strict";
 
-const { mw } = require("./MediaWiki");
+const { mw } = require("./mediaWiki");
 const { CronJob } = require("cron");
 const api = new mw.Api(require("./config.json").zh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
