@@ -1,0 +1,26 @@
+name: 清理者
+
+on:
+	schedule:
+		- cron: "0 * * * *"
+	workflow_dispatch:
+jobs:
+	清理者:
+		runs-on: ubuntu-latest
+		steps:
+			- name: 签出
+				uses: actions/checkout@v4
+			- name: 设置 node.js
+			  	uses: actions/setup-node@v4
+			  with:
+				node-version: 20
+				cache: npm
+			- name: 安装 npm 依赖
+				run: npm install
+			- name: 运行清理者
+			env:
+				MOEGIRL_BOTUSERNAME: ${{ vars.MOEGIRL_BOTUSERNAME }}
+				MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+				MOEGIRL_BOTPASSWORD: ${{ secrets.MOEGIRL_BOTPASSWORD }}
+				MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+				run: node 清理者.js

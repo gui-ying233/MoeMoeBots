@@ -1,19 +1,15 @@
 {
-	"name": "my-bot",
+	"name": "moemoebots",
 	"version": "1.0.0",
-	"description": "npm init",
+	"description": "服务于萌娘百科的姬器人。",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/gui-ying233/my-bot.git"
+		"url": "git+https://github.com/gui-ying233/MoeMoeBots.git"
 	},
-	"author": "",
+	"author": "鬼影233",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/gui-ying233/my-bot/issues"
+		"url": "https://github.com/gui-ying233/MoeMoeBots/issues"
 	},
-	"homepage": "https://github.com/gui-ying233/my-bot",
-	"dependencies": {
-		"cron": "^2.1.0",
-		"open": "^10.1.0"
-	}
+	"homepage": "https://github.com/gui-ying233/MoeMoeBots"
 }
