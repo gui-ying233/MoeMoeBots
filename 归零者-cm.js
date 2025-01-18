@@ -16,18 +16,18 @@ const api = new mw.Api(require("./config").cm);
 				...page,
 			});
 			if (r?.error?.code === "badtoken") {
-				console.error("badtoken");
+				console.warn("badtoken");
 				await api.getToken("csrf", true);
 				return await edit(page);
 			}
-			console.table(r.edit);
-			if (r.edit.nochange !== true) {
-				console.info(
-					`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
-				);
-			}
 		} catch (e) {
 			console.error(e);
+		}
+		console.table(r.edit);
+		if (r.edit.nochange !== true) {
+			console.info(
+				`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+			);
 		}
 	};
 	[
