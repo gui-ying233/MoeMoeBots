@@ -1,73 +1,46 @@
 "use strict";
 
-const { MediaWikiJS } = require("@lavgup/mediawiki.js");
-const bot = new MediaWikiJS(require("./config.json").mzh);
-const pageList = ["模块:Sandbox", "模块:Sandbox/test"];
-bot.login().then(async () => {
-	for (const title of pageList) {
+const { mw } = require("./mediaWiki");
+const api = new mw.Api(require("./config").zh);
+(async () => {
+	await api.login();
+	const edit = async page => {
 		try {
-			const result0 = await bot.doEdit({
-				title,
-				text: "",
-				summary:
-					"沙盒清理作业，若想保留较长时间，可以在个人测试区作测试，或者翻阅历史记录。",
+			const r = await api.post({
+				action: "edit",
+				nocreate: true,
 				tags: "Bot",
-				Bot: true,
+				bot: true,
+				token: await api.getToken("csrf"),
+				...page,
 			});
-			console.log(
-				result0.edit.result,
-				result0.edit.nochange ? "无更改" : "有更改"
-			);
-		} catch (e0) {
-			console.error(e0);
+			if (r?.error?.code === "badtoken") {
+				console.error("badtoken");
+				await api.getToken("csrf", true);
+				return await edit(page);
+			}
+			console.table(r.edit);
+			if (r.edit.nochange !== true) {
+				console.info(
+					`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+				);
+			}
+		} catch (e) {
+			console.error(e);
 		}
-	}
-	try {
-		const result1 = await bot.doEdit({
-			title: "H:沙盒/styles.css",
-			text: '._addText {\n\tcontent: "{{:H:沙盒}}";\n}',
+	};
+	[
+		{
+			title: "模块:Sandbox/test",
+			text: "",
 			summary:
-				"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。",
-			tags: "Bot",
-			Bot: true,
-		});
-		console.log(
-			result1.edit.result,
-			result1.edit.nochange ? "无更改" : "有更改"
-		);
-	} catch (e1) {
-		console.error(e1);
-	}
-	try {
-		const result2 = await bot.doEdit({
-			title: "T:沙盒/styles.css",
-			text: '._addText {\n\tcontent: "{{:T:沙盒}}";\n}\n\n/* [[Category:在模板名字空间下的CSS页面]] */',
-			summary:
-				"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/styles.css|个人测试区]]作测试，或者翻阅历史记录。",
-			tags: "Bot",
-			Bot: true,
-		});
-		console.log(
-			result2.edit.result,
-			result2.edit.nochange ? "无更改" : "有更改"
-		);
-	} catch (e2) {
-		console.error(e2);
-	}
-	try {
-		const result3 = await bot.doEdit({
-			title: "H:沙盒/json",
+				"沙盒清理作业，若想保留较长时间，可以在个人测试区作测试，或者翻阅历史记录。",
+		},
+		{
+			title: "Help:沙盒/json",
 			text: '{"warning":"请删除此行"}',
 			summary:
 				"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox/json|个人测试区]]作测试，或者翻阅历史记录。",
-			tags: "Bot",
-			Bot: true,
-		});
-		console.log(
-			result3.edit.result,
-			result3.edit.nochange ? "无更改" : "有更改"
-		);
-	} catch (e3) {
-		console.error(e3);
-	}
-});
+		},
+	].forEach(edit);
+})();
