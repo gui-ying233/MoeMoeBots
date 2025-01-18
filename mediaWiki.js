@@ -96,7 +96,9 @@ class Api {
 			return this.login(lgname, lgpassword, r?.login?.token);
 		if (r?.login?.result === "Success") return r;
 		if (r?.login?.result)
-			throw new Error(r?.login?.result ?? r?.login ?? r);
+			throw new Error(
+				r?.login?.reason ?? r?.login?.result ?? r?.login ?? r
+			);
 		throw new Error();
 	}
 	async login(lgname = this.#botUsername, lgpassword = this.#botPassword) {

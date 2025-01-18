@@ -1,10 +1,10 @@
-name: 清理者
+name: 归零者
 on:
     schedule:
-        - cron: "0 * * * *"
+        - cron: "30 4 * * *"
     workflow_dispatch:
 jobs:
-    cleaner:
+    zero-homers:
         runs-on: ubuntu-latest
         steps:
             - name: 签出
@@ -16,12 +16,16 @@ jobs:
                   cache: npm
             - name: 安装 npm 依赖
               run: npm install
-            - name: 运行清理者
+            - name: 运行归零者
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
                   MOEGIRL_ZH_BOTPASSWORD: ${{ secrets.MOEGIRL_ZH_BOTPASSWORD }}
                   MOEGIRL_MZH_BOTUSERNAME: ${{ vars.MOEGIRL_MZH_BOTUSERNAME }}
                   MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
+                  MOEGIRL_CM_BOTUSERNAME: ${{ vars.MOEGIRL_CM_BOTUSERNAME }}
+                  MOEGIRL_CM_BOTPASSWORD: ${{ secrets.MOEGIRL_CM_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 清理者
+              run: |
+                  node 归零者-zh
+                  node 归零者-cm
