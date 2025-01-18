@@ -3,8 +3,9 @@
 const { mw } = require("./mediaWiki");
 const api = new mw.Api(require("./config").zh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
+	let result1;
 	try {
-		const result1 = await api.post({
+		result1 = await api.post({
 			action: "query",
 			curtimestamp: 1,
 			prop: "revisions",
@@ -77,8 +78,9 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					}
 				} else replaceText = regex;
 				const edit = async () => {
+					let result2;
 					try {
-						const result2 = await api.post({
+						result2 = await api.post({
 							action: "edit",
 							title: result1.query.pages[i].title,
 							text: result1.query.pages[

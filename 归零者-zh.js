@@ -5,8 +5,9 @@ const api = new mw.Api(require("./config").zh);
 (async () => {
 	await api.login();
 	const edit = async page => {
+		let r;
 		try {
-			const r = await api.post({
+			r = await api.post({
 				action: "edit",
 				nocreate: true,
 				tags: "Bot",
