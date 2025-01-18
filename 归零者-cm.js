@@ -24,6 +24,7 @@ const api = new mw.Api(require("./config").cm);
 		} catch (e) {
 			console.error(e);
 		}
+		if (!r) return;
 		console.table(r.edit);
 		if (r.edit.nochange !== true) {
 			console.info(

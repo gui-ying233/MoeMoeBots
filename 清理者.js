@@ -19,6 +19,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	} catch (e) {
 		console.error(e);
 	}
+	if (!result1) return;
 	if (result1.query === undefined) {
 		console.log("无页面");
 	} else {
