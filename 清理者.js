@@ -18,6 +18,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 		});
 	} catch (e) {
 		console.error(e);
+		return;
 	}
 	if (!result1) return;
 	if (result1.query === undefined) {
@@ -105,6 +106,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 						}
 					} catch (e) {
 						console.error(e);
+						return;
 					}
 					console.table(result2.edit);
 					if (result2.edit.nochange !== true) {

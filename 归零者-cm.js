@@ -23,6 +23,7 @@ const api = new mw.Api(require("./config").cm);
 			}
 		} catch (e) {
 			console.error(e);
+			return;
 		}
 		if (!r) return;
 		console.table(r.edit);
