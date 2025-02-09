@@ -29,14 +29,14 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 			console.log(`第${i + 1}个页面：${result1.query.pages[i].title}`);
 			if (
 				new RegExp(
-					/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//
+					/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//u
 				).test(result1.query.pages[i].title) ||
 				new RegExp(skipTitle).test(result1.query.pages[i].title)
 			) {
 				console.log("跳过页面");
 			} else if (
 				result1.query.pages[i].revisions[0].content.match(
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:施工中|[编編][辑輯]中|inuse.*}})/gi
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:施工中|[编編][辑輯]中|inuse).*?}}/giu
 				) !== null
 			) {
 				console.log("施工中");
@@ -124,27 +124,27 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	await api.login();
 	await cleaner(
 		"CAT:错误使用标题格式化的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gi
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gisu
 	);
 	await cleaner(
 		"CAT:需要更换为标题格式化的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gisu,
 		"{{标题格式化}}"
 	);
 	await cleaner(
 		"CAT:需要更换为小写标题的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gisu,
 		"{{小写标题}}"
 	);
 	await cleaner("CAT:不必要使用override参数的音乐条目", /\|override=1\n?/g);
 	await cleaner(
 		"CAT:错误使用标题替换模板的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gisu,
 		"",
 		/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
 	);
 	// await cleaner(
 	// 	"CAT:错误使用NoSubpage的页面",
-	// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gi
+	// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gisu
 	// );
 })();
