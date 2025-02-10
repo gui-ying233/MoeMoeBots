@@ -13,25 +13,19 @@ const api = new mw.Api(require("./config").cm);
 				nocreate: true,
 				tags: "Bot",
 				bot: true,
-				token: await api.getToken("csrf"),
+				token: await api.getToken("csrf", true),
 				...page,
 			});
-			if (r?.error?.code === "badtoken") {
-				console.warn("badtoken");
-				await api.getToken("csrf", true);
-				return await edit(page);
-			}
+			if (r?.error?.code === "badtoken") return edit(page);
 		} catch (e) {
-			console.error(e);
-			return;
+			return console.error(e);
 		}
 		if (!r) return;
 		console.table(r.edit);
-		if (r.edit.nochange !== true) {
+		if (r.edit.nochange !== true)
 			console.info(
-				`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+				`https://commons.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
 			);
-		}
 	};
 	[
 		{
