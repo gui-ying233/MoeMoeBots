@@ -143,8 +143,8 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 		"",
 		/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
 	);
-	// await cleaner(
-	// 	"CAT:错误使用NoSubpage的页面",
-	// 	/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*?}}\n?/gis
-	// );
+	await cleaner(
+		"CAT:错误使用NoSubpage的页面",
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*}}\n?/gis
+	);
 })();
