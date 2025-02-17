@@ -11,5 +11,10 @@
 	"bugs": {
 		"url": "https://github.com/gui-ying233/MoeMoeBots/issues"
 	},
-	"homepage": "https://github.com/gui-ying233/MoeMoeBots"
+	"homepage": "https://github.com/gui-ying233/MoeMoeBots",
+	"devDependencies": {
+		"encoding-japanese": "latest",
+		"jsdom": "latest",
+		"wikiparser-node": "latest"
+	}
 }

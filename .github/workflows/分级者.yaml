@@ -1,0 +1,27 @@
+name: 分级者
+on:
+    schedule:
+        - cron: "0 20 * * *"
+    workflow_dispatch:
+jobs:
+    cleaner:
+        runs-on: ubuntu-latest
+        steps:
+            - name: 签出
+              uses: actions/checkout@v4
+            - name: 设置 node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+            - name: 安装 npm 依赖
+              run: npm install
+            - name: 运行分级者
+              env:
+                  MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
+                  MOEGIRL_ZH_BOTPASSWORD: ${{ secrets.MOEGIRL_ZH_BOTPASSWORD }}
+                  MOEGIRL_MZH_BOTUSERNAME: ${{ vars.MOEGIRL_MZH_BOTUSERNAME }}
+                  MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+              run: node 分级者
