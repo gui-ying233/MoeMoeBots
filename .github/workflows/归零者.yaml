@@ -24,8 +24,11 @@ jobs:
                   MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
                   MOEGIRL_CM_BOTUSERNAME: ${{ vars.MOEGIRL_CM_BOTUSERNAME }}
                   MOEGIRL_CM_BOTPASSWORD: ${{ secrets.MOEGIRL_CM_BOTPASSWORD }}
+                  MOEGIRL_EN_BOTUSERNAME: ${{ vars.MOEGIRL_EN_BOTUSERNAME }}
+                  MOEGIRL_EN_BOTPASSWORD: ${{ secrets.MOEGIRL_EN_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: |
                   node 归零者-zh
                   node 归零者-cm
+                  node 归零者-en

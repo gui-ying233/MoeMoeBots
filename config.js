@@ -6,6 +6,8 @@ const {
 		MOEGIRL_MZH_BOTPASSWORD,
 		MOEGIRL_CM_BOTUSERNAME,
 		MOEGIRL_CM_BOTPASSWORD,
+		MOEGIRL_EN_BOTUSERNAME,
+		MOEGIRL_EN_BOTPASSWORD,
 		MOEGIRL_MOEGIRLSSOUSERID,
 		MOEGIRL_MOEGIRLSSOTOKEN,
 	},
@@ -33,6 +35,15 @@ module.exports = {
 		url: "https://commons.moegirl.org.cn/api.php",
 		botUsername: MOEGIRL_CM_BOTUSERNAME,
 		botPassword: MOEGIRL_CM_BOTPASSWORD,
+		cookie: {
+			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
+			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
+		},
+	},
+	en: {
+		url: "https://en.moegirl.org.cn/api.php",
+		botUsername: MOEGIRL_EN_BOTUSERNAME,
+		botPassword: MOEGIRL_EN_BOTPASSWORD,
 		cookie: {
 			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
 			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,

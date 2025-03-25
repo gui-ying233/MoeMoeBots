@@ -1,24 +1,33 @@
 "use strict";
 
-const { MediaWikiJS } = require("@lavgup/mediawiki.js");
-const bot = new MediaWikiJS(require("./config.json").en);
-const pageList = ["Help:Sandbox", "Template:Sandbox"];
-bot.login().then(async () => {
-	for (const title of pageList) {
+const { mw } = require("./mediaWiki");
+const api = new mw.Api(require("./config").en);
+
+(async () => {
+	await api.login();
+	const edit = async title => {
+		let r;
 		try {
-			const result0 = await bot.doEdit({
-				title,
+			r = await api.post({
+				action: "edit",
 				text: "<noinclude>{{Sandbox heading}}</noinclude>\n== Please test below ==<!--DO NOT DELETE NOR CHANGE ANYTHING ABOVE THIS LINE, INCLUDING THIS LINE!-->",
 				summary: "Clearing the sandbox",
+				nocreate: true,
 				tags: "Bot",
-				Bot: true,
+				bot: true,
+				token: await api.getToken("csrf", true),
+				title,
 			});
-			console.log(
-				result0.edit.result,
-				result0.edit.nochange ? "无更改" : "有更改"
-			);
-		} catch (e0) {
-			console.error(e0);
+			if (r?.error?.code === "badtoken") return edit(title);
+		} catch (e) {
+			return console.error(e);
 		}
-	}
-});
+		if (!r) return;
+		console.table(r.edit);
+		if (r.edit.nochange !== true)
+			console.info(
+				`https://en.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+			);
+	};
+	["Help:Sandbox", "Template:Sandbox"].forEach(edit);
+})();
