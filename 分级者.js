@@ -1,10 +1,13 @@
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").zh);
+const api = new mw.Api(require("./config").mzh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
+WikiParser.templateDir = "./template/zh";
 const { JSDOM } = require("jsdom");
 const encodingJapanese = require("encoding-japanese");
+const { writeFile } = require("node:fs/promises");
+const { existsSync } = require("node:fs");
 
 (async () => {
 	await api.login();
@@ -30,20 +33,66 @@ const encodingJapanese = require("encoding-japanese");
 					},
 				],
 			},
-		} = await api.get({
+		} = await api.post({
 			action: "query",
 			curtimestamp: 1,
 			prop: "revisions",
 			titles: title,
 			rvprop: "content|timestamp",
 			rvsection: 0,
-			formatversion: "2",
 		});
 		const root = WikiParser.parse(content);
-		const gameName = root
-			.querySelector("parameter#原名 > parameter-value")
-			.childNodes.filter(node => node.type === "text")[0]
-			.data.trim();
+		const originalName = root.querySelector(
+			"parameter#原名 > parameter-value"
+		);
+		await Promise.all(
+			originalName
+				.querySelectorAll("template-name")
+				.map(node => node.childNodes.map(child => child.data.trim()))
+				.flat()
+				.map(async template => {
+					if (!template) return;
+					template = WikiParser.normalizeTitle(
+						template,
+						10
+					).toString();
+					if (
+						existsSync(
+							`template/zh/${template.replaceAll(":", "꞉")}.wiki`
+						)
+					)
+						return;
+					console.log(`获取页面：${template}`);
+					const {
+						query: {
+							pages: [
+								{
+									revisions: [{ content }],
+								},
+							],
+						},
+					} = await api.post({
+						action: "query",
+						prop: "revisions",
+						titles: template,
+						rvprop: "content",
+						rvsection: 0,
+					});
+					await writeFile(
+						`template/zh/${template.replaceAll(":", "꞉")}.wiki`,
+						content
+					);
+					WikiParser.templates.set(
+						`${template.replace("Template:", "template:")}`,
+						content
+					);
+				})
+		);
+		const gameName = new JSDOM(
+			WikiParser.parse(
+				`<div id="gameName">${originalName.toString().trim()}</div>`
+			).toHtml()
+		).window.document.getElementById("gameName").textContent;
 		console.log(`原名：${gameName}`);
 		let enName;
 		const getEnName = async () => {
