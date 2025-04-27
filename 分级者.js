@@ -13,7 +13,7 @@ const { existsSync } = require("node:fs");
 	await api.login();
 	const {
 		query: { categorymembers },
-	} = await api.get({
+	} = await api.post({
 		action: "query",
 		list: "categorymembers",
 		cmtitle: "Category:需要更新分级信息的游戏条目",
