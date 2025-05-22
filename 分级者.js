@@ -1,5 +1,5 @@
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").mzh);
+const api = new mw.Api(require("./config").zh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
