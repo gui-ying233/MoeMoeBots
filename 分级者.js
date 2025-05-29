@@ -1,9 +1,10 @@
+const path = require("path");
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").zh);
+const api = new mw.Api(require("./config.json").zh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
-WikiParser.templateDir = "./template/zh";
+WikiParser.templateDir = path.join(__dirname, "template", "zh");
 const { JSDOM } = require("jsdom");
 const encodingJapanese = require("encoding-japanese");
 const { writeFile } = require("node:fs/promises");
@@ -47,15 +48,8 @@ const { existsSync } = require("node:fs");
 		);
 		await Promise.all(
 			originalName
-				.querySelectorAll("template-name")
-				.map(node => node.childNodes.map(child => child.data.trim()))
-				.flat()
-				.map(async template => {
-					if (!template) return;
-					template = WikiParser.normalizeTitle(
-						template,
-						10
-					).toString();
+				.querySelectorAll("template")
+				.map(async ({ name: template }) => {
 					if (
 						existsSync(
 							`template/zh/${template.replaceAll(":", "꞉")}.wiki`
@@ -67,7 +61,7 @@ const { existsSync } = require("node:fs");
 						query: {
 							pages: [
 								{
-									revisions: [{ content }],
+									revisions: [{ content: wikitext }],
 								},
 							],
 						},
@@ -80,11 +74,11 @@ const { existsSync } = require("node:fs");
 					});
 					await writeFile(
 						`template/zh/${template.replaceAll(":", "꞉")}.wiki`,
-						content
+						wikitext
 					);
 					WikiParser.templates.set(
 						`${template.replace("Template:", "template:")}`,
-						content
+						wikitext
 					);
 				})
 		);
