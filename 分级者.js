@@ -1,6 +1,6 @@
 const path = require("path");
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config.json").zh);
+const api = new mw.Api(require("./config").zh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
