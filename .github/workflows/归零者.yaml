@@ -32,7 +32,7 @@ jobs:
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: |
-                  node 归零者-zh.js || true
-                  node 归零者-cm.js || true
-                  node 归零者-en.js || true
-                  node 归零者-library.js || true
+                  node 归零者-zh.js; echo "归零者-zh 完成"
+                  node 归零者-cm.js; echo "归零者-cm 完成"
+                  node 归零者-en.js; echo "归零者-en 完成"
+                  node 归零者-library.js; echo "归零者-library 完成"
