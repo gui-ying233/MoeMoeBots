@@ -2,16 +2,20 @@ const {
 	env: {
 		MOEGIRL_ZH_BOTUSERNAME,
 		MOEGIRL_ZH_BOTPASSWORD,
-		MOEGIRL_MZH_BOTUSERNAME,
-		MOEGIRL_MZH_BOTPASSWORD,
 		MOEGIRL_CM_BOTUSERNAME,
 		MOEGIRL_CM_BOTPASSWORD,
 		MOEGIRL_EN_BOTUSERNAME,
 		MOEGIRL_EN_BOTPASSWORD,
+		MOEGIRL_JA_BOTUSERNAME,
+		MOEGIRL_JA_BOTPASSWORD,
 		MOEGIRL_LIBRARY_BOTUSERNAME,
 		MOEGIRL_LIBRARY_BOTPASSWORD,
 		MOEGIRL_MOEGIRLSSOUSERID,
 		MOEGIRL_MOEGIRLSSOTOKEN,
+		MOEGIRL_UK_BOTUSERNAME,
+		MOEGIRL_UK_BOTPASSWORD,
+		PRTS_BOTUSERNAME,
+		PRTS_BOTPASSWORD,
 	},
 } = process;
 module.exports = {
@@ -26,8 +30,17 @@ module.exports = {
 	},
 	mzh: {
 		url: "https://mzh.moegirl.org.cn/api.php",
-		botUsername: MOEGIRL_MZH_BOTUSERNAME,
-		botPassword: MOEGIRL_MZH_BOTPASSWORD,
+		botUsername: MOEGIRL_ZH_BOTUSERNAME,
+		botPassword: MOEGIRL_ZH_BOTUSERNAME,
+		cookie: {
+			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
+			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
+		},
+	},
+	mobile: {
+		url: "https://mobile.moegirl.org.cn/api.php",
+		botUsername: MOEGIRL_ZH_BOTUSERNAME,
+		botPassword: MOEGIRL_ZH_BOTUSERNAME,
 		cookie: {
 			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
 			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
@@ -68,5 +81,15 @@ module.exports = {
 			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
 			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
 		},
+	},
+	uk: {
+		url: "https://moegirl.uk/api.php",
+		botUsername: MOEGIRL_UK_BOTUSERNAME,
+		botPassword: MOEGIRL_UK_BOTPASSWORD,
+	},
+	prts: {
+		url: "https://prts.wiki/api.php",
+		botUsername: PRTS_BOTUSERNAME,
+		botPassword: PRTS_BOTPASSWORD,
 	},
 };
