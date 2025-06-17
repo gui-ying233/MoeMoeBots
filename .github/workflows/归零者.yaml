@@ -40,6 +40,14 @@ jobs:
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: node 归零者-en
+            - name: 运行归零者-ja
+              if: always()
+              env:
+                  MOEGIRL_JA_BOTUSERNAME: ${{ vars.MOEGIRL_JA_BOTUSERNAME }}
+                  MOEGIRL_JA_BOTPASSWORD: ${{ secrets.MOEGIRL_JA_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+              run: node 归零者-ja
             - name: 运行归零者-library
               if: always()
               env:
@@ -48,3 +56,6 @@ jobs:
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: node 归零者-library
+            - name: keep
+              if: always()
+              run:
