@@ -13,6 +13,7 @@
 	},
 	"homepage": "https://github.com/gui-ying233/MoeMoeBots",
 	"devDependencies": {
+		"@dotenvx/dotenvx": "latest",
 		"encoding-japanese": "latest",
 		"jsdom": "latest",
 		"wikiparser-node": "latest"
