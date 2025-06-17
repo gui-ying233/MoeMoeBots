@@ -2,7 +2,6 @@
 
 const { mw } = require("./mediaWiki");
 const api = new mw.Api(require("./config").en);
-
 (async () => {
 	await api.login();
 	const edit = async title => {
