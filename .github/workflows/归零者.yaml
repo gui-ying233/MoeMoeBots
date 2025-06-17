@@ -6,6 +6,7 @@ on:
 jobs:
     zero-homers:
         runs-on: ubuntu-latest
+        continue-on-error: true
         steps:
             - name: 签出
               uses: actions/checkout@v4
@@ -31,7 +32,7 @@ jobs:
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: |
-                  node 归零者-zh
-                  node 归零者-cm
-                  node 归零者-en
-                  node 归零者-library
+                  node 归零者-zh.js || true
+                  node 归零者-cm.js || true
+                  node 归零者-en.js || true
+                  node 归零者-library.js || true
