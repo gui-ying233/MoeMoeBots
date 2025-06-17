@@ -17,19 +17,31 @@ jobs:
                   cache: npm
             - name: 安装 npm 依赖
               run: npm install
-            - name: 运行归零者
+            - name: 运行归零者-zh
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
                   MOEGIRL_ZH_BOTPASSWORD: ${{ secrets.MOEGIRL_ZH_BOTPASSWORD }}
-                  MOEGIRL_MZH_BOTUSERNAME: ${{ vars.MOEGIRL_MZH_BOTUSERNAME }}
-                  MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+              run: node 归零者-zh
+            - name: 运行归零者-cm
+              env:
                   MOEGIRL_CM_BOTUSERNAME: ${{ vars.MOEGIRL_CM_BOTUSERNAME }}
                   MOEGIRL_CM_BOTPASSWORD: ${{ secrets.MOEGIRL_CM_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+              run: node 归零者-cm
+            - name: 运行归零者-en
+              env:
                   MOEGIRL_EN_BOTUSERNAME: ${{ vars.MOEGIRL_EN_BOTUSERNAME }}
                   MOEGIRL_EN_BOTPASSWORD: ${{ secrets.MOEGIRL_EN_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+              run: node 归零者-en
+            - name: 运行归零者-library
+              env:
                   MOEGIRL_LIBRARY_BOTUSERNAME: ${{ vars.MOEGIRL_LIBRARY_BOTUSERNAME }}
                   MOEGIRL_LIBRARY_BOTPASSWORD: ${{ secrets.MOEGIRL_LIBRARY_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: |
-                  node 归零者-zh; node 归零者-cm; node 归零者-en; node 归零者-library;
+              run: node 归零者-library
