@@ -51,6 +51,15 @@ module.exports = {
 			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
 		},
 	},
+	ja: {
+		url: "https://ja.moegirl.org.cn/api.php",
+		botUsername: MOEGIRL_JA_BOTUSERNAME,
+		botPassword: MOEGIRL_JA_BOTPASSWORD,
+		cookie: {
+			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
+			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
+		},
+	},
 	library: {
 		url: "https://library.moegirl.org.cn/api.php",
 		botUsername: MOEGIRL_LIBRARY_BOTUSERNAME,

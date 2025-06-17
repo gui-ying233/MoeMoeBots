@@ -1,21 +1,32 @@
 "use strict";
 
-const { MediaWikiJS } = require("@lavgup/mediawiki.js");
-const bot = new MediaWikiJS(require("./config.json").ja);
-bot.login().then(async () => {
-	try {
-		const result0 = await bot.doEdit({
-			title: "ヘルプ:サンドボックス",
-			text: "<noinclude>{{サンドボックス冒頭}}</noinclude>\n== ここから下に書き込んでください ==",
-			summary: "砂場ならし",
-			tags: "Bot",
-			Bot: true,
-		});
-		console.log(
-			result0.edit.result,
-			result0.edit.nochange ? "无更改" : "有更改"
-		);
-	} catch (e0) {
-		console.error(e0);
-	}
-});
+const { mw } = require("./mediaWiki");
+const api = new mw.Api(require("./config").ja);
+(async () => {
+	await api.login();
+	const edit = async () => {
+		let r;
+		try {
+			r = await api.post({
+				action: "edit",
+				text: "<noinclude>{{サンドボックス冒頭}}</noinclude>\n== ここから下に書き込んでください ==",
+				summary: "砂場ならし",
+				nocreate: true,
+				tags: "Bot",
+				bot: true,
+				token: await api.getToken("csrf", true),
+				title: "ヘルプ:サンドボックス",
+			});
+			if (r?.error?.code === "badtoken") return edit();
+		} catch (e) {
+			return console.error(e);
+		}
+		if (!r) return;
+		console.table(r.edit);
+		if (r.edit.nochange !== true)
+			console.info(
+				`https://en.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+			);
+	};
+	edit();
+})();
