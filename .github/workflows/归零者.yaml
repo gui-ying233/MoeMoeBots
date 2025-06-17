@@ -25,6 +25,7 @@ jobs:
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: node 归零者-zh
             - name: 运行归零者-cm
+              if: always()
               env:
                   MOEGIRL_CM_BOTUSERNAME: ${{ vars.MOEGIRL_CM_BOTUSERNAME }}
                   MOEGIRL_CM_BOTPASSWORD: ${{ secrets.MOEGIRL_CM_BOTPASSWORD }}
@@ -32,6 +33,7 @@ jobs:
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: node 归零者-cm
             - name: 运行归零者-en
+              if: always()
               env:
                   MOEGIRL_EN_BOTUSERNAME: ${{ vars.MOEGIRL_EN_BOTUSERNAME }}
                   MOEGIRL_EN_BOTPASSWORD: ${{ secrets.MOEGIRL_EN_BOTPASSWORD }}
@@ -39,6 +41,7 @@ jobs:
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
               run: node 归零者-en
             - name: 运行归零者-library
+              if: always()
               env:
                   MOEGIRL_LIBRARY_BOTUSERNAME: ${{ vars.MOEGIRL_LIBRARY_BOTUSERNAME }}
                   MOEGIRL_LIBRARY_BOTPASSWORD: ${{ secrets.MOEGIRL_LIBRARY_BOTPASSWORD }}
