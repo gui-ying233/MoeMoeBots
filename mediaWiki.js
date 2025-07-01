@@ -1,14 +1,33 @@
 "use strict";
 
+const { console } = require("inspector/promises");
+
+/**
+ * @import { ReadStream } from "fs"
+ * @import { ApiResponse } "types-mediawiki/mw/Api"
+ * @import { ApiLoginParams, ApiTokenType, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
+ * @class Api
+ */
 class Api {
+	/** @type { URL["href"] } */
 	#api;
+	/** @type { string } */
 	#botUsername;
+	/** @type { string } */
 	#botPassword;
+	/** @type { { string: string } } */
 	#cookie;
+	/** @type { { get: RequestInit; post: RequestInit } } */
 	#init;
-	#parameters = { format: "json", utf8: 1, formatversion: 2 };
+	/** @type { { format: ApiParams["format"] ; utf8: ApiFormatJsonParams["utf8"]; formatversion: ApiFormatJsonParams["formatversion"] } } */
+	#parameters = { format: "json", utf8: true, formatversion: 2 };
+	/** @type { Record<`${ApiTokenType}token`, string> } */
 	#tokens = {};
+	/** @type { { string: string } } */
 	#defaultCookie = {};
+	/**
+	 * @param { { url: URL["href"]; botUsername: string; botPassword: string; cookie:{ string: string } } } config
+	 */
 	constructor({ url, botUsername, botPassword, cookie = {} }) {
 		url = new URL(url);
 		url.hash = "";
@@ -24,6 +43,9 @@ class Api {
 		this.#cookie = this.#defaultCookie;
 		this.#updateInit();
 	}
+	/**
+	 * @private
+	 */
 	#updateInit() {
 		Object.entries(this.#init).forEach(([m]) => {
 			this.#init[m].headers.cookie = Object.entries(this.#cookie)
@@ -31,6 +53,11 @@ class Api {
 				.join("; ");
 		});
 	}
+	/**
+	 * @private
+	 * @param { Response<ApiResponse> } res
+	 * @returns { any }
+	 */
 	#parseRes(res) {
 		res.headers
 			.getSetCookie()
@@ -38,6 +65,11 @@ class Api {
 		this.#updateInit();
 		return res.json();
 	}
+	/**
+	 * @private
+	 * @param { ApiParams } parameters
+	 * @returns { ApiParams }
+	 */
 	#listToPipe(parameters) {
 		return Object.fromEntries(
 			Object.entries(parameters).map(([k, v]) =>
@@ -45,8 +77,13 @@ class Api {
 			)
 		);
 	}
+	/**
+	 * @async
+	 * @param { ApiParams } parameters
+	 * @returns { Promise<ApiResponse> }
+	 */
 	async get(parameters) {
-		return fetch(
+		return await fetch(
 			`${this.#api}?${new URLSearchParams({
 				...this.#parameters,
 				...this.#listToPipe(parameters),
@@ -54,10 +91,20 @@ class Api {
 			this.#init.get
 		).then(this.#parseRes.bind(this));
 	}
+	/**
+	 * @async
+	 * @param { ApiTokenType } type
+	 * @param { boolean } newToken
+	 * @returns { string | Promise<string> }
+	 * @throws { TypeError }
+	 */
 	async getToken(type, newToken = false) {
 		if (type === undefined) type = "csrf";
 		else if (typeof type !== "string") throw new TypeError("types");
-		if (newToken || !this.#tokens[`${type}token`])
+		if (
+			newToken ||
+			[undefined, "+\\"].includes(this.#tokens?.[`${type}token`])
+		)
 			this.#tokens = (
 				await this.get({
 					action: "query",
@@ -75,8 +122,49 @@ class Api {
 			).query.tokens;
 		return this.#tokens[`${type}token`];
 	}
+	/**
+	 * @async
+	 * @param { ApiParams & { file?: ReadStream } } parameters
+	 * @returns { Promise<ApiResponse> }
+	 * @throws { TypeError }
+	 */
 	async post(parameters) {
-		return fetch(this.#api, {
+		if (parameters.action === "upload" && parameters.file) {
+			const { file, filesize } = parameters;
+			if (file.constructor.name !== "ReadStream")
+				throw new TypeError("file");
+			const async = filesize > file.readableHighWaterMark;
+			delete parameters.file;
+			parameters.offset = 0;
+			await new Promise((res, rej) => {
+				file.on("data", async chunk => {
+					file.pause();
+					const body = new FormData();
+					Object.entries({
+						...this.#parameters,
+						...this.#listToPipe(parameters),
+						stash: async,
+						async,
+					}).forEach(([k, v]) => body.append(k, v));
+					body.append("chunk", new Blob([chunk]));
+					const r = await fetch(this.#api, {
+						...this.#init.post,
+						body,
+					}).then(this.#parseRes.bind(this));
+					console.log(r);
+					parameters.filekey = r?.upload?.filekey;
+					if (r?.upload?.result === "Success") {
+						return res(delete parameters.offset);
+					}
+					if (r?.upload?.result !== "Continue")
+						return rej(new Error(JSON.stringify(r)));
+					parameters.offset = r.upload.offset;
+					file.resume();
+				});
+				file.on("error", rej);
+			}).finally(() => file.destroyed || file.destroy());
+		}
+		return await fetch(this.#api, {
 			...this.#init.post,
 			body: new URLSearchParams({
 				...this.#parameters,
@@ -84,6 +172,15 @@ class Api {
 			}),
 		}).then(this.#parseRes.bind(this));
 	}
+	/**
+	 * @async
+	 * @private
+	 * @param { ApiLoginParams["lgname"] } lgname
+	 * @param { ApiLoginParams["lgpassword"] } lgpassword
+	 * @param { ApiLoginParams["lgtoken"] } [lgtoken]
+	 * @returns { Promise<ApiResponse> }
+	 * @throws { Error }
+	 */
 	async #login(lgname, lgpassword, lgtoken) {
 		lgtoken = lgtoken ?? (await this.getToken("login"));
 		const r = await this.post({
@@ -93,7 +190,7 @@ class Api {
 			lgtoken,
 		});
 		if (r?.login?.result === "NeedToken")
-			return this.login(lgname, lgpassword, r?.login?.token);
+			return await this.login(lgname, lgpassword, r?.login?.token);
 		if (r?.login?.result === "Success") return r;
 		if (r?.login?.result)
 			throw new Error(
@@ -101,9 +198,20 @@ class Api {
 			);
 		throw new Error();
 	}
+	/**
+	 * @async
+	 * @param { ApiLoginParams["lgname"] } [lgname]
+	 * @param { ApiLoginParams["lgpassword"] } [lgpassword]
+	 * @returns { Promise<ApiResponse> }
+	 * @throws { Error }
+	 */
 	async login(lgname = this.#botUsername, lgpassword = this.#botPassword) {
-		return this.#login(lgname, lgpassword);
+		return await this.#login(lgname, lgpassword);
 	}
+	/**
+	 * @async
+	 * @returns { Promise<ApiResponse> }
+	 */
 	async logout() {
 		const r = await this.post({
 			action: "logout",
@@ -115,6 +223,9 @@ class Api {
 		return r;
 	}
 }
+
+/** @type { { Api: typeof Api } } */
 const mediaWiki = { Api };
+/** @type { { Api: typeof Api } } */
 const mw = mediaWiki;
 module.exports = { mediaWiki, mw };
