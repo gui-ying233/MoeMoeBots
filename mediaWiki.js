@@ -91,14 +91,13 @@ class Api {
 	}
 	/**
 	 * @async
-	 * @param { ApiTokenType } type
-	 * @param { boolean } newToken
+	 * @param { ApiTokenType } [type]
+	 * @param { boolean } [newToken]
 	 * @returns { string | Promise<string> }
 	 * @throws { TypeError }
 	 */
-	async getToken(type, newToken = false) {
-		if (type === undefined) type = "csrf";
-		else if (typeof type !== "string") throw new TypeError("types");
+	async getToken(type = "csrf", newToken = false) {
+		if (typeof type !== "string") throw new TypeError("types");
 		if (
 			newToken ||
 			[undefined, "+\\"].includes(this.#tokens?.[`${type}token`])
