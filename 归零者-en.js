@@ -14,7 +14,7 @@ const api = new mw.Api(require("./config").en);
 				nocreate: true,
 				tags: "Bot",
 				bot: true,
-				token: await api.getToken("csrf", true),
+				token: await api.getToken("csrf"),
 				title,
 			});
 			if (r?.error?.code === "badtoken") return edit(title);
