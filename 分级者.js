@@ -21,7 +21,7 @@ const { existsSync } = require("fs");
 		cmtype: "page",
 		cmlimit: "max",
 	});
-	await api.getToken("csrf", true);
+	await api.getToken("csrf");
 	for (const { title } of categorymembers) {
 		console.log(`页面：${title}`);
 		const {

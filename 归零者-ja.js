@@ -14,7 +14,7 @@ const api = new mw.Api(require("./config").ja);
 				nocreate: true,
 				tags: "Bot",
 				bot: true,
-				token: await api.getToken("csrf", true),
+				token: await api.getToken("csrf"),
 				title: "ヘルプ:サンドボックス",
 			});
 			if (r?.error?.code === "badtoken") return edit();

@@ -211,7 +211,7 @@ class Api {
 	async logout() {
 		const r = await this.post({
 			action: "logout",
-			token: await this.getToken("csrf", true),
+			token: await this.getToken("csrf"),
 		});
 		this.#tokens = {};
 		this.#cookie = this.#defaultCookie;
