@@ -1,5 +1,5 @@
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").uk);
+const api = new mw.Api(require("./config").cm);
 const { createReadStream, statSync } = require("fs");
 (async () => {
 	const filepath = "example.jpg";
