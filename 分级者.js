@@ -1,14 +1,13 @@
-const path = require("path");
 const { mw } = require("./mediaWiki");
 const api = new mw.Api(require("./config").zh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
-WikiParser.templateDir = path.join(__dirname, "template", "zh");
+WikiParser.templateDir = require("path").join(__dirname, "template", "zh");
 const { JSDOM } = require("jsdom");
 const encodingJapanese = require("encoding-japanese");
-const { writeFile } = require("node:fs/promises");
-const { existsSync } = require("node:fs");
+const { writeFile } = require("fs/promises");
+const { existsSync } = require("fs");
 
 (async () => {
 	await api.login();

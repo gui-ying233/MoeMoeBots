@@ -1,5 +1,10 @@
 __pycache__
 .DS_Store
-.env*
+.env.keys
 node_modules
 template
+
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
