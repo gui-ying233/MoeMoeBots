@@ -1,7 +1,5 @@
 "use strict";
 
-const { console } = require("inspector/promises");
-
 /**
  * @import { ReadStream } from "fs"
  * @import { ApiResponse } "types-mediawiki/mw/Api"
@@ -151,7 +149,6 @@ class Api {
 						...this.#init.post,
 						body,
 					}).then(this.#parseRes.bind(this));
-					console.log(r);
 					parameters.filekey = r?.upload?.filekey;
 					if (r?.upload?.result === "Success") {
 						return res(delete parameters.offset);
