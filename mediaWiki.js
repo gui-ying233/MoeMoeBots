@@ -221,4 +221,5 @@ class Api {
 }
 
 /** @type { { Api: typeof Api } } */
-module.exports = { mediaWiki: { Api }, mw: { Api } };
+const mediaWiki = { Api };
+module.exports = { mediaWiki, mw: mediaWiki };
