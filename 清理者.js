@@ -1,7 +1,7 @@
 "use strict";
 
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").zh);
+const api = new mw.Api(require("./config").mzh);
 async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	let result1;
 	try {

@@ -1,7 +1,7 @@
 "use strict";
 
 const { mw } = require("./mediaWiki");
-const api = new mw.Api(require("./config").zh);
+const api = new mw.Api(require("./config").mzh);
 (async () => {
 	await api.login();
 	const edit = async page => {

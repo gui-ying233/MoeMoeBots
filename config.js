@@ -31,7 +31,7 @@ module.exports = {
 	mzh: {
 		url: "https://mzh.moegirl.org.cn/api.php",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
-		botPassword: MOEGIRL_ZH_BOTUSERNAME,
+		botPassword: MOEGIRL_ZH_BOTPASSWORD,
 		cookie: {
 			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
 			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
