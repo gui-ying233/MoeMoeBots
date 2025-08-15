@@ -16,8 +16,6 @@
 		"@dotenvx/dotenvx": "latest",
 		"encoding-japanese": "latest",
 		"jsdom": "latest",
-		"types-mediawiki": "latest",
-		"types-mediawiki-api": "latest",
 		"wikiparser-node": "latest"
 	}
 }
