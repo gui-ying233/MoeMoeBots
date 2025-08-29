@@ -1,11 +1,19 @@
 "use strict";
-
 /**
  * @import { ReadStream } from "fs"
  * @import { ApiResponse } "types-mediawiki/mw/Api"
+ * @import { RestResponse } "types-mediawiki/mw/Rest"
  * @import { ApiLoginParams, ApiTokenType, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
- * @class Api
+ * @import "types-mediawiki/mw/Rest"
  */
+
+/** @type {string: string} */
+const cookies = {};
+
+/** @type {string: any} */
+const pack = require("./package.json");
+
+/** @class Api */
 class Api {
 	/** @type { URL["href"] } */
 	#api;
@@ -31,25 +39,21 @@ class Api {
 		url.hash = "";
 		url.search = "";
 		this.#api = url.href;
+		const headers = {
+			referer: url.href,
+			"user-agent": `${pack.name || ""}/${pack.version || ""} (${
+				pack.repository?.url || ""
+			}; ${pack.bugs?.email || ""}) `,
+			cookie: cookies,
+		};
 		this.#init = {
-			get: { headers: { referer: url.href } },
-			post: { headers: { referer: url.href }, method: "POST" },
+			get: { headers },
+			post: { headers, method: "POST" },
 		};
 		this.#botUsername = botUsername;
 		this.#botPassword = botPassword;
 		this.#defaultCookie = cookie;
-		this.#cookie = this.#defaultCookie;
-		this.#updateInit();
-	}
-	/**
-	 * @private
-	 */
-	#updateInit() {
-		Object.entries(this.#init).forEach(([m]) => {
-			this.#init[m].headers.cookie = Object.entries(this.#cookie)
-				.map(([k, v]) => `${k}=${v}`)
-				.join("; ");
-		});
+		Object.assign(cookies, this.#defaultCookie);
 	}
 	/**
 	 * @private
@@ -59,9 +63,22 @@ class Api {
 	#parseRes(res) {
 		res.headers
 			.getSetCookie()
-			.forEach(c => (this.#cookie[c.split("=")[0]] = c.split("=")[1]));
-		this.#updateInit();
+			.forEach(c => (cookies[c.split("=")[0]] = c.split(/[=;]/)[1]));
 		return res.json();
+	}
+	/**
+	 * @private
+	 * @param { RequestInit & { cookie: { string: string } } } init
+	 * @returns { RequestInit }
+	 */
+	#cookies2string(init) {
+		return Object.assign(Object.assign({}, init), {
+			headers: Object.assign(Object.assign({}, init.headers), {
+				cookie: Object.entries(init.headers.cookie)
+					.map(([k, v]) => `${k}=${v}`)
+					.join("; "),
+			}),
+		});
 	}
 	/**
 	 * @private
@@ -86,7 +103,7 @@ class Api {
 				...this.#parameters,
 				...this.#listToPipe(parameters),
 			})}`,
-			this.#init.get
+			this.#cookies2string(this.#init.get)
 		).then(this.#parseRes.bind(this));
 	}
 	/**
@@ -145,7 +162,7 @@ class Api {
 					}).forEach(([k, v]) => body.append(k, v));
 					body.append("chunk", new Blob([chunk]));
 					const r = await fetch(this.#api, {
-						...this.#init.post,
+						...this.#cookies2string(this.#init.post),
 						body,
 					}).then(this.#parseRes.bind(this));
 					parameters.filekey = r?.upload?.filekey;
@@ -161,7 +178,7 @@ class Api {
 			}).finally(() => file.destroyed || file.destroy());
 		}
 		return await fetch(this.#api, {
-			...this.#init.post,
+			...this.#cookies2string(this.#init.post),
 			body: new URLSearchParams({
 				...this.#parameters,
 				...this.#listToPipe(parameters),
@@ -214,12 +231,151 @@ class Api {
 			token: await this.getToken("csrf"),
 		});
 		this.#tokens = {};
-		this.#cookie = this.#defaultCookie;
-		this.#updateInit();
+		Object.keys(cookies).forEach(k => delete cookies[k]);
+		Object.assign(cookies, this.#defaultCookie);
 		return r;
 	}
 }
 
-/** @type { { Api: typeof Api } } */
-const mediaWiki = { Api };
+/** @class Rest */
+class Rest {
+	/** @type { URL["href"] } */
+	#rest;
+	/** @type { { string: string } } */
+	#cookie;
+	/** @type { { get: RequestInit & { cookie: { string: string } }; post: RequestInit & { cookie: { string: string } }; put: RequestInit & { cookie: { string: string } } } } */
+	#init;
+	/** @type { { string: string } } */
+	#defaultCookie = {};
+	/**
+	 * @param { { url: URL["href"]; cookie:{ string: string } } } config
+	 */
+	constructor({ url, cookie = {} }) {
+		url = new URL(url);
+		url.hash = "";
+		url.search = "";
+		this.#rest = url.href;
+		const headers = {
+			referer: url.href,
+			"user-agent": `${pack.name || ""}/${pack.version || ""} (${
+				pack.repository?.url || ""
+			}; ${pack.bugs?.email || ""}) `,
+			cookie: cookies,
+		};
+		this.#init = {
+			head: { headers, method: "HEAD" },
+			get: { headers },
+			post: {
+				headers: { ...headers, "Content-Type": "application/json" },
+				method: "POST",
+			},
+			put: {
+				headers: { ...headers, "Content-Type": "application/json" },
+				method: "PUT",
+			},
+			delete: {
+				headers: { ...headers, "Content-Type": "application/json" },
+				method: "DELETE",
+			},
+		};
+		this.#defaultCookie = cookie;
+		Object.assign(cookies, this.#defaultCookie);
+	}
+	/**
+	 * @private
+	 * @param { Response<ApiResponse> } res
+	 * @returns { any }
+	 */
+	#parseRes(res) {
+		res.headers
+			.getSetCookie()
+			.forEach(c => (cookies[c.split("=")[0]] = c.split(/[=;]/)[1]));
+		return res.json();
+	}
+	/**
+	 * @private
+	 * @param { RequestInit & { cookie: { string: string } } } init
+	 * @returns { RequestInit }
+	 */
+	#cookies2string(init) {
+		return Object.assign(Object.assign({}, init), {
+			headers: Object.assign(Object.assign({}, init.headers), {
+				cookie: Object.entries(init.headers.cookie)
+					.map(([k, v]) => `${k}=${v}`)
+					.join("; "),
+			}),
+		});
+	}
+	/**
+	 * @param { string } path
+	 * @param { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } query
+	 * @param { HeadersInit } [headers]
+	 * @returns { Promise<Response> }
+	 */
+	async head(path, query, headers = {}) {
+		return await fetch(
+			`${this.#rest}${path}?${new URLSearchParams(query)}`,
+			{ ...this.#init.head, ...headers }
+		).then(res => {
+			res.headers
+				.getSetCookie()
+				.forEach(c => (cookies[c.split("=")[0]] = c.split("=")[1]));
+			return res;
+		});
+	}
+	/**
+	 * @param { string } path
+	 * @param { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } query
+	 * @param { HeadersInit } [headers]
+	 * @returns { Promise<RestResponse> }
+	 */
+	async get(path, query, headers = {}) {
+		return await fetch(
+			`${this.#rest}${path}?${new URLSearchParams(query)}`,
+			{ ...this.#cookies2string(this.#init.get), ...headers }
+		).then(this.#parseRes.bind(this));
+	}
+	/**
+	 * @param { string } path
+	 * @param { { string: any } } body
+	 * @param { HeadersInit } [headers]
+	 * @returns { Promise<RestResponse> }
+	 */
+	async post(path, body, headers = {}) {
+		return await fetch(`${this.#rest}${path}`, {
+			...this.#cookies2string(this.#init.post),
+			...headers,
+			body: JSON.stringify(body),
+		}).then(this.#parseRes.bind(this));
+	}
+	/**
+	 * @param { string } path
+	 * @param { { string: any } } body
+	 * @param { HeadersInit } [headers]
+	 * @returns { Promise<RestResponse> }
+	 */
+	async put(path, body, headers = {}) {
+		return await fetch(`${this.#rest}${path}`, {
+			...this.#cookies2string(this.#init.put),
+			...headers,
+			body: JSON.stringify(body),
+		}).then(this.#parseRes.bind(this));
+	}
+	/**
+	 * @param { string } path
+	 * @param { Record<string, any> } body
+	 * @param { HeadersInit } [headers]
+	 * @returns { Promise<RestResponse> }
+	 */
+	async delete(path, body, headers = {}) {
+		return await fetch(`${this.#rest}${path}`, {
+			...this.#cookies2string(this.#init.delete),
+			...headers,
+			body: JSON.stringify(body),
+		}).then(this.#parseRes.bind(this));
+	}
+}
+
+/** @type { { Api: typeof Api; Rest: typeof Rest } } */
+const mediaWiki = { Api, Rest };
 module.exports = { mediaWiki, mw: mediaWiki };

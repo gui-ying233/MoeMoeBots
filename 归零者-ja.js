@@ -17,7 +17,11 @@ const api = new mw.Api(require("./config").ja);
 				token: await api.getToken("csrf"),
 				title: "ヘルプ:サンドボックス",
 			});
-			if (r?.error?.code === "badtoken") return edit();
+			if (r?.error?.code === "badtoken") {
+				console.warn("badtoken");
+				await api.getToken("csrf", true);
+				return await edit();
+			}
 		} catch (e) {
 			return console.error(e);
 		}

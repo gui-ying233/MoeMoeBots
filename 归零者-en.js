@@ -17,7 +17,11 @@ const api = new mw.Api(require("./config").en);
 				token: await api.getToken("csrf"),
 				title,
 			});
-			if (r?.error?.code === "badtoken") return edit(title);
+			if (r?.error?.code === "badtoken") {
+				console.warn("badtoken");
+				await api.getToken("csrf", true);
+				return await edit(title);
+			}
 		} catch (e) {
 			return console.error(e);
 		}
