@@ -1,6 +1,6 @@
 "use strict";
 /**
- * @import { ReadStream } from "fs"
+ * @import { ReadStream } "fs"
  * @import { ApiResponse } "types-mediawiki/mw/Api"
  * @import { RestResponse } "types-mediawiki/mw/Rest"
  * @import { ApiLoginParams, ApiTokenType, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
