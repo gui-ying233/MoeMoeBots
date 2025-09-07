@@ -26,7 +26,13 @@ class Api {
 	/** @type { { get: RequestInit; post: RequestInit } } */
 	#init;
 	/** @type { { format: ApiParams["format"] ; utf8: ApiFormatJsonParams["utf8"]; formatversion: ApiFormatJsonParams["formatversion"] } } */
-	#parameters = { format: "json", utf8: true, formatversion: 2 };
+	#parameters = {
+		format: "json",
+		errorformat: "plaintext",
+		errorsuselocal: true,
+		utf8: true,
+		formatversion: 2,
+	};
 	/** @type { Record<`${ApiTokenType}token`, string> } */
 	#tokens = {};
 	/** @type { { string: string } } */
