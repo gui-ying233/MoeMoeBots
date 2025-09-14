@@ -25,10 +25,9 @@ class Api {
 	#cookie;
 	/** @type { { get: RequestInit; post: RequestInit } } */
 	#init;
-	/** @type { { format: ApiParams["format"] ; utf8: ApiFormatJsonParams["utf8"]; formatversion: ApiFormatJsonParams["formatversion"] } } */
+	/** @type { { format: ApiParams["format"]; errorsuselocal: ApiParams["errorsuselocal"]; utf8: ApiFormatJsonParams["utf8"]; formatversion: ApiFormatJsonParams["formatversion"] } } */
 	#parameters = {
 		format: "json",
-		errorformat: "plaintext",
 		errorsuselocal: true,
 		utf8: true,
 		formatversion: 2,
