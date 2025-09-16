@@ -92,9 +92,12 @@ class Api {
 	 */
 	#listToPipe(parameters) {
 		return Object.fromEntries(
-			Object.entries(parameters).map(([k, v]) =>
-				Array.isArray(v) ? [k, v.join("|")] : [k, v]
-			)
+			Object.entries(parameters)
+				.filter(
+					([k, v]) =>
+						Object.keys(this.#parameters).includes(k) || Boolean(v)
+				)
+				.map(([k, v]) => (Array.isArray(v) ? [k, v.join("|")] : [k, v]))
 		);
 	}
 	/**
