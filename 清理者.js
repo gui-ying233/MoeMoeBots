@@ -123,10 +123,6 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 (async () => {
 	await api.login();
 	await cleaner(
-		"CAT:错误使用标题格式化的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*[标標][题題]格式化.*}}\n?/gis
-	);
-	await cleaner(
 		"CAT:需要更换为标题格式化的页面",
 		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
 		"{{标题格式化}}"
