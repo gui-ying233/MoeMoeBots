@@ -95,7 +95,8 @@ class Api {
 			Object.entries(parameters)
 				.filter(
 					([k, v]) =>
-						Object.keys(this.#parameters).includes(k) || Boolean(v)
+						Object.keys(this.#parameters).includes(k) ||
+						(v !== false && v !== null && v !== undefined)
 				)
 				.map(([k, v]) => (Array.isArray(v) ? [k, v.join("|")] : [k, v]))
 		);
