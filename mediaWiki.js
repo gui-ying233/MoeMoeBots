@@ -32,8 +32,8 @@ class Api {
 		utf8: true,
 		formatversion: 2,
 	};
-	/** @type { Record<`${ApiTokenType}token`, string> } */
-	#tokens = {};
+	/** @type { Record<`${ApiTokenType}token`, string> | Promise<Record<`${ApiTokenType}token`, string>> | null } */
+	#tokens = null;
 	/** @type { { string: string } } */
 	#defaultCookie = {};
 	/**
@@ -124,26 +124,30 @@ class Api {
 	 */
 	async getToken(type = "csrf", newToken = false) {
 		if (typeof type !== "string") throw new TypeError("types");
+		if (this.#tokens instanceof Promise) this.#tokens = await this.#tokens;
+		const key = `${type}token`;
 		if (
 			newToken ||
-			[undefined, "+\\"].includes(this.#tokens?.[`${type}token`])
-		)
-			this.#tokens = (
-				await this.get({
-					action: "query",
-					meta: "tokens",
-					type: [
-						"createaccount",
-						"csrf",
-						"login",
-						"patrol",
-						"rollback",
-						"userrights",
-						"watch",
-					],
-				})
-			).query.tokens;
-		return this.#tokens[`${type}token`];
+			!this.#tokens ||
+			!this.#tokens[key] ||
+			[undefined, "+\\"].includes(this.#tokens[key])
+		) {
+			this.#tokens = this.get({
+				action: "query",
+				meta: "tokens",
+				type: [
+					"createaccount",
+					"csrf",
+					"login",
+					"patrol",
+					"rollback",
+					"userrights",
+					"watch",
+				],
+			}).then(res => res.query.tokens);
+			this.#tokens = await this.#tokens;
+		}
+		return await this.#tokens[key];
 	}
 	/**
 	 * @async
@@ -239,7 +243,7 @@ class Api {
 			action: "logout",
 			token: await this.getToken("csrf"),
 		});
-		this.#tokens = {};
+		this.#tokens = null;
 		Object.keys(cookies).forEach(k => delete cookies[k]);
 		Object.assign(cookies, this.#defaultCookie);
 		return r;
