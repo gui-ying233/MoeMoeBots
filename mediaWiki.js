@@ -21,8 +21,6 @@ class Api {
 	#botUsername;
 	/** @type { string } */
 	#botPassword;
-	/** @type { { string: string } } */
-	#cookie;
 	/** @type { { get: RequestInit; post: RequestInit } } */
 	#init;
 	/** @type { { format: ApiParams["format"]; errorsuselocal: ApiParams["errorsuselocal"]; utf8: ApiFormatJsonParams["utf8"]; formatversion: ApiFormatJsonParams["formatversion"] } } */
@@ -254,8 +252,6 @@ class Api {
 class Rest {
 	/** @type { URL["href"] } */
 	#rest;
-	/** @type { { string: string } } */
-	#cookie;
 	/** @type { { get: RequestInit & { cookie: { string: string } }; post: RequestInit & { cookie: { string: string } }; put: RequestInit & { cookie: { string: string } } } } */
 	#init;
 	/** @type { { string: string } } */
@@ -270,8 +266,8 @@ class Rest {
 		this.#rest = url.href;
 		const headers = {
 			referer: url.href,
-			"user-agent": `${pack.name || ""}/${pack.version || ""} (${
-				pack.repository?.url || ""
+			"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
+				pack.homepage || pack.repository?.url || pack?.bugs?.url || ""
 			}; ${pack.bugs?.email || ""}) `,
 			cookie: cookies,
 		};
