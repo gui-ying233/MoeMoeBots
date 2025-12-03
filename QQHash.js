@@ -129,13 +129,11 @@ const { createHash } = require("crypto");
 	} else {
 		const { h, u, s, e } = workerData,
 			th = Buffer.from(h, "hex"),
-			fs = `MoegirlPediaUserQQHash-${u}-`;
+			fs = createHash("sha3-512").update("MoegirlPediaUserQQHash-");
 		for (let n = s; n <= e; n++) {
 			if (
-				!createHash("sha3-512")
-					.update(fs + n)
-					.digest()
-					.equals(th)
+				!fs.copy().update(`${u}-${n}`).digest().equals(th) &&
+				!fs.copy().update(`${n}`).digest().equals(th)
 			)
 				continue;
 			parentPort.postMessage({ t: "f", n });
