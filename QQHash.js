@@ -63,7 +63,7 @@ const { createHash } = require("crypto");
 				QQ: null,
 			};
 			if (!/^[a-z0-9]{128}$/.test(h)) {
-				writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+				await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
 				continue;
 			}
 			const nw = require("os").cpus().length,
@@ -73,8 +73,6 @@ const { createHash } = require("crypto");
 					[2000000001, 3000000000],
 					[4000000001, 5000000000],
 					[5000000001, 6000000000],
-					// [6000000001, 7000000000],
-					// [7000000001, 8000000000],
 				],
 				runRange = async (st, ed) => {
 					const cs = Math.ceil((ed - st + 1) / nw),
@@ -86,13 +84,16 @@ const { createHash } = require("crypto");
 								workerData: { h, u, s, e },
 							});
 						ws.push(w);
-						w.on("message", m => {
+						w.on("message", async m => {
 							if (m.t !== "f") return;
 							ws.forEach(w => w.terminate());
 							const QQ = m.n ?? null;
 							console.log(`QQ：${QQ}`);
 							QQHash[u].QQ = QQ;
-							writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+							await writeFile(
+								fp,
+								JSON.stringify(QQHash, null, "\t")
+							);
 							process.exit(0);
 						});
 						w.on("error", e => console.error(e));
@@ -121,7 +122,7 @@ const { createHash } = require("crypto");
 				await runRange(st, ed);
 				console.log(`Completed: ${st}~${ed}`);
 			}
-			writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+			await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
 			break;
 		}
 	} else {
