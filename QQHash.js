@@ -4,7 +4,8 @@ const api = new mw.Api(require("./config").mzh);
 const WikiParser = require("wikiparser-node");
 WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
-WikiParser.templateDir = require("path").join(__dirname, "template", "zh");
+const path = require("path");
+WikiParser.templateDir = path.join(__dirname, "template", "zh");
 const { readFile, writeFile } = require("fs/promises");
 const {
 	Worker,
@@ -15,7 +16,8 @@ const {
 const { createHash } = require("crypto");
 
 (async () => {
-	const fp = "../QQHash/QQHash.json";
+	const fp = path.join("..", "QQHash", "QQHash.json");
+	console.log(fp);
 	if (isMainThread) {
 		const QQHash = JSON.parse(await readFile(fp, { encoding: "utf-8" }));
 		await api.login();
