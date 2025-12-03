@@ -1,3 +1,5 @@
+"use strict";
+
 const { mw } = require("./mediaWiki");
 const api = new mw.Api(require("./config").mzh);
 const WikiParser = require("wikiparser-node");
