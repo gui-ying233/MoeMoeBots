@@ -16,9 +16,8 @@ const {
 const { createHash } = require("crypto");
 
 (async () => {
-	const fp = path.join("..", "QQHash", "QQHash.json");
-	console.log(fp);
 	if (isMainThread) {
+		const fp = path.join("..", "QQHash", "QQHash.json");
 		const QQHash = JSON.parse(await readFile(fp, { encoding: "utf-8" }));
 		await api.login();
 		let ticontinue = "0";
