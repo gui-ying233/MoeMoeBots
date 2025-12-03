@@ -42,6 +42,9 @@ const { createHash } = require("crypto");
 		} while (ticontinue);
 		for (const [u, pageids] of Object.entries(pages)) {
 			if (QQHash[u]) continue;
+			console.log(
+				`${Object.keys(QQHash).length}/${Object.keys(pages).length}`
+			);
 			const r = await api.post({
 					action: "query",
 					prop: "revisions",
