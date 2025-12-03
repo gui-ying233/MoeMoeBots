@@ -86,7 +86,9 @@ const { createHash } = require("crypto");
 						w.on("message", m => {
 							if (m.t !== "f") return;
 							ws.forEach(w => w.terminate());
-							QQHash[u].QQ = m.n;
+							const QQ = m.n ?? null;
+							console.log(`QQ：${QQ}`);
+							QQHash[u].QQ = QQ;
 							writeFile(fp, JSON.stringify(QQHash, null, "\t"));
 							process.exit(0);
 						});
