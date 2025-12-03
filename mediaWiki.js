@@ -218,7 +218,9 @@ class Api {
 		if (r?.login?.result === "Success") return r;
 		if (r?.login?.result)
 			throw new Error(
-				r?.login?.reason ?? r?.login?.result ?? r?.login ?? r
+				JSON.stringify(
+					r?.login?.reason ?? r?.login?.result ?? r?.login ?? r
+				)
 			);
 		throw new Error();
 	}
