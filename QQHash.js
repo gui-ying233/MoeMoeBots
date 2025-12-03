@@ -6,7 +6,7 @@ WikiParser.config = "moegirl";
 WikiParser.i18n = "zh-hans";
 const path = require("path");
 WikiParser.templateDir = path.join(__dirname, "template", "zh");
-const { readFile, writeFile } = require("fs/promises");
+const { writeFile } = require("fs/promises");
 const {
 	Worker,
 	isMainThread,
