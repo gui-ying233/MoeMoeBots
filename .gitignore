@@ -8,3 +8,5 @@ template
 .flaskenv*
 !.env.project
 !.env.vault
+
+hashcat.hex
