@@ -84,7 +84,7 @@ const { createHash } = require("crypto");
 				[6000000001, 9999999999],
 			];
 		const runRangeHashcat = async (st, ed) => {
-			const chunkSize = 100000000;
+			const chunkSize = 5000000000;
 			const sessionName = `QQHash-${u}-${st}-${ed}`;
 			for (let start = st; start <= ed; start += chunkSize) {
 				const end = Math.min(start + chunkSize - 1, ed);
@@ -102,12 +102,16 @@ const { createHash } = require("crypto");
 								? `MoegirlPediaUserQQHash-${u}-`
 								: "MoegirlPediaUserQQHash-";
 						const result = await execAsync(
-							`hashcat -m 17600 -a 3 -w 3 --session ${sessionName} --skip ${skip} --limit ${limit} hashcat.hex "${
+							`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --session ${sessionName} --skip ${skip} --limit ${limit} hashcat.hex "${
 								prefix + "?d".repeat(len)
 							}"`,
 							{ maxBuffer: 50 * 1024 * 1024 }
 						).catch(e => e);
-						if (result.code !== 0 && result.code !== 1) {
+						if (
+							result.code != null &&
+							result.code !== 0 &&
+							result.code !== 1
+						) {
 							throw result;
 						}
 						const { stdout } = await execAsync(
@@ -177,6 +181,7 @@ const { createHash } = require("crypto");
 			for (const [st, ed] of hashcatRanges) {
 				console.log(`Starting: ${st}~${ed}`);
 				await runRangeHashcat(st, ed);
+				if (found) break;
 				console.log(`Completed: ${st}~${ed}`);
 			}
 		} catch (e) {
