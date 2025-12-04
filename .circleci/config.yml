@@ -1,0 +1,57 @@
+version: 2.1
+jobs:
+    qqhash:
+        docker:
+            - image: cimg/node:20
+        steps:
+            - checkout
+            - run:
+                  name: 签出 QQHash
+                  command: |
+                      git clone https://x-access-token:${QQHASH_PAT}@github.com/gui-ying233/QQHash.git QQHash
+            - restore_cache:
+                  keys:
+                      - node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+            - run:
+                  name: 安装 npm 依赖
+                  command: npm ci
+            - save_cache:
+                  key: node-deps-v1-{{ .Branch }}-{{checksum "package-lock.json"}}
+                  paths:
+                      - ~/.npm
+            - run:
+                  name: 运行 QQHash
+                  environment:
+                      MOEGIRL_ZH_BOTUSERNAME: $MOEGIRL_ZH_BOTUSERNAME
+                      MOEGIRL_ZH_BOTPASSWORD: $MOEGIRL_ZH_BOTPASSWORD
+                      MOEGIRL_MZH_BOTUSERNAME: $MOEGIRL_MZH_BOTUSERNAME
+                      MOEGIRL_MZH_BOTPASSWORD: $MOEGIRL_MZH_BOTPASSWORD
+                      MOEGIRL_MOEGIRLSSOUSERID: $MOEGIRL_MOEGIRLSSOUSERID
+                      MOEGIRL_MOEGIRLSSOTOKEN: $MOEGIRL_MOEGIRLSSOTOKEN
+                  command: cd MoeMoeBots && node QQHash
+            - run:
+                  name: 提交 QQHash
+                  command: |
+                      cd QQHash
+                      git config user.name "circleci[bot]"
+                      git config user.email "circleci[bot]@users.noreply.github.com"
+                      git add -A
+                      if git diff --staged --quiet; then
+                        echo "No changes to commit"
+                      else
+                        git commit -m "Update QQHash"
+                        git push
+                      fi
+workflows:
+    qqhash-workflow:
+        jobs:
+            - qqhash:
+                  filters:
+                      branches:
+                          only: main
+        triggers:
+            - schedule:
+                  cron: "0 0/12 * * *"
+                  filters:
+                      branches:
+                          only: main
