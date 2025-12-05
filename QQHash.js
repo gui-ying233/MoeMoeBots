@@ -193,7 +193,8 @@ const { createHash } = require("crypto");
 				const nw = require("os").cpus().length,
 					cs = Math.ceil((ed - st + 1) / nw),
 					ws = [];
-				let completed = 0;
+				let completed = 0,
+					terminated = false;
 				const checkComplete = () => {
 					completed++;
 					if (completed === ws.length) res();
@@ -207,6 +208,7 @@ const { createHash } = require("crypto");
 					ws.push(w);
 					w.on("message", async m => {
 						if (m.t !== "f") return;
+						terminated = true;
 						ws.forEach(w => w.terminate());
 						const QQ = m.n ?? null;
 						console.log(`QQ：${QQ}`);
@@ -217,7 +219,7 @@ const { createHash } = require("crypto");
 					});
 					w.on("error", e => console.error(e));
 					w.on("exit", c => {
-						if (c !== 0 && !found)
+						if (c !== 0 && !terminated)
 							console.error(`Worker stopped with exit code ${c}`);
 						checkComplete();
 					});
