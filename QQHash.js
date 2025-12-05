@@ -103,6 +103,13 @@ const { createHash } = require("crypto");
 			],
 			chunkSize = 5000000000;
 		const runRangeHashcat = async (st, ed) => {
+			const userPrefix = Buffer.from(
+				`MoegirlPediaUserQQHash-${u}-`
+			).length;
+			const formats = userPrefix <= 45 ? [0, 1] : [1];
+			if (formats.length === 1) {
+				console.log(`用户名过长 (${userPrefix} bytes)，跳过 format 0`);
+			}
 			for (let start = st; start <= ed; start += chunkSize) {
 				const end = Math.min(start + chunkSize - 1, ed);
 				const min_len = start.toString().length;
@@ -113,7 +120,7 @@ const { createHash } = require("crypto");
 					if (start_num > end_num) continue;
 					const skip = start_num;
 					const limit = end_num - start_num + 1;
-					for (const format of [0, 1]) {
+					for (const format of formats) {
 						await execAsync(
 							'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
 						).catch(() => {});
@@ -146,6 +153,13 @@ const { createHash } = require("crypto");
 							);
 							hashcatProcess.on("error", e => resolve(e));
 						});
+						// 如果 hashcat 因密码长度超限而跳过，静默 continue
+						if (
+							result.stdout &&
+							result.stdout.includes("Skipping mask")
+						) {
+							continue;
+						}
 						if (
 							result.code != null &&
 							result.code !== 0 &&
