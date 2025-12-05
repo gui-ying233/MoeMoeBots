@@ -98,75 +98,72 @@ const { createHash } = require("crypto");
 			if (formats.length === 1) {
 				console.log(`用户名过长 (${userPrefix} bytes)，跳过 format 0`);
 			}
-			for (let len = 5; len <= 10; len++) {
-				for (const format of formats) {
-					await execAsync(
-						'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
-					).catch(() => {});
-					const prefix =
-						format === 0
-							? `MoegirlPediaUserQQHash-${u}-`
-							: "MoegirlPediaUserQQHash-";
-					console.log(`Hashcat: ${len} digits, format ${format}`);
-					const hashcatProcess = exec(
-						`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 hashcat.hex "${
-							prefix + "?d".repeat(len)
-						}"`,
-						{ maxBuffer: 50 * 1024 * 1024 }
+			for (const format of formats) {
+				await execAsync(
+					'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
+				).catch(() => {});
+				const prefix =
+					format === 0
+						? `MoegirlPediaUserQQHash-${u}-`
+						: "MoegirlPediaUserQQHash-";
+				console.log(`Hashcat: format ${format}`);
+				const hashcatProcess = exec(
+					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --increment --increment-min ${
+						prefix.length + 5
+					} --increment-max ${prefix.length + 10} hashcat.hex "${
+						prefix + "?d".repeat(10)
+					}"`,
+					{ maxBuffer: 50 * 1024 * 1024 }
+				);
+				execAsync(
+					`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
+				).catch(() => {});
+				const result = await new Promise(resolve => {
+					let stdout = "",
+						stderr = "";
+					hashcatProcess.stdout.on("data", d => (stdout += d));
+					hashcatProcess.stderr.on("data", d => (stderr += d));
+					hashcatProcess.on("close", code =>
+						resolve({ stdout, stderr, code })
 					);
-					execAsync(
-						`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
-					).catch(() => {});
-					const result = await new Promise(resolve => {
-						let stdout = "",
-							stderr = "";
-						hashcatProcess.stdout.on("data", d => (stdout += d));
-						hashcatProcess.stderr.on("data", d => (stderr += d));
-						hashcatProcess.on("close", code =>
-							resolve({ stdout, stderr, code })
-						);
-						hashcatProcess.on("error", e => resolve(e));
-					});
-					if (
-						result.stdout &&
-						result.stdout.includes("Skipping mask")
-					) {
-						continue;
-					}
-					if (
-						result.code != null &&
-						result.code !== 0 &&
-						result.code !== 1
-					) {
-						throw result;
-					}
-					const { stdout } = await execAsync(
-						`hashcat --show -m 17600 hashcat.hex`,
-						{ maxBuffer: 50 * 1024 * 1024 }
-					);
-					const lines = stdout.split("\n");
-					const prefixes = [
-						`MoegirlPediaUserQQHash-${u}-`,
-						"MoegirlPediaUserQQHash-",
-					];
-					for (const line of lines) {
-						if (line.startsWith(h + ":")) {
-							const password = line.slice(129).trim();
-							if (!password) continue;
-							for (const p of prefixes) {
-								if (!password.startsWith(p)) continue;
-								const n_str = password.slice(p.length);
-								const n = parseInt(n_str);
-								if (isNaN(n)) continue;
-								console.log(`QQ：${n}`);
-								QQHash[u].QQ = n;
-								await writeFile(
-									fp,
-									JSON.stringify(QQHash, null, "\t")
-								);
-								found = true;
-								return;
-							}
+					hashcatProcess.on("error", e => resolve(e));
+				});
+				if (result.stdout && result.stdout.includes("Skipping mask")) {
+					continue;
+				}
+				if (
+					result.code != null &&
+					result.code !== 0 &&
+					result.code !== 1
+				) {
+					throw result;
+				}
+				const { stdout } = await execAsync(
+					`hashcat --show -m 17600 hashcat.hex`,
+					{ maxBuffer: 50 * 1024 * 1024 }
+				);
+				const lines = stdout.split("\n");
+				const prefixes = [
+					`MoegirlPediaUserQQHash-${u}-`,
+					"MoegirlPediaUserQQHash-",
+				];
+				for (const line of lines) {
+					if (line.startsWith(h + ":")) {
+						const password = line.slice(129).trim();
+						if (!password) continue;
+						for (const p of prefixes) {
+							if (!password.startsWith(p)) continue;
+							const n_str = password.slice(p.length);
+							const n = parseInt(n_str);
+							if (isNaN(n)) continue;
+							console.log(`QQ：${n}`);
+							QQHash[u].QQ = n;
+							await writeFile(
+								fp,
+								JSON.stringify(QQHash, null, "\t")
+							);
+							found = true;
+							return;
 						}
 					}
 				}
