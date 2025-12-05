@@ -56,24 +56,42 @@ const { createHash } = require("crypto");
 		);
 		ticontinue = r?.continue?.ticontinue;
 	} while (ticontinue);
-	for (const [u, pageids] of Object.entries(pages)) {
-		if (QQHash[u]) continue;
-		console.log(
-			`${Object.keys(QQHash).length}/${Object.keys(pages).length}`
-		);
-		const r = await api.post({
-				action: "query",
-				prop: "revisions",
-				pageids,
-				rvprop: "content",
-				rvslots: "*",
-			}),
-			h = WikiParser.parse(
-				r.query.pages[0].revisions[0]?.slots.main.content
-			)
-				.querySelector("template#Template:QQHash > parameter#1")
-				.getValue()
-				.trim();
+	const pageEntries = Object.entries(pages);
+	const fetchUserHash = async pageids => {
+		return WikiParser.parse(
+			(
+				await api.post({
+					action: "query",
+					prop: "revisions",
+					pageids,
+					rvprop: "content",
+					rvslots: "*",
+				})
+			).query.pages[0].revisions[0]?.slots.main.content
+		)
+			.querySelector("template#Template:QQHash > parameter#1")
+			.getValue()
+			.trim();
+	};
+	let nextFetch = null;
+	for (let i = 0; i < pageEntries.length; i++) {
+		const [u, pageids] = pageEntries[i];
+		if (QQHash[u]) {
+			nextFetch = null;
+			continue;
+		}
+		console.log(`${Object.keys(QQHash).length}/${pageEntries.length}`);
+		let h;
+		if (nextFetch) {
+			h = await nextFetch;
+			nextFetch = null;
+		} else h = await fetchUserHash(pageids);
+		for (let j = i + 1; j < pageEntries.length; j++) {
+			const [nextU, nextPageids] = pageEntries[j];
+			if (QQHash[nextU]) continue;
+			nextFetch = fetchUserHash(nextPageids);
+			break;
+		}
 		QQHash[u] = {
 			Hash: h,
 			QQ: null,
