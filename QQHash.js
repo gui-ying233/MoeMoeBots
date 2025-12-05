@@ -82,10 +82,9 @@ const { createHash } = require("crypto");
 				[3000000001, 4000000000],
 				[4000000001, 6000000000],
 				[6000000001, 9999999999],
-			];
+			],
+			chunkSize = 5000000000;
 		const runRangeHashcat = async (st, ed) => {
-			const chunkSize = 5000000000;
-			const sessionName = `QQHash-${u}-${st}-${ed}`;
 			for (let start = st; start <= ed; start += chunkSize) {
 				const end = Math.min(start + chunkSize - 1, ed);
 				const min_len = start.toString().length;
@@ -97,12 +96,15 @@ const { createHash } = require("crypto");
 					const skip = start_num;
 					const limit = end_num - start_num + 1;
 					for (const format of [0, 1]) {
+						await execAsync(
+							'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
+						).catch(() => {});
 						const prefix =
 							format === 0
 								? `MoegirlPediaUserQQHash-${u}-`
 								: "MoegirlPediaUserQQHash-";
 						const result = await execAsync(
-							`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --session ${sessionName} --skip ${skip} --limit ${limit} hashcat.hex "${
+							`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --skip ${skip} --limit ${limit} hashcat.hex "${
 								prefix + "?d".repeat(len)
 							}"`,
 							{ maxBuffer: 50 * 1024 * 1024 }
@@ -115,7 +117,7 @@ const { createHash } = require("crypto");
 							throw result;
 						}
 						const { stdout } = await execAsync(
-							`hashcat --show --session ${sessionName} -m 17600 hashcat.hex`,
+							`hashcat --show -m 17600 hashcat.hex`,
 							{ maxBuffer: 50 * 1024 * 1024 }
 						);
 						const lines = stdout.split("\n");
@@ -167,7 +169,7 @@ const { createHash } = require("crypto");
 					});
 					w.on("error", e => console.error(e));
 					w.on("exit", c => {
-						if (c !== 0)
+						if (c !== 0 && !found)
 							console.error(`Worker stopped with exit code ${c}`);
 						checkComplete();
 					});
@@ -185,13 +187,14 @@ const { createHash } = require("crypto");
 				console.log(`Completed: ${st}~${ed}`);
 			}
 		} catch (e) {
-			console.error("Hashcat failed, falling back to CPU:", e);
+			console.error("Hashcat failed, fallback to Crypto:", e);
 		}
 		if (!found) {
-			console.log("Hashcat did not find, using CPU fallback");
+			console.log("Hashcat not found, fallback to Crypto");
 			for (const [st, ed] of cpuRanges) {
 				console.log(`Starting: ${st}~${ed}`);
 				await runRangeCPU(st, ed);
+				if (found) break;
 				console.log(`Completed: ${st}~${ed}`);
 			}
 		}
@@ -212,4 +215,5 @@ if (!isMainThread) {
 		parentPort.postMessage({ t: "f", n });
 		break;
 	}
+	process.exit(0);
 }
