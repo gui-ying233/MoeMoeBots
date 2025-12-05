@@ -129,7 +129,7 @@ const { createHash } = require("crypto");
 				await writeFile("hashcat.mask", mask);
 				console.log(`Hashcat: format ${format}`);
 				const hashcatProcess = exec(
-					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --increment --increment-min ${preBytes} --increment-max ${
+					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 4 --increment --increment-min ${preBytes} --increment-max ${
 						preBytes + 5
 					} hashcat.hex hashcat.mask`,
 					{ maxBuffer: 50 * 1024 * 1024 }
