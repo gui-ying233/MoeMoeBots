@@ -25,11 +25,7 @@ const { createHash } = require("crypto");
 			th = Buffer.from(h, "hex"),
 			fs = createHash("sha3-512").update("MoegirlPediaUserQQHash-");
 		for (let n = s; n <= e; n++) {
-			if (
-				!fs.copy().update(`${u}-${n}`).digest().equals(th) &&
-				!fs.copy().update(`${n}`).digest().equals(th)
-			)
-				continue;
+			if (!fs.copy().update(`${u}-${n}`).digest().equals(th)) continue;
 			parentPort.postMessage({ t: "f", n });
 			break;
 		}
@@ -153,7 +149,6 @@ const { createHash } = require("crypto");
 							);
 							hashcatProcess.on("error", e => resolve(e));
 						});
-						// 如果 hashcat 因密码长度超限而跳过，静默 continue
 						if (
 							result.stdout &&
 							result.stdout.includes("Skipping mask")
