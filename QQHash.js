@@ -20,6 +20,9 @@ const {
 const { createHash } = require("crypto");
 
 (async () => {
+	execAsync(
+		`powershell -Command "(Get-Process -Id ${process.pid}).PriorityClass = 'High'"`
+	).catch(() => {});
 	const fp = path.join("..", "QQHash", "QQHash.json");
 	const QQHash = require(fp);
 	await api.login();
@@ -103,12 +106,31 @@ const { createHash } = require("crypto");
 							format === 0
 								? `MoegirlPediaUserQQHash-${u}-`
 								: "MoegirlPediaUserQQHash-";
-						const result = await execAsync(
+						const hashcatProcess = exec(
 							`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --skip ${skip} --limit ${limit} hashcat.hex "${
 								prefix + "?d".repeat(len)
 							}"`,
 							{ maxBuffer: 50 * 1024 * 1024 }
-						).catch(e => e);
+						);
+						execAsync(
+							`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
+						).catch(() => {});
+						const result = await new Promise(resolve => {
+							let stdout = "",
+								stderr = "";
+							hashcatProcess.stdout.on(
+								"data",
+								d => (stdout += d)
+							);
+							hashcatProcess.stderr.on(
+								"data",
+								d => (stderr += d)
+							);
+							hashcatProcess.on("close", code =>
+								resolve({ stdout, stderr, code })
+							);
+							hashcatProcess.on("error", e => resolve(e));
+						});
 						if (
 							result.code != null &&
 							result.code !== 0 &&
