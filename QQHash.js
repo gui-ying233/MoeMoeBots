@@ -112,8 +112,9 @@ const { createHash } = require("crypto");
 			const userPrefix = Buffer.from(
 				`MoegirlPediaUserQQHash-${u}-`
 			).length;
-			const formats = userPrefix <= 45 ? [1, 0] : [0];
-			if (formats.length === 1)
+			const skippedFormat1 = userPrefix > 45;
+			const formats = skippedFormat1 ? [0] : [1, 0];
+			if (skippedFormat1)
 				console.log(
 					`用户名过长 (${userPrefix} bytes)，将跳过 format 1`
 				);
@@ -182,11 +183,12 @@ const { createHash } = require("crypto");
 								JSON.stringify(QQHash, null, "\t")
 							);
 							found = true;
-							return;
+							return skippedFormat1;
 						}
 					}
 				}
 			}
+			return skippedFormat1;
 		};
 		const runRangeCPU = async (st, ed) => {
 			return new Promise(res => {
@@ -228,15 +230,17 @@ const { createHash } = require("crypto");
 		};
 		console.log(u, h);
 		await writeFile("hashcat.hex", h);
-		let found = false;
+		let found = false,
+			needCpuFallback = false;
 		try {
 			console.log("Starting Hashcat...");
-			await runRangeHashcat();
+			needCpuFallback = await runRangeHashcat();
 		} catch (e) {
 			console.error("Hashcat failed, fallback to Crypto:", e);
+			needCpuFallback = true;
 		}
-		if (!found) {
-			console.log("Hashcat not found, fallback to Crypto");
+		if (!found && needCpuFallback) {
+			console.log("Hashcat skipped format 1, fallback to Crypto");
 			for (const [st, ed] of cpuRanges) {
 				console.log(`Starting: ${st}~${ed}`);
 				await runRangeCPU(st, ed);
