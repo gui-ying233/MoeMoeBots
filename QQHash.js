@@ -20,6 +20,21 @@ const {
 const { createHash } = require("crypto");
 
 (async () => {
+	if (!isMainThread) {
+		const { h, u, s, e } = workerData,
+			th = Buffer.from(h, "hex"),
+			fs = createHash("sha3-512").update("MoegirlPediaUserQQHash-");
+		for (let n = s; n <= e; n++) {
+			if (
+				!fs.copy().update(`${u}-${n}`).digest().equals(th) &&
+				!fs.copy().update(`${n}`).digest().equals(th)
+			)
+				continue;
+			parentPort.postMessage({ t: "f", n });
+			break;
+		}
+		process.exit(0);
+	}
 	execAsync(
 		`powershell -Command "(Get-Process -Id ${process.pid}).PriorityClass = 'High'"`
 	).catch(() => {});
@@ -223,19 +238,3 @@ const { createHash } = require("crypto");
 		await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
 	}
 })();
-
-if (!isMainThread) {
-	const { h, u, s, e } = workerData,
-		th = Buffer.from(h, "hex"),
-		fs = createHash("sha3-512").update("MoegirlPediaUserQQHash-");
-	for (let n = s; n <= e; n++) {
-		if (
-			!fs.copy().update(`${u}-${n}`).digest().equals(th) &&
-			!fs.copy().update(`${n}`).digest().equals(th)
-		)
-			continue;
-		parentPort.postMessage({ t: "f", n });
-		break;
-	}
-	process.exit(0);
-}
