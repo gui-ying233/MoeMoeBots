@@ -44,7 +44,7 @@ const { createHash } = require("crypto");
 	let ticontinue = "0";
 	const pages = {};
 	do {
-		const r = await api.get({
+		const r = await api.post({
 			action: "query",
 			prop: "transcludedin",
 			titles: "Template:QQHash",
@@ -158,19 +158,27 @@ const { createHash } = require("crypto");
 							{ maxBuffer: 50 * 1024 * 1024 }
 						);
 						const lines = stdout.split("\n");
+						const prefixes = [
+							`MoegirlPediaUserQQHash-${u}-`,
+							"MoegirlPediaUserQQHash-",
+						];
 						for (const line of lines) {
 							if (line.startsWith(h + ":")) {
 								const password = line.split(":")[1];
-								const n_str = password.slice(prefix.length);
-								const n = parseInt(n_str);
-								console.log(`QQ：${n}`);
-								QQHash[u].QQ = n;
-								await writeFile(
-									fp,
-									JSON.stringify(QQHash, null, "\t")
-								);
-								found = true;
-								return;
+								for (const p of prefixes) {
+									if (!password.startsWith(p)) continue;
+									const n_str = password.slice(p.length);
+									const n = parseInt(n_str);
+									if (isNaN(n)) continue;
+									console.log(`QQ：${n}`);
+									QQHash[u].QQ = n;
+									await writeFile(
+										fp,
+										JSON.stringify(QQHash, null, "\t")
+									);
+									found = true;
+									return;
+								}
 							}
 						}
 					}
