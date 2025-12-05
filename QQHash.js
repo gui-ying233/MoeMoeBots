@@ -94,25 +94,22 @@ const { createHash } = require("crypto");
 			const userPrefix = Buffer.from(
 				`MoegirlPediaUserQQHash-${u}-`
 			).length;
-			const formats = userPrefix <= 45 ? [0, 1] : [1];
-			if (formats.length === 1) {
+			const formats = userPrefix <= 45 ? [1, 0] : [1];
+			if (formats.length === 1)
 				console.log(`用户名过长 (${userPrefix} bytes)，跳过 format 0`);
-			}
 			for (const format of formats) {
 				await execAsync(
 					'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
 				).catch(() => {});
-				const prefix =
-					format === 0
-						? `MoegirlPediaUserQQHash-${u}-`
-						: "MoegirlPediaUserQQHash-";
+				const prefix = `MoegirlPediaUserQQHash-${
+					format ? `${u}-` : ""
+				}`;
+				const preBytes = Buffer.from(prefix).length + 5;
 				console.log(`Hashcat: format ${format}`);
 				const hashcatProcess = exec(
-					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --increment --increment-min ${
-						prefix.length + 5
-					} --increment-max ${prefix.length + 10} hashcat.hex "${
-						prefix + "?d".repeat(10)
-					}"`,
+					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 3 --increment --increment-min ${preBytes} --increment-max ${
+						preBytes + 5
+					} hashcat.hex "${prefix + "?d".repeat(10)}"`,
 					{ maxBuffer: 50 * 1024 * 1024 }
 				);
 				execAsync(
