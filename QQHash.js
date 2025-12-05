@@ -230,7 +230,6 @@ const { createHash } = require("crypto");
 		try {
 			console.log("Starting Hashcat...");
 			await runRangeHashcat();
-			console.log("Hashcat completed");
 		} catch (e) {
 			console.error("Hashcat failed, fallback to Crypto:", e);
 		}
