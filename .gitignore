@@ -10,3 +10,4 @@ template
 !.env.vault
 
 hashcat.hex
+hashcat.mask
