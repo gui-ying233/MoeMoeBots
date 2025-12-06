@@ -93,11 +93,11 @@ const { createHash } = require("crypto");
 			break;
 		}
 		QQHash[u] = {
-			Hash: h,
-			QQ: null,
+			H: h,
+			Q: null,
 		};
 		if (!/^[a-z0-9]{128}$/.test(h)) {
-			await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+			await writeFile(fp, JSON.stringify(QQHash));
 			continue;
 		}
 		const cpuRanges = [
@@ -177,11 +177,8 @@ const { createHash } = require("crypto");
 							const n = parseInt(n_str);
 							if (isNaN(n)) continue;
 							console.log(`QQ：${n}`);
-							QQHash[u].QQ = n;
-							await writeFile(
-								fp,
-								JSON.stringify(QQHash, null, "\t")
-							);
+							QQHash[u].Q = n;
+							await writeFile(fp, JSON.stringify(QQHash));
 							found = true;
 							return skippedFormat1;
 						}
@@ -214,8 +211,8 @@ const { createHash } = require("crypto");
 						ws.forEach(w => w.terminate());
 						const QQ = m.n ?? null;
 						console.log(`QQ：${QQ}`);
-						QQHash[u].QQ = QQ;
-						await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+						QQHash[u].Q = QQ;
+						await writeFile(fp, JSON.stringify(QQHash));
 						found = true;
 						res();
 					});
@@ -248,6 +245,6 @@ const { createHash } = require("crypto");
 				console.log(`Completed: ${st}~${ed}`);
 			}
 		}
-		await writeFile(fp, JSON.stringify(QQHash, null, "\t"));
+		await writeFile(fp, JSON.stringify(QQHash));
 	}
 })();
