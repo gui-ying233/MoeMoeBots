@@ -40,7 +40,14 @@ const { createHash } = require("crypto");
 	const fp = path.join("..", "QQHash", "QQHash.json");
 	const QQHash = require(fp);
 	await api.login();
-	let ticontinue = "0";
+	let ticontinue = "0",
+		hasHashcat = false;
+	try {
+		console.log(
+			`Hashcat: ${(await execAsync("hashcat --version")).stdout.trim()}`
+		);
+		hasHashcat = true;
+	} catch {}
 	const pages = {};
 	do {
 		const r = await api.post({
@@ -76,12 +83,7 @@ const { createHash } = require("crypto");
 			.getValue()
 			.trim();
 	};
-	let nextFetch = null,
-		hasHashcat = false;
-	try {
-		await execAsync("hashcat --version");
-		hasHashcat = true;
-	} catch {}
+	let nextFetch = null;
 	for (let i = 0; i < pageEntries.length; i++) {
 		const [u, pageids] = pageEntries[i];
 		if (QQHash[u]) {

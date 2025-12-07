@@ -26,8 +26,11 @@ jobs:
                   node-version: 20
                   cache: npm
                   cache-dependency-path: MoeMoeBots/package-lock.json
-            - name: 安装 npm 依赖
-              run: cd MoeMoeBots && npm install
+            - name: 安装依赖
+              run: |
+                  sudo apt-get install -y hashcat &
+                  cd MoeMoeBots && npm install &
+                  wait
             - name: 运行 QQHash
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
