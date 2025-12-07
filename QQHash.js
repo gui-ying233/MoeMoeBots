@@ -76,7 +76,12 @@ const { createHash } = require("crypto");
 			.getValue()
 			.trim();
 	};
-	let nextFetch = null;
+	let nextFetch = null,
+		hasHashcat = false;
+	try {
+		await execAsync("hashcat --version");
+		hasHashcat = true;
+	} catch {}
 	for (let i = 0; i < pageEntries.length; i++) {
 		const [u, pageids] = pageEntries[i];
 		if (QQHash[u]) {
@@ -231,12 +236,7 @@ const { createHash } = require("crypto");
 		console.log(u, h);
 		await writeFile("hashcat.hex", h);
 		let found = false,
-			needCpuFallback = false,
-			hasHashcat = false;
-		try {
-			await execAsync("hashcat --version");
-			hasHashcat = true;
-		} catch {}
+			needCpuFallback = false;
 		if (hasHashcat) {
 			try {
 				console.log("Starting Hashcat...");
