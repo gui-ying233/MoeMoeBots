@@ -23,9 +23,12 @@ const { createHash } = require("crypto");
 	if (!isMainThread) {
 		const { h, u, s, e } = workerData,
 			th = Buffer.from(h, "hex"),
-			fs = createHash("sha3-512").update("MoegirlPediaUserQQHash-");
+			prefix = u ? `${u}-` : "",
+			fs = createHash("sha3-512").update(
+				`MoegirlPediaUserQQHash-${prefix}`
+			);
 		for (let n = s; n <= e; n++) {
-			if (!fs.copy().update(`${u}-${n}`).digest().equals(th)) continue;
+			if (!fs.copy().update(String(n)).digest().equals(th)) continue;
 			parentPort.postMessage({ t: "f", n });
 			break;
 		}
@@ -100,7 +103,7 @@ const { createHash } = require("crypto");
 			await writeFile(fp, JSON.stringify(QQHash));
 			continue;
 		}
-		const cpuRanges = [
+		const cryptoRanges = [
 			[10001, 1000000000],
 			[1000000001, 2000000000],
 			[2000000001, 3000000000],
@@ -187,7 +190,7 @@ const { createHash } = require("crypto");
 			}
 			return skippedFormat1;
 		};
-		const runRangeCPU = async (st, ed) => {
+		const runRangeCrypto = async (st, ed, format = 1) => {
 			return new Promise(res => {
 				const nw = require("os").cpus().length,
 					cs = Math.ceil((ed - st + 1) / nw),
@@ -202,7 +205,7 @@ const { createHash } = require("crypto");
 					const s = st + i * cs,
 						e = Math.min(st + (i + 1) * cs - 1, ed),
 						w = new Worker(__filename, {
-							workerData: { h, u, s, e },
+							workerData: { h, u: format ? u : "", s, e },
 						});
 					ws.push(w);
 					w.on("message", async m => {
@@ -228,21 +231,40 @@ const { createHash } = require("crypto");
 		console.log(u, h);
 		await writeFile("hashcat.hex", h);
 		let found = false,
-			needCpuFallback = false;
+			needCpuFallback = false,
+			hasHashcat = false;
 		try {
-			console.log("Starting Hashcat...");
-			needCpuFallback = await runRangeHashcat();
-		} catch (e) {
-			console.error("Hashcat failed, fallback to Crypto:", e);
-			needCpuFallback = true;
-		}
-		if (!found && needCpuFallback) {
-			console.log("Hashcat skipped format 1, fallback to Crypto");
-			for (const [st, ed] of cpuRanges) {
-				console.log(`Starting: ${st}~${ed}`);
-				await runRangeCPU(st, ed);
+			await execAsync("hashcat --version");
+			hasHashcat = true;
+		} catch {}
+		if (hasHashcat) {
+			try {
+				console.log("Starting Hashcat...");
+				needCpuFallback = await runRangeHashcat();
+			} catch (e) {
+				console.error("Hashcat failed, fallback to Crypto:", e);
+				needCpuFallback = true;
+			}
+			if (!found && needCpuFallback) {
+				console.log("Hashcat skipped format 1, fallback to Crypto");
+				for (const [st, ed] of cryptoRanges) {
+					console.log(`Starting: ${st}~${ed}`);
+					await runRangeCrypto(st, ed);
+					if (found) break;
+					console.log(`Completed: ${st}~${ed}`);
+				}
+			}
+		} else {
+			console.log("Hashcat not found, using Crypto...");
+			for (const format of [1, 0]) {
+				console.log(`Crypto: format ${format}`);
+				for (const [st, ed] of cryptoRanges) {
+					console.log(`Starting: ${st}~${ed}`);
+					await runRangeCrypto(st, ed, format);
+					if (found) break;
+					console.log(`Completed: ${st}~${ed}`);
+				}
 				if (found) break;
-				console.log(`Completed: ${st}~${ed}`);
 			}
 		}
 		await writeFile(fp, JSON.stringify(QQHash));
