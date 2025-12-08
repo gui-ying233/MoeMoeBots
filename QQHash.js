@@ -39,7 +39,7 @@ const { createHash } = require("crypto");
 	).catch(() => {});
 	const fp = path.join("..", "QQHash", "QQHash.json");
 	const QQHash = require(fp);
-	await api.login();
+	await api.login().catch(() => {});
 	let ticontinue = "0",
 		hasHashcat = false;
 	try {
