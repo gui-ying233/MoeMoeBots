@@ -9,13 +9,17 @@ jobs:
         steps:
             - name: 签出
               uses: actions/checkout@v4
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  version: latest
             - name: 设置 node.js
               uses: actions/setup-node@v4
               with:
                   node-version: 20
-                  cache: npm
-            - name: 安装 npm 依赖
-              run: npm install
+                  cache: pnpm
+            - name: 安装 pnpm 依赖
+              run: pnpm install
             - name: 运行清理者
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
