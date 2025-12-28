@@ -122,97 +122,90 @@ const { createHash } = require("crypto");
 			const userPrefix = Buffer.from(
 				`MoegirlPediaUserQQHash-${u}-`
 			).length;
-			const skippedFormat1 = userPrefix > 45;
-			const formats = skippedFormat1 ? [0] : [1, 0];
-			if (skippedFormat1)
+			if (userPrefix > 45) {
 				console.log(
-					`用户名过长 (${userPrefix} bytes)，将跳过 format 1`
+					`用户名过长 (${userPrefix} bytes)，将回退到 Crypto`
 				);
-			for (const format of formats) {
-				await execAsync(
-					'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
-				).catch(() => {});
-				const prefix = `MoegirlPediaUserQQHash-${
-					format ? `${u}-` : ""
-				}`;
-				const preBytes = Buffer.from(prefix).length + 5;
-				const mask = prefix + "?d".repeat(10);
-				await writeFile("hashcat.mask", mask);
-				console.log(`Hashcat: format ${format}`);
-				const hashcatProcess = exec(
-					`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 4 --increment --increment-min ${preBytes} --increment-max ${
-						preBytes + 5
-					} hashcat.hex hashcat.mask`,
-					{ maxBuffer: 50 * 1024 * 1024 }
+				return false;
+			}
+			await execAsync(
+				'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
+			).catch(() => {});
+			const prefix = `MoegirlPediaUserQQHash-${u}-`;
+			const preBytes = Buffer.from(prefix).length + 5;
+			const mask = prefix + "?d".repeat(10);
+			await writeFile("hashcat.mask", mask);
+			console.log("Hashcat: ");
+			const hashcatProcess = exec(
+				`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 4 --increment --increment-min ${preBytes} --increment-max ${
+					preBytes + 5
+				} hashcat.hex hashcat.mask`,
+				{ maxBuffer: 50 * 1024 * 1024 }
+			);
+			execAsync(
+				`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
+			).catch(() => {});
+			const result = await new Promise(resolve => {
+				let stdout = "",
+					stderr = "";
+				hashcatProcess.stdout.on("data", d => (stdout += d));
+				hashcatProcess.stderr.on("data", d => (stderr += d));
+				hashcatProcess.on("close", code =>
+					resolve({ stdout, stderr, code })
 				);
-				execAsync(
-					`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
-				).catch(() => {});
-				const result = await new Promise(resolve => {
-					let stdout = "",
-						stderr = "";
-					hashcatProcess.stdout.on("data", d => (stdout += d));
-					hashcatProcess.stderr.on("data", d => (stderr += d));
-					hashcatProcess.on("close", code =>
-						resolve({ stdout, stderr, code })
-					);
-					hashcatProcess.on("error", e => resolve(e));
-				});
-				if (result.stdout && result.stdout.includes("Skipping mask")) {
-					continue;
-				}
-				if (
-					result.code != null &&
-					result.code !== 0 &&
-					result.code !== 1
-				) {
-					throw result;
-				}
-				const { stdout } = await execAsync(
-					`hashcat --show -m 17600 hashcat.hex`,
-					{ maxBuffer: 50 * 1024 * 1024 }
-				);
-				const lines = stdout.split("\n");
-				const prefixes = [
-					`MoegirlPediaUserQQHash-${u}-`,
-					"MoegirlPediaUserQQHash-",
-				];
-				for (const line of lines) {
-					if (line.startsWith(h + ":")) {
-						const password = line.slice(129).trim();
-						if (!password) continue;
-						for (const p of prefixes) {
-							if (!password.startsWith(p)) continue;
-							const n_str = password.slice(p.length);
-							const n = parseInt(n_str);
-							if (isNaN(n)) continue;
-							console.log(`QQ：${n}`);
-							QQHash[u].Q = n;
-							await writeFile(fp, JSON.stringify(QQHash));
-							found = true;
-							return skippedFormat1;
-						}
+				hashcatProcess.on("error", e => resolve(e));
+			});
+			if (result.stdout && result.stdout.includes("Skipping mask")) {
+				return;
+			}
+			if (result.code != null && result.code !== 0 && result.code !== 1) {
+				throw result;
+			}
+			const { stdout } = await execAsync(
+				`hashcat --show -m 17600 hashcat.hex`,
+				{ maxBuffer: 50 * 1024 * 1024 }
+			);
+			const lines = stdout.split("\n");
+			const prefixes = [
+				`MoegirlPediaUserQQHash-${u}-`,
+				"MoegirlPediaUserQQHash-",
+			];
+			for (const line of lines) {
+				if (line.startsWith(h + ":")) {
+					const password = line.slice(129).trim();
+					if (!password) continue;
+					for (const p of prefixes) {
+						if (!password.startsWith(p)) continue;
+						const n_str = password.slice(p.length);
+						const n = parseInt(n_str);
+						if (isNaN(n)) continue;
+						console.log(`QQ：${n}`);
+						QQHash[u].Q = n;
+						await writeFile(fp, JSON.stringify(QQHash));
+						found = true;
+						return;
 					}
 				}
 			}
-			return skippedFormat1;
+			return true;
 		};
-		const runRangeCrypto = async (st, ed, format = 1) => {
+		const runRangeCrypto = async (st, ed) => {
 			return new Promise(res => {
 				const nw = require("os").cpus().length,
 					cs = Math.ceil((ed - st + 1) / nw),
 					ws = [];
 				let completed = 0,
-					terminated = false;
+					terminated = false,
+					found_range = false;
 				const checkComplete = () => {
 					completed++;
-					if (completed === ws.length) res();
+					if (completed === ws.length) res(found_range);
 				};
 				for (let i = 0; i < nw; i++) {
 					const s = st + i * cs,
 						e = Math.min(st + (i + 1) * cs - 1, ed),
 						w = new Worker(__filename, {
-							workerData: { h, u: format ? u : "", s, e },
+							workerData: { h, u, s, e },
 						});
 					ws.push(w);
 					w.on("message", async m => {
@@ -223,8 +216,9 @@ const { createHash } = require("crypto");
 						console.log(`QQ：${QQ}`);
 						QQHash[u].Q = QQ;
 						await writeFile(fp, JSON.stringify(QQHash));
+						found_range = true;
 						found = true;
-						res();
+						res(true);
 					});
 					w.on("error", e => console.error(e));
 					w.on("exit", c => {
@@ -241,32 +235,22 @@ const { createHash } = require("crypto");
 			needCpuFallback = false;
 		if (hasHashcat) {
 			try {
-				console.log("Starting Hashcat...");
-				needCpuFallback = await runRangeHashcat();
+				const result = await runRangeHashcat();
+				if (!result) {
+					needCpuFallback = true;
+				}
 			} catch (e) {
 				console.error("Hashcat failed, fallback to Crypto:", e);
 				needCpuFallback = true;
 			}
-			if (!found && needCpuFallback) {
-				console.log("Hashcat skipped format 1, fallback to Crypto");
-				for (const [st, ed] of cryptoRanges) {
-					console.log(`Starting: ${st}~${ed}`);
-					await runRangeCrypto(st, ed);
-					if (found) break;
-					console.log(`Completed: ${st}~${ed}`);
-				}
-			}
-		} else {
-			console.log("Hashcat not found, using Crypto...");
-			for (const format of [1, 0]) {
-				console.log(`Crypto: format ${format}`);
-				for (const [st, ed] of cryptoRanges) {
-					console.log(`Starting: ${st}~${ed}`);
-					await runRangeCrypto(st, ed, format);
-					if (found) break;
-					console.log(`Completed: ${st}~${ed}`);
-				}
-				if (found) break;
+		}
+		if (!found && (needCpuFallback || !hasHashcat)) {
+			console.log("Crypto: ");
+			for (const [st, ed] of cryptoRanges) {
+				console.log(`Starting: ${st}~${ed}`);
+				const found_in_range = await runRangeCrypto(st, ed);
+				if (found_in_range) break;
+				console.log(`Completed: ${st}~${ed}`);
 			}
 		}
 		await writeFile(fp, JSON.stringify(QQHash));
