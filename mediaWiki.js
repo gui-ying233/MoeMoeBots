@@ -61,7 +61,7 @@ class Api {
 	/**
 	 * @private
 	 * @param { Response<ApiResponse> } res
-	 * @returns { any }
+	 * @returns { Promise<any | string> }
 	 */
 	#parseRes(res) {
 		res.headers
