@@ -16,6 +16,7 @@ const {
 		MOEGIRL_UK_BOTPASSWORD,
 		PRTS_BOTUSERNAME,
 		PRTS_BOTPASSWORD,
+		BWIKI_SESSDATA,
 	},
 } = process;
 module.exports = {
@@ -91,5 +92,23 @@ module.exports = {
 		url: "https://prts.wiki/api.php",
 		botUsername: PRTS_BOTUSERNAME,
 		botPassword: PRTS_BOTPASSWORD,
+	},
+	ft: {
+		url: "https://wiki.biligame.com/ft/api.php",
+		cookie: {
+			SESSDATA: BWIKI_SESSDATA,
+		},
+	},
+	xytx: {
+		url: "https://wiki.biligame.com/xytx/api.php",
+		cookie: {
+			SESSDATA: BWIKI_SESSDATA,
+		},
+	},
+	klbq: {
+		url: "https://wiki.biligame.com/klbq/api.php",
+		cookie: {
+			SESSDATA: BWIKI_SESSDATA,
+		},
 	},
 };
