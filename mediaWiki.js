@@ -67,7 +67,10 @@ class Api {
 		res.headers
 			.getSetCookie()
 			.forEach(c => (cookies[c.split("=")[0]] = c.split(/[=;]/)[1]));
-		return res.json();
+		return res.headers.get("content-type").split(";")[0] ===
+			"application/json"
+			? res.json()
+			: res.text();
 	}
 	/**
 	 * @private
