@@ -115,8 +115,8 @@ class Api {
 	}
 	/**
 	 * @async
-	 * @param { ApiTokenType } [type]
-	 * @param { boolean } [newToken]
+	 * @param { ApiTokenType } [type=csrf]
+	 * @param { boolean } [newToken=false]
 	 * @returns { string | Promise<string> }
 	 * @throws { TypeError }
 	 */
@@ -323,7 +323,7 @@ class Rest {
 	/**
 	 * @param { string } path
 	 * @param { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } query
-	 * @param { HeadersInit } [headers]
+	 * @param { HeadersInit } [headers={}]
 	 * @returns { Promise<Response> }
 	 */
 	async head(path, query, headers = {}) {
@@ -340,7 +340,7 @@ class Rest {
 	/**
 	 * @param { string } path
 	 * @param { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } query
-	 * @param { HeadersInit } [headers]
+	 * @param { HeadersInit } [headers={}]
 	 * @returns { Promise<RestResponse> }
 	 */
 	async get(path, query, headers = {}) {
@@ -352,7 +352,7 @@ class Rest {
 	/**
 	 * @param { string } path
 	 * @param { { string: any } } body
-	 * @param { HeadersInit } [headers]
+	 * @param { HeadersInit } [headers={}]
 	 * @returns { Promise<RestResponse> }
 	 */
 	async post(path, body, headers = {}) {
@@ -378,7 +378,7 @@ class Rest {
 	/**
 	 * @param { string } path
 	 * @param { Record<string, any> } body
-	 * @param { HeadersInit } [headers]
+	 * @param { HeadersInit } [headers={}]
 	 * @returns { Promise<RestResponse> }
 	 */
 	async delete(path, body, headers = {}) {
