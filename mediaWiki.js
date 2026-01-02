@@ -37,15 +37,15 @@ class Api {
 	/**
 	 * @param { { url: URL["href"]; botUsername: string; botPassword: string; cookie:{ string: string } } } config
 	 */
-	constructor({ url, botUsername, botPassword, cookie = {} }) {
-		url = new URL(url);
-		url.hash = "";
-		url.search = "";
-		this.#api = url.href;
+	constructor({ api, botUsername, botPassword, cookie = {} }) {
+		api = new URL(api);
+		api.hash = "";
+		api.search = "";
+		this.#api = api.href;
 		const headers = {
-			referer: url.href,
-			"user-agent": `${pack.name || ""}/${pack.version || ""} (${
-				pack.repository?.url || ""
+			referer: api.href,
+			"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
+				pack.homepage || pack.repository?.url || pack?.bugs?.url || ""
 			}; ${pack.bugs?.email || ""}) `,
 			cookie: cookies,
 		};
@@ -261,13 +261,13 @@ class Rest {
 	/**
 	 * @param { { url: URL["href"]; cookie:{ string: string } } } config
 	 */
-	constructor({ url, cookie = {} }) {
-		url = new URL(url);
-		url.hash = "";
-		url.search = "";
-		this.#rest = url.href;
+	constructor({ rest, cookie = {} }) {
+		rest = new URL(rest);
+		rest.hash = "";
+		rest.search = "";
+		this.#rest = rest.href;
 		const headers = {
-			referer: url.href,
+			referer: rest.href,
 			"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
 				pack.homepage || pack.repository?.url || pack?.bugs?.url || ""
 			}; ${pack.bugs?.email || ""}) `,

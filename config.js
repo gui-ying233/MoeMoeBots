@@ -14,6 +14,8 @@ const {
 		MOEGIRL_MOEGIRLSSOTOKEN,
 		MOEGIRL_UK_BOTUSERNAME,
 		MOEGIRL_UK_BOTPASSWORD,
+		MOEGIRL_ICU_BOTUSERNAME,
+		MOEGIRL_ICU_BOTPASSWORD,
 		PRTS_BOTUSERNAME,
 		PRTS_BOTPASSWORD,
 		BWIKI_SESSDATA,
@@ -21,7 +23,8 @@ const {
 } = process;
 module.exports = {
 	zh: {
-		url: "https://zh.moegirl.org.cn/api.php",
+		api: "https://zh.moegirl.org.cn/api.php",
+		rest: "https://zh.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTPASSWORD,
 		cookie: {
@@ -30,7 +33,8 @@ module.exports = {
 		},
 	},
 	mzh: {
-		url: "https://mzh.moegirl.org.cn/api.php",
+		api: "https://mzh.moegirl.org.cn/api.php",
+		rest: "https://mzh.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTPASSWORD,
 		cookie: {
@@ -39,7 +43,8 @@ module.exports = {
 		},
 	},
 	mobile: {
-		url: "https://mobile.moegirl.org.cn/api.php",
+		api: "https://mobile.moegirl.org.cn/api.php",
+		rest: "https://mobile.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTUSERNAME,
 		cookie: {
@@ -48,7 +53,8 @@ module.exports = {
 		},
 	},
 	cm: {
-		url: "https://commons.moegirl.org.cn/api.php",
+		api: "https://commons.moegirl.org.cn/api.php",
+		rest: "https://commons.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_CM_BOTUSERNAME,
 		botPassword: MOEGIRL_CM_BOTPASSWORD,
 		cookie: {
@@ -57,7 +63,8 @@ module.exports = {
 		},
 	},
 	en: {
-		url: "https://en.moegirl.org.cn/api.php",
+		api: "https://en.moegirl.org.cn/api.php",
+		rest: "https://en.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_EN_BOTUSERNAME,
 		botPassword: MOEGIRL_EN_BOTPASSWORD,
 		cookie: {
@@ -66,7 +73,8 @@ module.exports = {
 		},
 	},
 	ja: {
-		url: "https://ja.moegirl.org.cn/api.php",
+		api: "https://ja.moegirl.org.cn/api.php",
+		rest: "https://ja.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_JA_BOTUSERNAME,
 		botPassword: MOEGIRL_JA_BOTPASSWORD,
 		cookie: {
@@ -75,7 +83,8 @@ module.exports = {
 		},
 	},
 	library: {
-		url: "https://library.moegirl.org.cn/api.php",
+		api: "https://library.moegirl.org.cn/api.php",
+		rest: "https://library.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_LIBRARY_BOTUSERNAME,
 		botPassword: MOEGIRL_LIBRARY_BOTPASSWORD,
 		cookie: {
@@ -84,31 +93,34 @@ module.exports = {
 		},
 	},
 	uk: {
-		url: "https://moegirl.uk/api.php",
+		api: "https://moegirl.uk/api.php",
+		rest: "https://moegirl.uk/rest.php/v1/",
 		botUsername: MOEGIRL_UK_BOTUSERNAME,
 		botPassword: MOEGIRL_UK_BOTPASSWORD,
 	},
+	icu: {
+		api: "https://moegirl.icu/api.php",
+		rest: "https://moegirl.icu/rest.php/v1/",
+		botUsername: MOEGIRL_ICU_BOTUSERNAME,
+		botPassword: MOEGIRL_ICU_BOTPASSWORD,
+	},
 	prts: {
-		url: "https://prts.wiki/api.php",
+		api: "https://prts.wiki/api.php",
+		rest: "https://prts.wiki/rest.php/v1/",
 		botUsername: PRTS_BOTUSERNAME,
 		botPassword: PRTS_BOTPASSWORD,
 	},
-	ft: {
-		url: "https://wiki.biligame.com/ft/api.php",
-		cookie: {
-			SESSDATA: BWIKI_SESSDATA,
-		},
-	},
-	xytx: {
-		url: "https://wiki.biligame.com/xytx/api.php",
-		cookie: {
-			SESSDATA: BWIKI_SESSDATA,
-		},
-	},
-	klbq: {
-		url: "https://wiki.biligame.com/klbq/api.php",
-		cookie: {
-			SESSDATA: BWIKI_SESSDATA,
-		},
+	/**
+	 * @param {string} wiki
+	 * @returns { { api: URL["href"]; cookie:{ SESSDATA: string } } }
+	 */
+	bwiki: wiki => {
+		return {
+			api: `https://wiki.biligame.com/${wiki}/api.php`,
+			rest: `https://wiki.biligame.com/${wiki}/rest.php/v1/`,
+			cookie: {
+				SESSDATA: BWIKI_SESSDATA,
+			},
+		};
 	},
 };
