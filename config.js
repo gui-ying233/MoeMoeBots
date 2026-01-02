@@ -112,7 +112,7 @@ module.exports = {
 	},
 	/**
 	 * @param {string} wiki
-	 * @returns { { api: URL["href"]; cookie:{ SESSDATA: string } } }
+	 * @returns { { api: URL["href"]; rest: URL["href"]; cookie:{ SESSDATA: string } } }
 	 */
 	bwiki: wiki => {
 		return {
