@@ -175,17 +175,26 @@ class Api {
 						async,
 					}).forEach(([k, v]) => body.append(k, v));
 					body.append("chunk", new Blob([chunk]));
-					const r = await fetch(this.#api, {
-						...this.#cookies2string(this.#init.post),
-						body,
-					}).then(this.#parseRes.bind(this));
-					parameters.filekey = r?.upload?.filekey;
-					if (r?.upload?.result === "Success") {
-						return res(delete parameters.offset);
-					}
-					if (r?.upload?.result !== "Continue")
-						return rej(new Error(JSON.stringify(r)));
-					parameters.offset = r.upload.offset;
+					const upload = async () => {
+						const r = await fetch(this.#api, {
+							...this.#cookies2string(this.#init.post),
+							body,
+						}).then(this.#parseRes.bind(this));
+						if (r?.error?.code === "badtoken") {
+							console.warn("badtoken");
+							await this.getToken("csrf", true);
+							return await upload();
+						}
+						parameters.filekey = r?.upload?.filekey;
+						if (r?.upload?.result === "Success")
+							return res(delete parameters.offset);
+						if (r?.upload?.result !== "Continue")
+							return rej(
+								new Error(JSON.stringify(r?.error ?? r))
+							);
+						parameters.offset = r.upload.offset;
+					};
+					await upload();
 					file.resume();
 				});
 				file.on("error", rej);
@@ -222,7 +231,11 @@ class Api {
 		if (r?.login?.result)
 			throw new Error(
 				JSON.stringify(
-					r?.login?.reason ?? r?.login?.result ?? r?.login ?? r
+					r?.login?.reason ??
+						r?.login?.result ??
+						r?.login ??
+						r?.error ??
+						r
 				)
 			);
 		throw new Error();
