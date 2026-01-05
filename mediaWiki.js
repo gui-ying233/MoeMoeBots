@@ -180,7 +180,7 @@ class Api {
 							...this.#cookies2string(this.#init.post),
 							body,
 						}).then(this.#parseRes.bind(this));
-						if (r?.error?.code === "badtoken") {
+						if (async && r?.error?.code === "badtoken") {
 							console.warn("badtoken");
 							await this.getToken("csrf", true);
 							return await upload();
