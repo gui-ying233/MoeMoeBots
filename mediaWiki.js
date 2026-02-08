@@ -97,9 +97,11 @@ class Api {
 				.filter(
 					([k, v]) =>
 						Object.keys(this.#parameters).includes(k) ||
-						(v !== false && v !== null && v !== undefined)
+						(v !== false && v !== null && v !== undefined),
 				)
-				.map(([k, v]) => (Array.isArray(v) ? [k, v.join("|")] : [k, v]))
+				.map(([k, v]) =>
+					Array.isArray(v) ? [k, v.join("|")] : [k, v],
+				),
 		);
 	}
 	/**
@@ -113,7 +115,7 @@ class Api {
 				...this.#parameters,
 				...this.#listToPipe(parameters),
 			})}`,
-			this.#cookies2string(this.#init.get)
+			this.#cookies2string(this.#init.get),
 		).then(this.#parseRes.bind(this));
 	}
 	/**
@@ -125,8 +127,8 @@ class Api {
 	 */
 	async getToken(type = "csrf", newToken = false) {
 		if (typeof type !== "string") throw new TypeError("types");
-		if (this.#tokens instanceof Promise) this.#tokens = await this.#tokens;
 		const key = `${type}token`;
+		if (this.#tokens instanceof Promise) return (await this.#tokens)[key];
 		if (
 			newToken ||
 			!this.#tokens ||
@@ -148,7 +150,7 @@ class Api {
 			}).then(res => res.query.tokens);
 			this.#tokens = await this.#tokens;
 		}
-		return await this.#tokens[key];
+		return this.#tokens[key];
 	}
 	/**
 	 * @async
@@ -190,7 +192,7 @@ class Api {
 							return res(delete parameters.offset);
 						if (r?.upload?.result !== "Continue")
 							return rej(
-								new Error(JSON.stringify(r?.error ?? r))
+								new Error(JSON.stringify(r?.error ?? r)),
 							);
 						parameters.offset = r.upload.offset;
 					};
@@ -235,8 +237,8 @@ class Api {
 						r?.login?.result ??
 						r?.login ??
 						r?.error ??
-						r
-				)
+						r,
+				),
 			);
 		throw new Error();
 	}
@@ -345,7 +347,7 @@ class Rest {
 	async head(path, query, headers = {}) {
 		return await fetch(
 			`${this.#rest}${path}?${new URLSearchParams(query)}`,
-			{ ...this.#init.head, ...headers }
+			{ ...this.#init.head, ...headers },
 		).then(res => {
 			res.headers
 				.getSetCookie()
@@ -362,7 +364,7 @@ class Rest {
 	async get(path, query, headers = {}) {
 		return await fetch(
 			`${this.#rest}${path}?${new URLSearchParams(query)}`,
-			{ ...this.#cookies2string(this.#init.get), ...headers }
+			{ ...this.#cookies2string(this.#init.get), ...headers },
 		).then(this.#parseRes.bind(this));
 	}
 	/**
