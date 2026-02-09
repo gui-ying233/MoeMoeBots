@@ -149,12 +149,8 @@ class Api {
 					"watch",
 				],
 			}).then(res => {
-				try {
-					return res.query.tokens;
-				} catch (e) {
-					if (e instanceof TypeError) console.error(res);
-					throw e;
-				}
+				if (!res?.query?.tokens) console.error(res);
+				return res.query.tokens;
 			});
 			this.#tokens = await this.#tokens;
 		}
