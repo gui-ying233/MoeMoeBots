@@ -1,5 +1,6 @@
 "use strict";
 /**
+ * @module mediaWiki
  * @import { ReadStream } "fs"
  * @import { ApiResponse } "types-mediawiki/mw/Api"
  * @import { RestResponse } "types-mediawiki/mw/Rest"
@@ -147,7 +148,14 @@ class Api {
 					"userrights",
 					"watch",
 				],
-			}).then(res => res.query.tokens);
+			}).then(res => {
+				try {
+					return res.query.tokens;
+				} catch (e) {
+					if (e instanceof TypeError) console.error(res);
+					throw e;
+				}
+			});
 			this.#tokens = await this.#tokens;
 		}
 		return this.#tokens[key];
