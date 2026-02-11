@@ -244,7 +244,7 @@ class Api {
 						r,
 				),
 			);
-		throw new Error();
+		throw new Error(r);
 	}
 	/**
 	 * @async
