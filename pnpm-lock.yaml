@@ -7,10 +7,7 @@ settings:
 importers:
 
   .:
-    devDependencies:
-      '@dotenvx/dotenvx':
-        specifier: latest
-        version: 1.52.0
+    dependencies:
       encoding-japanese:
         specifier: latest
         version: 2.2.0
@@ -20,6 +17,10 @@ importers:
       wikiparser-node:
         specifier: latest
         version: 1.35.1
+    devDependencies:
+      '@dotenvx/dotenvx':
+        specifier: latest
+        version: 1.52.0
 
 packages:
 
