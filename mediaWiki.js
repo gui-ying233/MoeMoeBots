@@ -4,7 +4,7 @@
  * @import { ReadStream } "fs"
  * @import { ApiResponse } "types-mediawiki/mw/Api"
  * @import { RestResponse } "types-mediawiki/mw/Rest"
- * @import { ApiLoginParams, ApiTokenType, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
+ * @import { ApiLoginParams, ApiTokenType, UnknownApiParams, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
  * @import "types-mediawiki/mw/Rest"
  */
 
@@ -36,7 +36,7 @@ class Api {
 	/** @type { { string: string } } */
 	#defaultCookie = {};
 	/**
-	 * @param { { url: URL["href"]; botUsername: string; botPassword: string; cookie:{ string: string } } } config
+	 * @param { { api: URL["href"]; botUsername: string; botPassword: string; cookie:{ string: string } } } config
 	 */
 	constructor({ api, botUsername, botPassword, cookie = {} }) {
 		api = new URL(api);
@@ -61,8 +61,8 @@ class Api {
 	}
 	/**
 	 * @private
-	 * @param { Response<ApiResponse> } res
-	 * @returns { Promise<any | string> }
+	 * @param { Response } res
+	 * @returns { Promise<ApiResponse | string> }
 	 */
 	#parseRes(res) {
 		res.headers
@@ -89,7 +89,7 @@ class Api {
 	}
 	/**
 	 * @private
-	 * @param { ApiParams } parameters
+	 * @param { UnknownApiParams } parameters
 	 * @returns { ApiParams }
 	 */
 	#listToPipe(parameters) {
@@ -98,7 +98,7 @@ class Api {
 				.filter(
 					([k, v]) =>
 						Object.keys(this.#parameters).includes(k) ||
-						(v !== false && v !== null && v !== undefined),
+						![false, null, undefined].includes(v),
 				)
 				.map(([k, v]) =>
 					Array.isArray(v) ? [k, v.join("|")] : [k, v],
@@ -108,7 +108,7 @@ class Api {
 	/**
 	 * @async
 	 * @param { ApiParams } parameters
-	 * @returns { Promise<ApiResponse> }
+	 * @returns { Promise<ApiResponse | string> }
 	 */
 	async get(parameters) {
 		return await fetch(
@@ -149,7 +149,6 @@ class Api {
 					"watch",
 				],
 			}).then(res => {
-				if (!res?.query?.tokens) console.error(res);
 				return res.query.tokens;
 			});
 			this.#tokens = await this.#tokens;
@@ -159,7 +158,7 @@ class Api {
 	/**
 	 * @async
 	 * @param { ApiParams & { file?: ReadStream } } parameters
-	 * @returns { Promise<ApiResponse> }
+	 * @returns { Promise<ApiResponse | string> }
 	 * @throws { TypeError }
 	 */
 	async post(parameters) {
@@ -251,7 +250,6 @@ class Api {
 	 * @param { ApiLoginParams["lgname"] } [lgname]
 	 * @param { ApiLoginParams["lgpassword"] } [lgpassword]
 	 * @returns { Promise<ApiResponse> }
-	 * @throws { Error }
 	 */
 	async login(lgname = this.#botUsername, lgpassword = this.#botPassword) {
 		return await this.#login(lgname, lgpassword);
@@ -259,6 +257,7 @@ class Api {
 	/**
 	 * @async
 	 * @returns { Promise<ApiResponse> }
+	 * @throws { TypeError }
 	 */
 	async logout() {
 		const r = await this.post({
@@ -268,6 +267,7 @@ class Api {
 		this.#tokens = null;
 		Object.keys(cookies).forEach(k => delete cookies[k]);
 		Object.assign(cookies, this.#defaultCookie);
+		if (typeof r === "string") new TypeError(r);
 		return r;
 	}
 }
@@ -281,7 +281,7 @@ class Rest {
 	/** @type { { string: string } } */
 	#defaultCookie = {};
 	/**
-	 * @param { { url: URL["href"]; cookie:{ string: string } } } config
+	 * @param { { rest: URL["href"]; cookie:{ string: string } } } config
 	 */
 	constructor({ rest, cookie = {} }) {
 		rest = new URL(rest);
@@ -316,8 +316,8 @@ class Rest {
 	}
 	/**
 	 * @private
-	 * @param { Response<ApiResponse> } res
-	 * @returns { Promise<any | string> }
+	 * @param { Response } res
+	 * @returns { Promise<RestResponse | string> }
 	 */
 	#parseRes(res) {
 		res.headers
@@ -363,7 +363,7 @@ class Rest {
 	 * @param { string } path
 	 * @param { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } query
 	 * @param { HeadersInit } [headers={}]
-	 * @returns { Promise<RestResponse> }
+	 * @returns { Promise<RestResponse | string> }
 	 */
 	async get(path, query, headers = {}) {
 		return await fetch(
@@ -375,7 +375,7 @@ class Rest {
 	 * @param { string } path
 	 * @param { { string: any } } body
 	 * @param { HeadersInit } [headers={}]
-	 * @returns { Promise<RestResponse> }
+	 * @returns { Promise<RestResponse | string> }
 	 */
 	async post(path, body, headers = {}) {
 		return await fetch(`${this.#rest}${path}`, {
@@ -388,7 +388,7 @@ class Rest {
 	 * @param { string } path
 	 * @param { { string: any } } body
 	 * @param { HeadersInit } [headers]
-	 * @returns { Promise<RestResponse> }
+	 * @returns { Promise<RestResponse | string> }
 	 */
 	async put(path, body, headers = {}) {
 		return await fetch(`${this.#rest}${path}`, {
@@ -401,7 +401,7 @@ class Rest {
 	 * @param { string } path
 	 * @param { Record<string, any> } body
 	 * @param { HeadersInit } [headers={}]
-	 * @returns { Promise<RestResponse> }
+	 * @returns { Promise<RestResponse | string> }
 	 */
 	async delete(path, body, headers = {}) {
 		return await fetch(`${this.#rest}${path}`, {
