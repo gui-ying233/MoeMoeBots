@@ -45,7 +45,7 @@ const { existsSync } = require("fs");
 		});
 		const root = WikiParser.parse(content);
 		const originalName = root.querySelector(
-			"parameter#原名 > parameter-value"
+			"parameter#原名 > parameter-value",
 		);
 		await Promise.all(
 			originalName
@@ -53,7 +53,7 @@ const { existsSync } = require("fs");
 				.map(async ({ name: template }) => {
 					if (
 						existsSync(
-							`template/zh/${template.replaceAll(":", "꞉")}.wiki`
+							`template/zh/${template.replaceAll(":", "꞉")}.wiki`,
 						)
 					)
 						return;
@@ -75,18 +75,18 @@ const { existsSync } = require("fs");
 					});
 					await writeFile(
 						`template/zh/${template.replaceAll(":", "꞉")}.wiki`,
-						wikitext
+						wikitext,
 					);
 					WikiParser.templates.set(
 						`${template.replace("Template:", "template:")}`,
-						wikitext
+						wikitext,
 					);
-				})
+				}),
 		);
 		const gameName = new JSDOM(
 			WikiParser.parse(
-				`<div id="gameName">${originalName.toString().trim()}</div>`
-			).toHtml()
+				`<div id="gameName">${originalName.toString().trim()}</div>`,
+			).toHtml(),
 		).window.document.getElementById("gameName").textContent;
 		console.log(`原名：${gameName}`);
 		let enName;
@@ -110,7 +110,7 @@ const { existsSync } = require("fs");
 		};
 		root.querySelectorAll("template#Template:游戏分级 > parameter");
 		for (const param of root.querySelectorAll(
-			"template#Template:游戏分级 > parameter"
+			"template#Template:游戏分级 > parameter",
 		)) {
 			switch (
 				`${param.name}-${param
@@ -138,25 +138,25 @@ const { existsSync } = require("fs");
 											srprop: "",
 											srinterwiki: 1,
 										})
-									).query.search[0].title
+									).query.search[0].title,
 								),
 								{
 									from: "UNICODE",
 									to: "EUC-JP",
 									type: "string",
-								}
-							)
-						)}`
+								},
+							),
+						)}`,
 					)
 						.then(res => res.arrayBuffer())
 						.then(buf => new TextDecoder("EUC-JP").decode(buf))
 						.then(html =>
 							new JSDOM(html).window.document
 								.querySelector(
-									"body > table > tbody > tr:last-of-type > td:last-of-type > table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > img"
+									"body > table > tbody > tr:last-of-type > td:last-of-type > table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > img",
 								)
 								?.alt?.trim()
-								.toUpperCase()
+								.toUpperCase(),
 						);
 					console.log(`CERO-${ceroRank ?? "EX"}`);
 					if (!ceroRank) break;
@@ -175,7 +175,7 @@ const { existsSync } = require("fs");
 									"application/x-www-form-urlencoded",
 							},
 							body: `action=search_rating&args%5BsearchKeyword%5D=${await getEnName()}&args%5BsearchType%5D=All&args%5Bpg%5D=1&args%5Bplatform%5D%5B%5D=All+Platforms&args%5Brating%5D%5B%5D=E&args%5Brating%5D%5B%5D=E10%2B&args%5Brating%5D%5B%5D=T&args%5Brating%5D%5B%5D=M&args%5Brating%5D%5B%5D=AO&args%5Bdescriptor%5D%5B%5D=All+Content&args%5Bielement%5D%5B%5D=all`,
-						}
+						},
 					).then(res => res.json());
 					if (
 						!found ||
@@ -198,7 +198,7 @@ const { existsSync } = require("fs");
 					const uskRank = await fetch(
 						`https://usk.de/en/?${new URLSearchParams({
 							s: await getEnName(),
-						})}`
+						})}`,
 					)
 						.then(res => res.text())
 						.then(html => {
@@ -207,15 +207,16 @@ const { existsSync } = require("fs");
 									...[
 										...[
 											...new JSDOM(
-												html
+												html,
 											).window.document.body.getElementsByClassName(
-												"usktitle-card-game-list-title"
+												"usktitle-card-game-list-title",
 											),
 										].filter(
 											node =>
 												node.getElementsByClassName(
-													"usktitle-card-game-list-platform"
-												)[0].textContent !== "(Trailer)"
+													"usktitle-card-game-list-platform",
+												)[0].textContent !==
+												"(Trailer)",
 										)[0].childNodes,
 									]
 										.filter(
@@ -223,16 +224,16 @@ const { existsSync } = require("fs");
 												node.nodeType === 3 &&
 												node.data
 													.trim()
-													.includes(gameName)
+													.includes(gameName),
 										)[0]
 										.parentNode.parentNode.parentNode.getElementsByClassName(
-											"usktitle-card-game-list-icon"
+											"usktitle-card-game-list-icon",
 										)[0].classList,
 								]
 									.filter(cls =>
 										cls.startsWith(
-											"usktitle-card-game-list-icon-"
-										)
+											"usktitle-card-game-list-icon-",
+										),
 									)[0]
 									.slice(29) - 1
 							];
@@ -277,7 +278,7 @@ const { existsSync } = require("fs");
 			console.table(result.edit);
 			if (result.edit.nochange !== true) {
 				console.info(
-					`https://zh.moegirl.org.cn/Special:Diff/${result.edit.oldrevid}/${result.edit.newrevid}`
+					`https://zh.moegirl.org.cn/Special:Diff/${result.edit.oldrevid}/${result.edit.newrevid}`,
 				);
 			}
 		};

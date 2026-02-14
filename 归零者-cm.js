@@ -28,7 +28,7 @@ const api = new mw.Api(require("./config").cm);
 		console.table(r.edit);
 		if (r.edit.nochange !== true)
 			console.info(
-				`https://commons.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+				`https://commons.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`,
 			);
 	};
 	[

@@ -9,7 +9,7 @@ const rest = new mw.Rest(require("./config").mobile);
 			"search/page",
 			new URLSearchParams({
 				q: "明日方舟",
-			})
-		)
+			}),
+		),
 	);
 })();

@@ -25,7 +25,7 @@ const { createHash } = require("crypto");
 			th = Buffer.from(h, "hex"),
 			prefix = u ? `${u}-` : "",
 			fs = createHash("sha3-512").update(
-				`MoegirlPediaUserQQHash-${prefix}`
+				`MoegirlPediaUserQQHash-${prefix}`,
 			);
 		for (let n = s; n <= e; n++) {
 			if (!fs.copy().update(String(n)).digest().equals(th)) continue;
@@ -35,7 +35,7 @@ const { createHash } = require("crypto");
 		process.exit(0);
 	}
 	execAsync(
-		`powershell -Command "(Get-Process -Id ${process.pid}).PriorityClass = 'High'"`
+		`powershell -Command "(Get-Process -Id ${process.pid}).PriorityClass = 'High'"`,
 	).catch(() => {});
 	const fp = path.join("..", "QQHash", "QQHash.json");
 	const QQHash = require(fp);
@@ -44,7 +44,7 @@ const { createHash } = require("crypto");
 		hasHashcat = false;
 	try {
 		console.log(
-			`Hashcat: ${(await execAsync("hashcat --version")).stdout.trim()}`
+			`Hashcat: ${(await execAsync("hashcat --version")).stdout.trim()}`,
 		);
 		hasHashcat = true;
 	} catch {}
@@ -62,7 +62,7 @@ const { createHash } = require("crypto");
 		r.query.pages[0].transcludedin.forEach(
 			p =>
 				(pages[WikiParser.normalizeTitle(p.title).toRootPage().main] =
-					p.pageid)
+					p.pageid),
 		);
 		ticontinue = r?.continue?.ticontinue;
 	} while (ticontinue);
@@ -77,7 +77,7 @@ const { createHash } = require("crypto");
 					rvprop: "content",
 					rvslots: "*",
 				})
-			).query.pages[0].revisions[0]?.slots.main.content
+			).query.pages[0].revisions[0]?.slots.main.content,
 		)
 			.querySelector("template#Template:QQHash > parameter#1")
 			.getValue()
@@ -120,16 +120,16 @@ const { createHash } = require("crypto");
 		];
 		const runRangeHashcat = async () => {
 			const userPrefix = Buffer.from(
-				`MoegirlPediaUserQQHash-${u}-`
+				`MoegirlPediaUserQQHash-${u}-`,
 			).length;
 			if (userPrefix > 45) {
 				console.log(
-					`用户名过长 (${userPrefix} bytes)，将回退到 Crypto`
+					`用户名过长 (${userPrefix} bytes)，将回退到 Crypto`,
 				);
 				return false;
 			}
 			await execAsync(
-				'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"'
+				'powershell -Command "Get-Process hashcat -ErrorAction SilentlyContinue | Stop-Process -Force"',
 			).catch(() => {});
 			const prefix = `MoegirlPediaUserQQHash-${u}-`;
 			const preBytes = Buffer.from(prefix).length + 5;
@@ -140,10 +140,10 @@ const { createHash } = require("crypto");
 				`hashcat --backend-ignore-opencl -m 17600 -a 3 -w 4 --increment --increment-min ${preBytes} --increment-max ${
 					preBytes + 5
 				} hashcat.hex hashcat.mask`,
-				{ maxBuffer: 50 * 1024 * 1024 }
+				{ maxBuffer: 50 * 1024 * 1024 },
 			);
 			execAsync(
-				`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`
+				`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`,
 			).catch(() => {});
 			const result = await new Promise(resolve => {
 				let stdout = "",
@@ -151,7 +151,7 @@ const { createHash } = require("crypto");
 				hashcatProcess.stdout.on("data", d => (stdout += d));
 				hashcatProcess.stderr.on("data", d => (stderr += d));
 				hashcatProcess.on("close", code =>
-					resolve({ stdout, stderr, code })
+					resolve({ stdout, stderr, code }),
 				);
 				hashcatProcess.on("error", e => resolve(e));
 			});
@@ -163,7 +163,7 @@ const { createHash } = require("crypto");
 			}
 			const { stdout } = await execAsync(
 				`hashcat --show -m 17600 hashcat.hex`,
-				{ maxBuffer: 50 * 1024 * 1024 }
+				{ maxBuffer: 50 * 1024 * 1024 },
 			);
 			const lines = stdout.split("\n");
 			const prefixes = [

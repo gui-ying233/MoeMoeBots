@@ -16,7 +16,7 @@ bot.login().then(async () => {
 				console.log(
 					`第${i + 1}个页面：${
 						result0.query.pages[0].links[i].title
-					}。`
+					}。`,
 				);
 				const result1 = await bot.doEdit({
 					title: result0.query.pages[0].links[i].title,

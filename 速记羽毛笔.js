@@ -38,7 +38,7 @@ const api = new mw.Api(require("./config").mzh);
 	};
 	for (let i = 1; i < pages.query.pages[0].links.length; i++) {
 		console.log(
-			`第${i + 1}个页面：${pages.query.pages[0].links[i].title}。`
+			`第${i + 1}个页面：${pages.query.pages[0].links[i].title}。`,
 		);
 		await edit(pages.query.pages[0].links[i].title);
 	}

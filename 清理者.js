@@ -29,14 +29,14 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 			console.log(`第${i + 1}个页面：${result1.query.pages[i].title}`);
 			if (
 				new RegExp(
-					/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//
+					/^(?:Template:Sandbox|Template:沙盒|模块:Sandbox)\//,
 				).test(result1.query.pages[i].title) ||
 				new RegExp(skipTitle).test(result1.query.pages[i].title)
 			) {
 				console.log("跳过页面");
 			} else if (
 				result1.query.pages[i].revisions[0].content.match(
-					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:施工中|[编編][辑輯]中|inuse).*?}}/gi
+					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:施工中|[编編][辑輯]中|inuse).*?}}/gi,
 				) !== null
 			) {
 				console.log("施工中");
@@ -48,7 +48,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 				) {
 					if (
 						result1.query.pages[i].revisions[0].content.search(
-							regex
+							regex,
 						) === -1
 					) {
 						console.warn("未找到匹配");
@@ -58,8 +58,8 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					const obj = result1.query.pages[i].revisions[0].content
 						.slice(
 							result1.query.pages[i].revisions[0].content.search(
-								regex
-							)
+								regex,
+							),
 						)
 						.split("");
 					for (let j = 0; j < obj.length; j++) {
@@ -89,7 +89,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 								i
 							].revisions[0].content.replace(
 								replaceText,
-								replace
+								replace,
 							),
 							summary: `自动修复[[${gcmtitle}]]中的页面`,
 							tags: "Bot",
@@ -111,7 +111,7 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 					console.table(result2.edit);
 					if (result2.edit.nochange !== true) {
 						console.info(
-							`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`
+							`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`,
 						);
 					}
 				};
@@ -121,26 +121,30 @@ async function cleaner(gcmtitle, regex, replace = "", skipTitle = /^$/) {
 	}
 }
 (async () => {
-	await api.login();
+	try {
+		await api.login();
+	} catch {
+		return;
+	}
 	await cleaner(
 		"CAT:需要更换为标题格式化的页面",
 		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
-		"{{标题格式化}}"
+		"{{标题格式化}}",
 	);
 	await cleaner(
 		"CAT:需要更换为小写标题的页面",
 		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
-		"{{小写标题}}"
+		"{{小写标题}}",
 	);
 	await cleaner("CAT:不必要使用override参数的音乐条目", /\|override=1\n?/g);
 	await cleaner(
 		"CAT:错误使用标题替换模板的页面",
 		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*(?:[标標][题題]替[换換]|替[换換][标標][题題]).*}}\n?/gis,
 		"",
-		/^Category:需要更换为(?:标题格式化|小写标题)的页面$/
+		/^Category:需要更换为(?:标题格式化|小写标题)的页面$/,
 	);
 	await cleaner(
 		"CAT:错误使用NoSubpage的页面",
-		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*}}\n?/gis
+		/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*}}\n?/gis,
 	);
 })();

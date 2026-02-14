@@ -30,7 +30,7 @@ const api = new mw.Api(require("./config").mzh);
 		console.table(r.edit);
 		if (r.edit.nochange !== true)
 			console.info(
-				`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+				`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`,
 			);
 	};
 	edit();

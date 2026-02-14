@@ -29,7 +29,7 @@ const api = new mw.Api(require("./config").ja);
 		console.table(r.edit);
 		if (r.edit.nochange !== true)
 			console.info(
-				`https://en.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`
+				`https://en.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`,
 			);
 	};
 	edit();
