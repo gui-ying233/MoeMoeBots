@@ -50,7 +50,7 @@ const { createHash } = require("crypto");
 	} catch {}
 	const pages = {};
 	do {
-		const r = await api.post({
+		const r = await api.get({
 			action: "query",
 			prop: "transcludedin",
 			titles: "Template:QQHash",
@@ -70,7 +70,7 @@ const { createHash } = require("crypto");
 	const fetchUserHash = async pageids => {
 		return WikiParser.parse(
 			(
-				await api.post({
+				await api.get({
 					action: "query",
 					prop: "revisions",
 					pageids,
@@ -255,4 +255,5 @@ const { createHash } = require("crypto");
 		}
 		await writeFile(fp, JSON.stringify(QQHash));
 	}
+	await global?.sdk?.shutdown();
 })();
