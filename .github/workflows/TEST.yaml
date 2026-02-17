@@ -34,4 +34,4 @@ jobs:
                   MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node -r logger.js rest.example.js
+              run: node -r ./logger.js rest.example.js
