@@ -36,18 +36,20 @@ const {
 							);
 							let result1;
 							try {
-								result1 = await api.get({
-									action: "query",
-									curtimestamp: 1,
-									prop: "revisions",
-									rvprop: "content|timestamp",
-									generator: "categorymembers",
-									gcmnamespace:
-										"-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303",
-									gcmlimit: "max",
-									gcmtitle,
-								});
-								setSpanAttributes(span, result1);
+								result1 = setSpanAttributes(
+									span,
+									await api.get({
+										action: "query",
+										curtimestamp: 1,
+										prop: "revisions",
+										rvprop: "content|timestamp",
+										generator: "categorymembers",
+										gcmnamespace:
+											"-2|-1|0|1|4|5|6|7|8|9|10|11|12|13|14|15|274|275|710|711|828|829|2300|2302|2303",
+										gcmlimit: "max",
+										gcmtitle,
+									}),
+								);
 								if (!result1) throw new Error(result1);
 							} catch (e) {
 								span.recordException(e);
@@ -145,42 +147,48 @@ const {
 											"cleaner.edit",
 											async span => {
 												try {
-													span.setAttribute(
-														ATTR_HTTP_REQUEST_RESEND_COUNT,
-														retry,
-													);
+													if (retry)
+														span.setAttribute(
+															ATTR_HTTP_REQUEST_RESEND_COUNT,
+															retry,
+														);
 													let result2;
 													try {
 														result2 =
-															await api.post({
-																action: "edit",
-																title: result1
-																	.query
-																	.pages[i]
-																	.title,
-																text: result1.query.pages[
-																	i
-																].revisions[0].content.replace(
-																	replaceText,
-																	replace,
-																),
-																summary: `自动修复[[${gcmtitle}]]中的页面`,
-																tags: "Bot",
-																bot: true,
-																basetimestamp:
-																	result1
+															setSpanAttributes(
+																span,
+																await api.post({
+																	action: "edit",
+																	title: result1
 																		.query
 																		.pages[
 																		i
-																	]
-																		.revisions[0]
-																		.timestamp,
-																starttimestamp:
-																	result1.curtimestamp,
-																token: await api.getToken(
-																	"csrf",
-																),
-															});
+																	].title,
+																	text: result1.query.pages[
+																		i
+																	].revisions[0].content.replace(
+																		replaceText,
+																		replace,
+																	),
+																	summary: `自动修复[[${gcmtitle}]]中的页面`,
+																	tags: "Bot",
+																	bot: true,
+																	basetimestamp:
+																		result1
+																			.query
+																			.pages[
+																			i
+																		]
+																			.revisions[0]
+																			.timestamp,
+																	starttimestamp:
+																		result1.curtimestamp,
+																	token: await api.getToken(
+																		"csrf",
+																		retry,
+																	),
+																}),
+															);
 														if (result2?.error) {
 															span.setStatus({
 																code: SpanStatusCode.ERROR,
@@ -192,15 +200,6 @@ const {
 															console.error(
 																result2.error,
 															);
-															if (
-																result2.error
-																	.code ===
-																"badtoken"
-															)
-																await api.getToken(
-																	"csrf",
-																	true,
-																);
 															span.end();
 															return await edit(
 																++retry,

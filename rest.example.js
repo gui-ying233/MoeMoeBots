@@ -1,5 +1,10 @@
 "use strict";
-const { mw, tracer, SpanStatusCode } = require("./mediaWiki");
+const {
+	mw,
+	tracer,
+	SpanStatusCode,
+	setSpanAttributes,
+} = require("./mediaWiki");
 
 (async () => {
 	await tracer.startActiveSpan(
@@ -8,11 +13,14 @@ const { mw, tracer, SpanStatusCode } = require("./mediaWiki");
 			const rest = new mw.Rest(require("./config").mobile);
 			try {
 				console.log(
-					await rest.get(
-						"search/page",
-						new URLSearchParams({
-							q: "明日方舟",
-						}),
+					setSpanAttributes(
+						span,
+						await rest.get(
+							"search/page",
+							new URLSearchParams({
+								q: "明日方舟",
+							}),
+						),
 					),
 				);
 				span.setStatus({ code: SpanStatusCode.OK });

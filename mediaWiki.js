@@ -29,15 +29,16 @@ const pack = require("./package.json");
  * @param { string[] } [path=["result"]]
  * @returns { { string: any } | any }
  */
-const setSpanAttributes = (span, r, path = ["api-response"]) => {
+const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 	if (typeof r === "object" && r !== null)
 		for (const [k, v] of Object.entries(r)) {
 			if (typeof v !== "object") {
 				span.setAttribute(
 					`${path.join(".")}.${k}`,
-					k.toLowerCase().endsWith("password") ||
-						k.toLowerCase().endsWith("token") ||
-						k.toLowerCase().endsWith("cookie")
+					typeof v === "string" &&
+						(k.toLowerCase().endsWith("password") ||
+							k.toLowerCase().endsWith("token") ||
+							k.toLowerCase().endsWith("cookie"))
 						? typeof v
 						: v,
 				);

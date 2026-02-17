@@ -1,5 +1,10 @@
 "use strict";
-const { mw, tracer, SpanStatusCode } = require("./mediaWiki");
+const {
+	mw,
+	tracer,
+	SpanStatusCode,
+	setSpanAttributes,
+} = require("./mediaWiki");
 const { createReadStream, statSync } = require("fs");
 
 (async () => {
@@ -10,18 +15,21 @@ const { createReadStream, statSync } = require("fs");
 				const api = new mw.Api(require("./config").cm);
 				const filepath = "example.jpg";
 				await api.login();
-				const r = await api.post({
-					action: "upload",
-					filename: "example",
-					file: createReadStream(filepath, {
-						highWaterMark: 1000000,
+				const r = setSpanAttributes(
+					span,
+					await api.post({
+						action: "upload",
+						filename: "example",
+						file: createReadStream(filepath, {
+							highWaterMark: 1000000,
+						}),
+						filesize: statSync(filepath).size,
+						token: await api.getToken("csrf"),
+						comment: "upload TEST",
+						text: "TEST",
+						ignorewarnings: true,
 					}),
-					filesize: statSync(filepath).size,
-					token: await api.getToken("csrf"),
-					comment: "upload TEST",
-					text: "TEST",
-					ignorewarnings: true,
-				});
+				);
 				console.log(r);
 			} catch (e) {
 				span.recordException(e);
