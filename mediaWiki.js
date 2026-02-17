@@ -418,7 +418,7 @@ class Api {
 									delete parameters.file;
 									parameters.offset = 0;
 									setSpanAttributes(span, parameters, [
-										"api-params",
+										"params",
 									]);
 									await new Promise((res, rej) => {
 										file.on("data", async chunk => {
@@ -442,7 +442,7 @@ class Api {
 															setSpanAttributes(
 																span,
 																{ [k]: v },
-																["api-params"],
+																["params"],
 															);
 														});
 														body.append(
@@ -612,7 +612,7 @@ class Api {
 						...setSpanAttributes(
 							span,
 							{ lgname, lgpassword, lgtoken },
-							["api-params"],
+							["params"],
 						),
 					});
 					setSpanAttributes(span, r);
