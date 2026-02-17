@@ -33,5 +33,9 @@ jobs:
                   MOEGIRL_MZH_BOTUSERNAME: ${{ vars.MOEGIRL_MZH_BOTUSERNAME }}
                   MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
-                  MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
               run: node -r ./logger.js rest.example.js
