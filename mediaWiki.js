@@ -1133,4 +1133,10 @@ class Rest {
 
 /** @type { { Api: typeof Api; Rest: typeof Rest } } */
 const mediaWiki = { Api, Rest };
-module.exports = { mediaWiki, mw: mediaWiki, tracer, SpanStatusCode };
+module.exports = {
+	mediaWiki,
+	mw: mediaWiki,
+	tracer,
+	SpanStatusCode,
+	setSpanAttributes,
+};

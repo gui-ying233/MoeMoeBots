@@ -10,24 +10,36 @@ jobs:
         steps:
             - name: 签出
               uses: actions/checkout@v4
-            - name: Setup pnpm
+            - name: 准备 pnpm
               uses: pnpm/action-setup@v4
               with:
                   version: latest
-            - name: 设置 node.js
+            - name: 准备 node.js
               uses: actions/setup-node@v4
               with:
                   node-version: 20
                   cache: pnpm
             - name: 安装 pnpm 依赖
               run: pnpm install
+            - name: 准备 Tailscale
+              uses: tailscale/github-action@v4
+              with:
+                  oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+                  oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+                  tags: tag:ci
+                  version: latest
             - name: 运行归零者-zh
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
                   MOEGIRL_ZH_BOTPASSWORD: ${{ secrets.MOEGIRL_ZH_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 归零者-zh
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 归零者-zh
             - name: 运行归零者-cm
               if: always()
               env:
@@ -35,7 +47,12 @@ jobs:
                   MOEGIRL_CM_BOTPASSWORD: ${{ secrets.MOEGIRL_CM_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 归零者-cm
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 归零者-cm
             - name: 运行归零者-en
               if: always()
               env:
@@ -43,7 +60,12 @@ jobs:
                   MOEGIRL_EN_BOTPASSWORD: ${{ secrets.MOEGIRL_EN_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 归零者-en
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 归零者-en
             - name: 运行归零者-ja
               if: always()
               env:
@@ -51,7 +73,12 @@ jobs:
                   MOEGIRL_JA_BOTPASSWORD: ${{ secrets.MOEGIRL_JA_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 归零者-ja
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 归零者-ja
             - name: 运行归零者-library
               if: always()
               env:
@@ -59,7 +86,12 @@ jobs:
                   MOEGIRL_LIBRARY_BOTPASSWORD: ${{ secrets.MOEGIRL_LIBRARY_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 归零者-library
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 归零者-library
             - name: keep
               if: always()
               run: true

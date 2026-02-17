@@ -9,17 +9,24 @@ jobs:
         steps:
             - name: 签出
               uses: actions/checkout@v4
-            - name: Setup pnpm
+            - name: 准备 pnpm
               uses: pnpm/action-setup@v4
               with:
                   version: latest
-            - name: 设置 node.js
+            - name: 准备 node.js
               uses: actions/setup-node@v4
               with:
                   node-version: 20
                   cache: pnpm
             - name: 安装 pnpm 依赖
               run: pnpm install
+            - name: 准备 Tailscale
+              uses: tailscale/github-action@v4
+              with:
+                  oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+                  oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+                  tags: tag:ci
+                  version: latest
             - name: 运行清理者
               env:
                   MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
@@ -28,4 +35,9 @@ jobs:
                   MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
                   MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
                   MOEGIRL_MOEGIRLSSOTOKEN: ${{ secrets.MOEGIRL_MOEGIRLSSOTOKEN }}
-              run: node 清理者
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node -r ./logger.js 清理者
