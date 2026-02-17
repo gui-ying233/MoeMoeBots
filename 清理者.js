@@ -278,6 +278,7 @@ const {
 					"CAT:错误使用NoSubpage的页面",
 					/{{\s*:?\s*(?:Template\s*:|[模样樣]板\s*:|T\s*:)?\s*NoSubpage.*}}\n?/gis,
 				);
+				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);
 				span.setStatus({

@@ -31,6 +31,7 @@ const { createReadStream, statSync } = require("fs");
 					}),
 				);
 				console.log(r);
+				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);
 				span.setStatus({

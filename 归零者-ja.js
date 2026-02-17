@@ -79,6 +79,7 @@ const {
 					});
 				};
 				edit();
+				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);
 				span.setStatus({

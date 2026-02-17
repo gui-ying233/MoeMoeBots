@@ -94,6 +94,7 @@ const {
 							"沙盒清理作业，若想保留较长时间，可以在个人测试区作测试，或者翻阅历史记录。",
 					},
 				].forEach(edit);
+				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);
 				span.setStatus({
