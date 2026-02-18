@@ -15,16 +15,7 @@ const pack = require("./package.json");
 
 const sdk = new opentelemetry.NodeSDK({
 	traceExporter: new OTLPTraceExporter({}),
-	instrumentations: [
-		getNodeAutoInstrumentations(),
-		getNodeAutoInstrumentations({
-			"@opentelemetry/instrumentation-fs": { enabled: true },
-			"@opentelemetry/instrumentation-http": { enabled: true },
-			"@opentelemetry/instrumentation-dns": { enabled: true },
-			"@opentelemetry/instrumentation-runtime-node": { enabled: true },
-			"@opentelemetry/instrumentation-undici": { enabled: true },
-		}),
-	],
+	instrumentations: [getNodeAutoInstrumentations()],
 	resource: resourceFromAttributes({
 		[ATTR_SERVICE_NAME]: pack.name,
 	}),
