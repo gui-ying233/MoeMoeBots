@@ -25,9 +25,10 @@ const pack = require("./package.json");
 
 /**
  * @param { Span } span
- * @param { { string: any } | any } r
- * @param { string[] } [path=["result"]]
- * @returns { { string: any } | any }
+ * @template T
+ * @param { T } r
+ * @param { string[] } [path=["mw-response"]]
+ * @returns { r }
  */
 const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 	if (typeof r === "object" && r !== null)

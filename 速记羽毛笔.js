@@ -1,5 +1,4 @@
 "use strict";
-
 const { mw } = require("./mediaWiki");
 const api = new mw.Api(require("./config").mzh);
 
