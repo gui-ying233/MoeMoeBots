@@ -251,7 +251,7 @@ class Api {
 							Object.fromEntries(
 								Object.entries(
 									setSpanAttributes(span, parameters, [
-										"api-params",
+										"params",
 									]),
 								)
 									.filter(
@@ -269,7 +269,7 @@ class Api {
 											: [k, v],
 									),
 							),
-							["api-params"],
+							["params"],
 						)
 					);
 				} catch (e) {
@@ -300,9 +300,7 @@ class Api {
 						`${this.#api}?${new URLSearchParams({
 							...this.#parameters,
 							...this.#listToPipe(
-								setSpanAttributes(span, parameters, [
-									"api-params",
-								]),
+								setSpanAttributes(span, parameters, ["params"]),
 							),
 						})}`,
 						this.#cookies2string(this.#init.get),
@@ -561,9 +559,7 @@ class Api {
 						body: new URLSearchParams({
 							...this.#parameters,
 							...this.#listToPipe(
-								setSpanAttributes(span, parameters, [
-									"api-params",
-								]),
+								setSpanAttributes(span, parameters, ["params"]),
 							),
 						}),
 					})
@@ -661,9 +657,7 @@ class Api {
 			this.#span,
 			async span => {
 				try {
-					setSpanAttributes(span, { lgname, lgpassword }, [
-						"api-params",
-					]);
+					setSpanAttributes(span, { lgname, lgpassword }, ["params"]);
 					const r = await this.#login(lgname, lgpassword);
 					setSpanAttributes(span, r);
 					span.setStatus({ code: SpanStatusCode.OK });
@@ -914,7 +908,7 @@ class Rest {
 			async span => {
 				try {
 					setSpanAttributes(span, { path, query, headers }, [
-						"rest-params",
+						"params",
 					]);
 					return await fetch(
 						`${this.#rest}${path}?${new URLSearchParams(query)}`,
@@ -965,7 +959,7 @@ class Rest {
 			async span => {
 				try {
 					setSpanAttributes(span, { path, query, headers }, [
-						"rest-params",
+						"params",
 					]);
 					return await fetch(
 						`${this.#rest}${path}?${new URLSearchParams(query)}`,
@@ -1009,7 +1003,7 @@ class Rest {
 			async span => {
 				try {
 					setSpanAttributes(span, { path, body, headers }, [
-						"rest-params",
+						"params",
 					]);
 					return await fetch(`${this.#rest}${path}`, {
 						...this.#cookies2string(this.#init.post),
@@ -1054,7 +1048,7 @@ class Rest {
 			async span => {
 				try {
 					setSpanAttributes(span, { path, body, headers }, [
-						"rest-params",
+						"params",
 					]);
 					return await fetch(`${this.#rest}${path}`, {
 						...this.#cookies2string(this.#init.put),
@@ -1099,7 +1093,7 @@ class Rest {
 			async span => {
 				try {
 					setSpanAttributes(span, { path, body, headers }, [
-						"rest-params",
+						"params",
 					]);
 					return await fetch(`${this.#rest}${path}`, {
 						...this.#cookies2string(this.#init.delete),
