@@ -23,9 +23,6 @@ const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
 const ATTR_HTTP_RESPONSE_HEADER =
 	global.ATTR_HTTP_RESPONSE_HEADER ?? (key => key);
 
-/** @type {string: string} */
-const cookies = {};
-
 /** @type {string: any} */
 const pack = require("./package.json");
 
@@ -82,10 +79,12 @@ class Api {
 	#tokens = null;
 	/** @type { { string: string } } */
 	#defaultCookie = {};
+	/** @type { { string: string } } */
+	#cookies = {};
 	/** @type { { links: [{ context:SpanContext }] } } */
 	#span;
 	/**
-	 * @param { { api: URL["href"]; botUsername: string; botPassword: string; cookie:{ string: string } } } config
+	 * @param { { api: URL["href"]; botUsername: string; botPassword: string; cookie?:{ string: string } } }  config
 	 */
 	constructor({ api, botUsername, botPassword, cookie = {} }) {
 		tracer.startActiveSpan("mediaWiki.Api.constructor", span => {
@@ -104,6 +103,7 @@ class Api {
 				api.hash = "";
 				api.search = "";
 				this.#api = api.href;
+				this.#cookies = cookie;
 				const headers = {
 					referer: api.href,
 					"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
@@ -112,7 +112,7 @@ class Api {
 						pack?.bugs?.url ||
 						""
 					}; ${pack.bugs?.email || ""}) `,
-					cookie: cookies,
+					cookie: this.#cookies,
 				};
 				this.#init = {
 					get: { headers },
@@ -120,8 +120,7 @@ class Api {
 				};
 				this.#botUsername = botUsername;
 				this.#botPassword = botPassword;
-				this.#defaultCookie = cookie;
-				Object.assign(cookies, this.#defaultCookie);
+				this.#defaultCookie = { ...this.#cookies };
 				setSpanAttributes(
 					span,
 					{
@@ -167,7 +166,7 @@ class Api {
 						JSON.stringify(
 							res.headers.getSetCookie().map(c => {
 								const k = c.split("=")[0];
-								cookies[k] = c.split(/[=;]/)[1];
+								this.#cookies[k] = c.split(/[=;]/)[1];
 								return k;
 							}),
 						),
@@ -201,31 +200,24 @@ class Api {
 			this.#span,
 			span => {
 				try {
-					return (
-						span.setStatus({ code: SpanStatusCode.OK }) &&
-						setSpanAttributes(
-							span,
-							Object.assign(
-								Object.assign(
-									{},
-									setSpanAttributes(span, init, ["init"]),
-								),
+					const result = Object.assign(
+						Object.assign(
+							{},
+							setSpanAttributes(span, init, ["init"]),
+						),
+						{
+							headers: Object.assign(
+								Object.assign({}, init.headers),
 								{
-									headers: Object.assign(
-										Object.assign({}, init.headers),
-										{
-											cookie: Object.entries(
-												init.headers.cookie,
-											)
-												.map(([k, v]) => `${k}=${v}`)
-												.join("; "),
-										},
-									),
+									cookie: Object.entries(init.headers.cookie)
+										.map(([k, v]) => `${k}=${v}`)
+										.join("; "),
 								},
 							),
-							["init"],
-						)
+						},
 					);
+					span.setStatus({ code: SpanStatusCode.OK });
+					return setSpanAttributes(span, result, ["init"]);
 				} catch (e) {
 					span.recordException(e);
 					span.setStatus({
@@ -696,8 +688,10 @@ class Api {
 					token = token ?? (await this.getToken("csrf"));
 					const r = await this.post({ action: "logout", token });
 					this.#tokens = null;
-					Object.keys(cookies).forEach(k => delete cookies[k]);
-					Object.assign(cookies, this.#defaultCookie);
+					Object.keys(this.#cookies).forEach(
+						k => delete this.#cookies[k],
+					);
+					Object.assign(this.#cookies, this.#defaultCookie);
 					if (typeof r !== "object") new TypeError(r);
 					setSpanAttributes(span, r);
 					if (!Object.keys(r).length)
@@ -729,10 +723,12 @@ class Rest {
 	#init;
 	/** @type { { string: string } } */
 	#defaultCookie = {};
+	/** @type { { string: string } } */
+	#cookies = {};
 	/** @type { { links: [{ context:SpanContext }] } } */
 	#span;
 	/**
-	 * @param { { rest: URL["href"]; cookie:{ string: string } } } config
+	 * @param { { rest: URL["href"]; cookie?:{ string: string } } } config
 	 */
 	constructor({ rest, cookie = {} }) {
 		tracer.startActiveSpan("mediaWiki.Rest.constructor", span => {
@@ -749,19 +745,22 @@ class Rest {
 				rest.hash = "";
 				rest.search = "";
 				this.#rest = rest.href;
+				this.#cookies = cookie;
+				const userAgent = `${pack.name || ""}/${pack.version || ""} (+${
+					pack.homepage ||
+					pack.repository?.url ||
+					pack?.bugs?.url ||
+					""
+				}; ${pack.bugs?.email || ""}) `;
 				const headers = {
 					referer: rest.href,
-					"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
-						pack.homepage ||
-						pack.repository?.url ||
-						pack?.bugs?.url ||
-						""
-					}; ${pack.bugs?.email || ""}) `,
-					cookie: cookies,
+					"user-agent": userAgent,
+					"Api-User-Agent": userAgent,
+					cookie: this.#cookies,
 				};
 				this.#init = {
-					head: { headers, method: "HEAD" },
-					get: { headers },
+					head: { headers: { ...headers }, method: "HEAD" },
+					get: { headers: { ...headers } },
 					post: {
 						headers: {
 							...headers,
@@ -784,8 +783,7 @@ class Rest {
 						method: "DELETE",
 					},
 				};
-				this.#defaultCookie = cookie;
-				Object.assign(cookies, this.#defaultCookie);
+				this.#defaultCookie = { ...this.#cookies };
 				setSpanAttributes(
 					span,
 					{
@@ -829,7 +827,7 @@ class Rest {
 						JSON.stringify(
 							res.headers.getSetCookie().map(c => {
 								const k = c.split("=")[0];
-								cookies[k] = c.split(/[=;]/)[1];
+								this.#cookies[k] = c.split(/[=;]/)[1];
 								return k;
 							}),
 						),
@@ -863,31 +861,24 @@ class Rest {
 			this.#span,
 			span => {
 				try {
-					return (
-						span.setStatus({ code: SpanStatusCode.OK }) &&
-						setSpanAttributes(
-							span,
-							Object.assign(
-								Object.assign(
-									{},
-									setSpanAttributes(span, init, ["init"]),
-								),
+					const result = Object.assign(
+						Object.assign(
+							{},
+							setSpanAttributes(span, init, ["init"]),
+						),
+						{
+							headers: Object.assign(
+								Object.assign({}, init.headers),
 								{
-									headers: Object.assign(
-										Object.assign({}, init.headers),
-										{
-											cookie: Object.entries(
-												init.headers.cookie,
-											)
-												.map(([k, v]) => `${k}=${v}`)
-												.join("; "),
-										},
-									),
+									cookie: Object.entries(init.headers.cookie)
+										.map(([k, v]) => `${k}=${v}`)
+										.join("; "),
 								},
 							),
-							["init"],
-						)
+						},
 					);
+					span.setStatus({ code: SpanStatusCode.OK });
+					return setSpanAttributes(span, result, ["init"]);
 				} catch (e) {
 					span.recordException(e);
 					span.setStatus({
@@ -925,7 +916,7 @@ class Rest {
 							JSON.stringify(
 								res.headers.getSetCookie().map(c => {
 									const k = c.split("=")[0];
-									cookies[k] = c.split(/[=;]/)[1];
+									this.#cookies[k] = c.split(/[=;]/)[1];
 									return k;
 								}),
 							),
