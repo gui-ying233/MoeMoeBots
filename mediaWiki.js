@@ -15,7 +15,7 @@ const tracer = global.trace?.getTracer(
 	__filename.slice(__dirname.length + 1),
 ) ?? {
 	startActiveSpan: (...args) =>
-		(args[2] ?? args[1])(new Proxy({}, { get: () => () => {} })),
+		(args[2] ?? args[1])(new Proxy({}, { get: () => () => true })),
 };
 /** @type { SpanStatusCode } */
 const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
@@ -200,24 +200,31 @@ class Api {
 			this.#span,
 			span => {
 				try {
-					const result = Object.assign(
-						Object.assign(
-							{},
-							setSpanAttributes(span, init, ["init"]),
-						),
-						{
-							headers: Object.assign(
-								Object.assign({}, init.headers),
+					return (
+						span.setStatus({ code: SpanStatusCode.OK }) &&
+						setSpanAttributes(
+							span,
+							Object.assign(
+								Object.assign(
+									{},
+									setSpanAttributes(span, init, ["init"]),
+								),
 								{
-									cookie: Object.entries(init.headers.cookie)
-										.map(([k, v]) => `${k}=${v}`)
-										.join("; "),
+									headers: Object.assign(
+										Object.assign({}, init.headers),
+										{
+											cookie: Object.entries(
+												init.headers.cookie,
+											)
+												.map(([k, v]) => `${k}=${v}`)
+												.join("; "),
+										},
+									),
 								},
 							),
-						},
+							["init"],
+						)
 					);
-					span.setStatus({ code: SpanStatusCode.OK });
-					return setSpanAttributes(span, result, ["init"]);
 				} catch (e) {
 					span.recordException(e);
 					span.setStatus({
@@ -861,24 +868,31 @@ class Rest {
 			this.#span,
 			span => {
 				try {
-					const result = Object.assign(
-						Object.assign(
-							{},
-							setSpanAttributes(span, init, ["init"]),
-						),
-						{
-							headers: Object.assign(
-								Object.assign({}, init.headers),
+					return (
+						span.setStatus({ code: SpanStatusCode.OK }) &&
+						setSpanAttributes(
+							span,
+							Object.assign(
+								Object.assign(
+									{},
+									setSpanAttributes(span, init, ["init"]),
+								),
 								{
-									cookie: Object.entries(init.headers.cookie)
-										.map(([k, v]) => `${k}=${v}`)
-										.join("; "),
+									headers: Object.assign(
+										Object.assign({}, init.headers),
+										{
+											cookie: Object.entries(
+												init.headers.cookie,
+											)
+												.map(([k, v]) => `${k}=${v}`)
+												.join("; "),
+										},
+									),
 								},
 							),
-						},
+							["init"],
+						)
 					);
-					span.setStatus({ code: SpanStatusCode.OK });
-					return setSpanAttributes(span, result, ["init"]);
 				} catch (e) {
 					span.recordException(e);
 					span.setStatus({
