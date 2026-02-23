@@ -24,7 +24,12 @@ const sdk = new opentelemetry.NodeSDK({
 		[ATTR_SERVICE_NAME]: pack.name,
 	}),
 });
-
+const originalShutdown = sdk.shutdown;
+sdk.shutdown = function () {
+	return originalShutdown
+		.apply(this, arguments)
+		.catch(error => console.log("Error terminating tracing", error));
+};
 global.sdk = sdk;
 
 sdk.start();
@@ -32,7 +37,6 @@ sdk.start();
 process.on("SIGTERM", () => {
 	sdk.shutdown()
 		.then(() => console.log("Tracing terminated"))
-		.catch(error => console.log("Error terminating tracing", error))
 		.finally(() => process.exit(0));
 });
 
