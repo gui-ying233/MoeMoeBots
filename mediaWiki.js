@@ -6,16 +6,22 @@
  * @import { RestResponse } "types-mediawiki/mw/Rest"
  * @import { ApiLoginParams, ApiLogoutParams, ApiTokenType, UnknownApiParams, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
  * @import "types-mediawiki/mw/Rest"
- * @import { Tracer, Span, SpanContext } "@opentelemetry/api"
+ * @import { Tracer, Span, SpanContext, SpanStatusCode } "@opentelemetry/api"
+ * @import { ATTR_HTTP_RESPONSE_HEADER } "@opentelemetry/semantic-conventions"
  */
 
-const { trace, SpanStatusCode } = require("@opentelemetry/api");
-const {
-	ATTR_HTTP_RESPONSE_HEADER,
-} = require("@opentelemetry/semantic-conventions");
-
 /** @type { Tracer } */
-const tracer = trace.getTracer(__filename.slice(__dirname.length + 1));
+const tracer = global.trace?.getTracer(
+	__filename.slice(__dirname.length + 1),
+) ?? {
+	startActiveSpan: (...args) =>
+		(args[2] ?? args[1])(new Proxy({}, { get: () => () => {} })),
+};
+/** @type { SpanStatusCode } */
+const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
+/** @type { ATTR_HTTP_RESPONSE_HEADER } */
+const ATTR_HTTP_RESPONSE_HEADER =
+	global.ATTR_HTTP_RESPONSE_HEADER ?? (key => key);
 
 /** @type {string: string} */
 const cookies = {};

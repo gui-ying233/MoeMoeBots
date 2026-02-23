@@ -9,6 +9,10 @@ const {
 } = require("@opentelemetry/exporter-trace-otlp-http");
 const { resourceFromAttributes } = require("@opentelemetry/resources");
 const { ATTR_SERVICE_NAME } = require("@opentelemetry/semantic-conventions");
+const { trace, SpanStatusCode } = require("@opentelemetry/api");
+Object.assign(global, { trace, SpanStatusCode });
+global.ATTR_HTTP_RESPONSE_HEADER =
+	require("@opentelemetry/semantic-conventions").ATTR_HTTP_RESPONSE_HEADER;
 
 /** @type {string: any} */
 const pack = require("./package.json");
