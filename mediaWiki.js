@@ -9,7 +9,6 @@
  * @import { Tracer, Span, SpanContext, SpanStatusCode } "@opentelemetry/api"
  * @import { ATTR_HTTP_RESPONSE_HEADER } "@opentelemetry/semantic-conventions"
  */
-const { lookup } = require("node:dns/promises");
 
 /** @type { Tracer } */
 const tracer = global.trace?.getTracer(
@@ -104,7 +103,6 @@ class Api {
 				api.hash = "";
 				api.search = "";
 				this.#api = api.href;
-				lookup(api.hostname);
 				this.#cookies = cookie;
 				const headers = {
 					referer: api.href,
@@ -754,7 +752,6 @@ class Rest {
 				rest.hash = "";
 				rest.search = "";
 				this.#rest = rest.href;
-				lookup(rest.hostname);
 				this.#cookies = cookie;
 				const userAgent = `${pack.name || ""}/${pack.version || ""} (+${
 					pack.homepage ||
