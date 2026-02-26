@@ -26,7 +26,7 @@ const { existsSync } = require("fs");
 				await api.login();
 				const {
 					query: { categorymembers },
-				} = await api.post({
+				} = await api.get({
 					action: "query",
 					list: "categorymembers",
 					cmtitle: "Category:需要更新分级信息的游戏条目",
@@ -79,7 +79,7 @@ const { existsSync } = require("fs");
 											},
 										],
 									},
-								} = await api.post({
+								} = await api.get({
 									action: "query",
 									prop: "revisions",
 									titles: template,
