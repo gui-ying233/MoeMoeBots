@@ -354,7 +354,7 @@ const { existsSync } = require("fs");
 									console.table(result.edit);
 									if (result.edit.nochange !== true) {
 										console.info(
-											`https://zh.moegirl.org.cn/Special:Diff/${result.edit.oldrevid}/${result.edit.newrevid}`,
+											`https://mzh.moegirl.org.cn/Special:Diff/${result.edit.oldrevid}/${result.edit.newrevid}`,
 										);
 									}
 								} catch (e) {

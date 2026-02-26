@@ -218,7 +218,7 @@ const {
 															.nochange !== true
 													) {
 														console.info(
-															`https://zh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`,
+															`https://mzh.moegirl.org.cn/Special:Diff/${result2.edit.oldrevid}/${result2.edit.newrevid}`,
 														);
 													}
 												} catch (e) {

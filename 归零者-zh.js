@@ -64,7 +64,7 @@ const {
 							console.table(r.edit);
 							if (r.edit.nochange !== true)
 								console.info(
-									`https://zh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`,
+									`https://mzh.moegirl.org.cn/Special:Diff/${r.edit.oldrevid}/${r.edit.newrevid}`,
 								);
 						} catch (e) {
 							span.recordException(e);
