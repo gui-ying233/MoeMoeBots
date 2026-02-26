@@ -194,11 +194,7 @@ const { existsSync } = require("fs");
 									);
 								console.log(`CERO-${ceroRank ?? "EX"}`);
 								if (!ceroRank) break;
-								param
-									.querySelector("parameter-value")
-									.replaceChildren(
-										root.createTextNode(ceroRank),
-									);
+								param.setValue(ceroRank);
 								break;
 							case "esrb-rp":
 								console.log("获取 ESRB 分级");
@@ -225,11 +221,7 @@ const { existsSync } = require("fs");
 								}
 								const esrbRank = games[0]?.rating;
 								console.log(`ESRB-${esrbRank}`);
-								param
-									.querySelector("parameter-value")
-									.replaceChildren(
-										root.createTextNode(esrbRank),
-									);
+								param.setValue(esrbRank);
 								break;
 							case "usk-rp":
 								console.log("获取 USK 分级");
@@ -291,11 +283,7 @@ const { existsSync } = require("fs");
 									});
 								console.log(`USK-${uskRank}`);
 								if (uskRank === "RP") break;
-								param
-									.querySelector("parameter-value")
-									.replaceChildren(
-										root.createTextNode(uskRank),
-									);
+								param.setValue(uskRank);
 								break;
 						}
 					}
