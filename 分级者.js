@@ -109,7 +109,8 @@ const { existsSync } = require("fs");
 							async span => {
 								try {
 									if (!enName)
-										enName = (
+										enName = setSpanAttributes(
+											span,
 											await new mw.Api({
 												api: "https://en.wikipedia.org/w/api.php",
 											}).get({
@@ -121,7 +122,7 @@ const { existsSync } = require("fs");
 												srinfo: "",
 												srprop: "",
 												srinterwiki: 1,
-											})
+											}),
 										).query.search[0].title;
 									return enName;
 								} catch (e) {
