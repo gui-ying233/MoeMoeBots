@@ -166,6 +166,8 @@ const { existsSync } = require("fs");
 														list: "search",
 														srsearch: gameName,
 														srlimit: 1,
+														srqiprofile:
+															"classic_noboostlinks",
 														srinfo: "",
 														srprop: "",
 														srinterwiki: 1,
