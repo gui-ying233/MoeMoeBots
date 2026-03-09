@@ -202,9 +202,8 @@ const { error } = require("console");
 									execAsync(
 										`powershell -Command "Start-Sleep -Milliseconds 50; Get-Process hashcat -ErrorAction SilentlyContinue | ForEach-Object { $_.PriorityClass = 'High' }"`,
 									).catch(() => {});
-									const result = setSpanAttributes(
-										span,
-										await new Promise((res, rej) => {
+									const result = await new Promise(
+										(res, rej) => {
 											let stdout = "",
 												stderr = "";
 											hashcatProcess.stdout.on(
@@ -220,22 +219,39 @@ const { error } = require("console");
 													![null, 0, 1].includes(code)
 														? rej
 														: res
-												)({
-													stdout,
-													stderr,
-													code,
-												});
+												)(
+													setSpanAttributes(
+														span,
+														{
+															stdout,
+															stderr,
+															code,
+														},
+														["result"],
+													),
+												);
 											});
 											hashcatProcess.on("error", error =>
-												rej({
-													stdout,
-													stderr,
-													error,
-												}),
+												rej(
+													setSpanAttributes(
+														span,
+														{
+															stdout,
+															stderr,
+															error,
+														},
+														["result"],
+													),
+												),
 											);
-										}),
-										["result"],
-									);
+										},
+									).catch(e => {
+										span.recordException(e);
+										span.setStatus({
+											code: SpanStatusCode.ERROR,
+										});
+										throw e;
+									});
 									if (
 										result.stdout &&
 										result.stdout.includes("Skipping mask")
@@ -292,7 +308,7 @@ const { error } = require("console");
 										code: SpanStatusCode.ERROR,
 										message: e.message,
 									});
-									console.error(e);
+									throw e;
 								} finally {
 									span.end();
 								}
