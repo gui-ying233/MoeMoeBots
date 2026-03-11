@@ -5,7 +5,7 @@ const {
 	SpanStatusCode,
 	setSpanAttributes,
 } = require("./mediaWiki");
-const { createReadStream, statSync } = require("fs");
+const { createReadStream, statSync } = require("node:fs");
 
 (async () => {
 	await tracer.startActiveSpan(
