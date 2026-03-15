@@ -16,17 +16,17 @@
 		"@dotenvx/dotenvx": "latest"
 	},
 	"dependencies": {
-		"encoding-japanese": "latest",
-		"jsdom": "latest",
-		"wikiparser-node": "latest",
 		"@opentelemetry/api": "latest",
+		"@opentelemetry/api-logs": "latest",
 		"@opentelemetry/auto-instrumentations-node": "latest",
+		"@opentelemetry/exporter-logs-otlp-http": "latest",
 		"@opentelemetry/exporter-trace-otlp-http": "latest",
-		"@opentelemetry/sdk-node": "latest",
-		"@opentelemetry/semantic-conventions": "latest",
 		"@opentelemetry/resources": "latest",
 		"@opentelemetry/sdk-logs": "latest",
-		"@opentelemetry/exporter-logs-otlp-http": "latest",
-		"@opentelemetry/api-logs": "latest"
+		"@opentelemetry/sdk-node": "latest",
+		"@opentelemetry/semantic-conventions": "latest",
+		"encoding-japanese": "latest",
+		"jsdom": "latest",
+		"wikiparser-node": "latest"
 	}
 }
