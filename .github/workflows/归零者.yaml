@@ -9,20 +9,20 @@ jobs:
         continue-on-error: true
         steps:
             - name: 签出
-              uses: actions/checkout@v4
+              uses: actions/checkout@main
             - name: 准备 pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@master
               with:
                   version: latest
             - name: 准备 node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@main
               with:
-                  node-version: 20
+                  node-version: latest
                   cache: pnpm
             - name: 安装 pnpm 依赖
               run: pnpm install
             - name: 准备 Tailscale
-              uses: tailscale/github-action@v4
+              uses: tailscale/github-action@main
               with:
                   oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
                   oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}

@@ -11,23 +11,23 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: 签出
-              uses: actions/checkout@v4
+              uses: actions/checkout@main
               with:
                   path: MoeMoeBots
             - name: 签出 QQHash
-              uses: actions/checkout@v4
+              uses: actions/checkout@main
               with:
                   repository: gui-ying233/QQHash
                   path: QQHash
                   token: ${{ secrets.QQHASH_PAT }}
             - name: 准备 pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@master
               with:
                   version: latest
             - name: 准备 node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@main
               with:
-                  node-version: 20
+                  node-version: latest
                   cache: pnpm
                   cache-dependency-path: MoeMoeBots/pnpm-lock.yaml
             - name: 安装依赖
@@ -36,7 +36,7 @@ jobs:
                   cd MoeMoeBots && pnpm install &
                   wait
             - name: 准备 Tailscale
-              uses: tailscale/github-action@v4
+              uses: tailscale/github-action@main
               with:
                   oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
                   oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
