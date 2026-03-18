@@ -87,7 +87,7 @@ const { error } = require("console");
 								).toRootPage().main
 							] = p.pageid),
 					);
-					ticontinue = r?.continue?.ticontinue;
+					ticontinue = r.continue?.ticontinue;
 				} while (ticontinue);
 				const pageEntries = Object.entries(pages);
 				const fetchUserHash = async pageids => {

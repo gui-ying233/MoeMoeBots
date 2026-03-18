@@ -188,7 +188,7 @@ const {
 																	),
 																}),
 															);
-														if (result2?.error) {
+														if (result2.error) {
 															span.setStatus({
 																code: SpanStatusCode.ERROR,
 																message:

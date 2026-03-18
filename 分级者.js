@@ -223,7 +223,7 @@ const { existsSync } = require("fs");
 									console.log("ESRB-RP");
 									break;
 								}
-								const esrbRank = games[0]?.rating;
+								const esrbRank = games[0].rating;
 								console.log(`ESRB-${esrbRank}`);
 								param.setValue(esrbRank);
 								break;
@@ -323,7 +323,7 @@ const { existsSync } = require("fs");
 												),
 											}),
 										);
-										if (result?.error) {
+										if (result.error) {
 											span.setStatus({
 												code: SpanStatusCode.ERROR,
 												message: JSON.stringify(

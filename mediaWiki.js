@@ -109,7 +109,7 @@ class Api {
 					"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
 						pack.homepage ||
 						pack.repository?.url ||
-						pack?.bugs?.url ||
+						pack.bugs?.url ||
 						""
 					}; ${pack.bugs?.email || ""}) `,
 					cookie: this.#cookies,
@@ -704,7 +704,7 @@ class Api {
 					if (!Object.keys(r).length)
 						span.setStatus({ code: SpanStatusCode.OK });
 					else if (r.error) {
-						throw new Error(JSON.stringify(r?.error ?? r));
+						throw new Error(JSON.stringify(r.error ?? r));
 					}
 					return r;
 				} catch (e) {
@@ -756,7 +756,7 @@ class Rest {
 				const userAgent = `${pack.name || ""}/${pack.version || ""} (+${
 					pack.homepage ||
 					pack.repository?.url ||
-					pack?.bugs?.url ||
+					pack.bugs?.url ||
 					""
 				}; ${pack.bugs?.email || ""}) `;
 				const headers = {
