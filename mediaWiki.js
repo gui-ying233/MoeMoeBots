@@ -703,7 +703,7 @@ class Api {
 					setSpanAttributes(span, r);
 					if (!Object.keys(r).length)
 						span.setStatus({ code: SpanStatusCode.OK });
-					else if (r.error) {
+					else {
 						throw new Error(JSON.stringify(r.error ?? r));
 					}
 					return r;
