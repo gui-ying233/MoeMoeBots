@@ -47,7 +47,7 @@ importers:
     devDependencies:
       '@dotenvx/dotenvx':
         specifier: latest
-        version: 1.57.1
+        version: 1.57.2
 
 packages:
 
@@ -73,9 +73,9 @@ packages:
   '@bhsd/cm-util@0.1.0':
     resolution: {integrity: sha512-gqwObmIVosIH3WulV9p/IoO8Rm90QofFN44XoaitjN3uopAMt3E6ipPm3OegjvUqrUPAbwcUrwZoUCZ5cI+OqA==}
 
-  '@bhsd/common@1.3.1':
-    resolution: {integrity: sha512-Kf5uIG4gPdNj51Eqy7PzZ1s0C8ERpv6olF9BeW7tNoPbvqWNlnYG3TQyo9s2OD5V0TsUuyTbEGI7cG7RAZ0Ouw==}
-    engines: {node: '>=18.17.0'}
+  '@bhsd/common@1.4.0':
+    resolution: {integrity: sha512-zA/WQcjnhmM3ltprPnbDgDBVcg2WOawP65cdyxyhQhwmGmHIVzvjeqAPkyg0rKKEZT7UcCCm2Nkd+fiP1oFvnQ==}
+    engines: {node: '>=20.19.0'}
 
   '@bhsd/stylelint-util@1.0.1':
     resolution: {integrity: sha512-R0qFvqLGvLa+BKh0YZe+ulUVt3f6ynAi3jNzMnDsaB1rm9MXRQglp51EQCTG9V2Wu0VQr4z/Qa21hfzTEiZwcw==}
@@ -146,8 +146,8 @@ packages:
     peerDependencies:
       postcss-selector-parser: ^7.1.1
 
-  '@dotenvx/dotenvx@1.57.1':
-    resolution: {integrity: sha512-iKXuo8Nes9Ft4zF3AZOT4FHkl6OV8bHqn61a67qHokkBzSEurnKZAlOkT0FYrRNVGvE6nCfZMtYswyjfXCR1MQ==}
+  '@dotenvx/dotenvx@1.57.2':
+    resolution: {integrity: sha512-lv9+UZPnl/KOvShepevLWm3+/wc1It5kgO5Q580evnvOFMZcgKVEYFwxlL7Ohl9my1yjTsWo28N3PJYUEO8wFQ==}
     hasBin: true
 
   '@ecies/ciphers@0.2.5':
@@ -790,8 +790,8 @@ packages:
   binary-search@1.3.6:
     resolution: {integrity: sha512-nbE1WxOTTrUWIfsfZ4aHGYu5DOuNkbxGokjV6Z2kxfJK3uaAb8zNK1muzOeipoLHZjInT4Br88BHpzevc681xA==}
 
-  brace-expansion@5.0.4:
-    resolution: {integrity: sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==}
+  brace-expansion@5.0.5:
+    resolution: {integrity: sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==}
     engines: {node: 18 || 20 || >=22}
 
   braces@3.0.3:
@@ -1260,12 +1260,12 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picomatch@2.3.1:
-    resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
+  picomatch@2.3.2:
+    resolution: {integrity: sha512-V7+vQEJ06Z+c5tSye8S+nHUfI51xoXIXjHQ99cQtKUkQqqO1kO/KCJUfZXuB47h/YBlDhah2H3hdUGXn8ie0oA==}
     engines: {node: '>=8.6'}
 
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
+  picomatch@4.0.4:
+    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
   postcss-safe-parser@7.0.1:
@@ -1587,7 +1587,7 @@ snapshots:
 
   '@bhsd/cm-util@0.1.0': {}
 
-  '@bhsd/common@1.3.1': {}
+  '@bhsd/common@1.4.0': {}
 
   '@bhsd/stylelint-util@1.0.1(stylelint@17.5.0)':
     dependencies:
@@ -1648,16 +1648,16 @@ snapshots:
     dependencies:
       postcss-selector-parser: 7.1.1
 
-  '@dotenvx/dotenvx@1.57.1':
+  '@dotenvx/dotenvx@1.57.2':
     dependencies:
       commander: 11.1.0
       dotenv: 17.3.1
       eciesjs: 0.4.18
       execa: 5.1.1
-      fdir: 6.5.0(picomatch@4.0.3)
+      fdir: 6.5.0(picomatch@4.0.4)
       ignore: 5.3.2
       object-treeify: 1.1.33
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       which: 4.0.0
 
   '@ecies/ciphers@0.2.5(@noble/ciphers@1.3.0)':
@@ -2503,7 +2503,7 @@ snapshots:
 
   binary-search@1.3.6: {}
 
-  brace-expansion@5.0.4:
+  brace-expansion@5.0.5:
     dependencies:
       balanced-match: 4.0.4
     optional: true
@@ -2641,9 +2641,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.3):
+  fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   fetch-blob@3.2.0:
     dependencies:
@@ -2871,13 +2871,13 @@ snapshots:
   micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
-      picomatch: 2.3.1
+      picomatch: 2.3.2
 
   mimic-fn@2.1.0: {}
 
   minimatch@10.2.4:
     dependencies:
-      brace-expansion: 5.0.4
+      brace-expansion: 5.0.5
     optional: true
 
   module-details-from-path@1.0.4: {}
@@ -2937,9 +2937,9 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@2.3.1: {}
+  picomatch@2.3.2: {}
 
-  picomatch@4.0.3: {}
+  picomatch@4.0.4: {}
 
   postcss-safe-parser@7.0.1(postcss@8.5.8):
     dependencies:
@@ -3225,7 +3225,7 @@ snapshots:
   wikilint@2.36.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.3.1
+      '@bhsd/common': 1.4.0
       '@bhsd/stylelint-util': 1.0.1(stylelint@17.5.0)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
@@ -3246,7 +3246,7 @@ snapshots:
   wikiparser-node@1.36.0:
     dependencies:
       '@bhsd/cm-util': 0.1.0
-      '@bhsd/common': 1.3.1
+      '@bhsd/common': 1.4.0
       '@bhsd/stylelint-util': 1.0.1(stylelint@17.5.0)
       binary-search: 1.3.6
       vscode-languageserver-types: 3.17.5
