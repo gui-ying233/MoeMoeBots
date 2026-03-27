@@ -19,7 +19,7 @@ jobs:
                   node-version: 20
                   cache: pnpm
             - name: 安装 pnpm 依赖
-              run: pnpm install
+              run: pnpm install && pnpm approve-builds
             - name: 准备 Tailscale
               uses: tailscale/github-action@main
               with:
