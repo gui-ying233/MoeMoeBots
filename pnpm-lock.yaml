@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@bhsd/nodejs':
+        specifier: latest
+        version: 1.0.0
       '@opentelemetry/api':
         specifier: latest
         version: 1.9.1
@@ -76,6 +79,10 @@ packages:
 
   '@bhsd/common@2.0.0':
     resolution: {integrity: sha512-vROxpbtwZUneugg/cbbziqaqAvZKuxne3oDM8/fUUhCy51d1SSNv27ifnlk5dB0K7h5NyFoyHUguRVrbsgp6sA==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
+
+  '@bhsd/nodejs@1.0.0':
+    resolution: {integrity: sha512-00x3uvYYxfvYnSgaCGSS7A0TyNCdqTo1joP9+PGjv/q51dF7rlcWHOvCD3x29kxDXnQk0JifeBxlcYn31VXSgA==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
 
   '@bhsd/stylelint-util@1.0.1':
@@ -1568,6 +1575,8 @@ snapshots:
   '@bhsd/cm-util@1.0.0': {}
 
   '@bhsd/common@2.0.0': {}
+
+  '@bhsd/nodejs@1.0.0': {}
 
   '@bhsd/stylelint-util@1.0.1(stylelint@17.6.0)':
     dependencies:

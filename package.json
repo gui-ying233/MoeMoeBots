@@ -16,6 +16,7 @@
 		"@dotenvx/dotenvx": "latest"
 	},
 	"dependencies": {
+		"@bhsd/nodejs": "latest",
 		"@opentelemetry/api": "latest",
 		"@opentelemetry/api-logs": "latest",
 		"@opentelemetry/auto-instrumentations-node": "latest",
