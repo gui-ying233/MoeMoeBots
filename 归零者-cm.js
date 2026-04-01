@@ -76,18 +76,20 @@ const {
 						}
 					});
 				};
-				[
-					{
-						title: "Template:沙盒",
-						summary:
-							"沙盒清理作业，若想保留较长时间，可以在[[特殊:我的用户页/Sandbox|个人测试区]]作测试，或者翻阅历史记录。",
-					},
-					{
-						title: "模块:沙盒",
-						summary:
-							"沙盒清理作业，若想保留较长时间，可以在个人测试区作测试，或者翻阅历史记录。",
-					},
-				].forEach(edit);
+				await Promise.all(
+					[
+						{
+							title: "Template:沙盒",
+							summary:
+								"沙盒清理作业，若想保留较长时间，可以在[[特殊:我的用户页/Sandbox|个人测试区]]作测试，或者翻阅历史记录。",
+						},
+						{
+							title: "模块:沙盒",
+							summary:
+								"沙盒清理作业，若想保留较长时间，可以在个人测试区作测试，或者翻阅历史记录。",
+						},
+					].map(edit),
+				);
 				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);

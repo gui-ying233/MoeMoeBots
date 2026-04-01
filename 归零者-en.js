@@ -77,7 +77,9 @@ const {
 						}
 					});
 				};
-				["Help:Sandbox", "Template:Sandbox"].forEach(edit);
+				await Promise.all(
+					["Help:Sandbox", "Template:Sandbox"].map(edit),
+				);
 				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);
