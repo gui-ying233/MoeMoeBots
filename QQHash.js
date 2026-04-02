@@ -21,7 +21,6 @@ const {
 	workerData,
 } = require("worker_threads");
 const { createHash } = require("crypto");
-const { error } = require("console");
 
 (async () => {
 	if (!isMainThread) {
