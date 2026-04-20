@@ -27,7 +27,7 @@ jobs:
             - name: 准备 node.js
               uses: actions/setup-node@main
               with:
-                  node-version: 20
+                  node-version: 24
                   cache: pnpm
                   cache-dependency-path: MoeMoeBots/pnpm-lock.yaml
             - name: 安装依赖
