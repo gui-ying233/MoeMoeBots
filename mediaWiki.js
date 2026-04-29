@@ -171,7 +171,7 @@ class Api {
 							}),
 						),
 					);
-					return res.headers.get("content-type").split(";")[0] ===
+					return res.headers.get("content-type")?.split(";")[0] ===
 						"application/json"
 						? span.setStatus({ code: SpanStatusCode.OK }) &&
 								res.json()
