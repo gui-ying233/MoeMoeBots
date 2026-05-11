@@ -10,22 +10,27 @@ jobs:
     qqhash:
         runs-on: ubuntu-latest
         steps:
+            - name: Harden the runner (Audit all outbound calls)
+              uses: step-security/harden-runner@a5ad31d6a139d249332a2605b85202e8c0b78450 # v2.19.1
+              with:
+                egress-policy: audit
+
             - name: 签出
-              uses: actions/checkout@main
+              uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
               with:
                   path: MoeMoeBots
             - name: 签出 QQHash
-              uses: actions/checkout@main
+              uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
               with:
                   repository: gui-ying233/QQHash
                   path: QQHash
                   token: ${{ secrets.QQHASH_PAT }}
             - name: 准备 pnpm
-              uses: pnpm/action-setup@master
+              uses: pnpm/action-setup@3e835812ef01165f4f8ae08ade56da44427ed4e0 # master
               with:
                   version: latest
             - name: 准备 node.js
-              uses: actions/setup-node@main
+              uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
               with:
                   node-version: 24
                   cache: pnpm
@@ -36,7 +41,7 @@ jobs:
                   cd MoeMoeBots && pnpm install &
                   wait
             - name: 准备 Tailscale
-              uses: tailscale/github-action@main
+              uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
               with:
                   oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
                   oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
