@@ -18,7 +18,7 @@
 	"dependencies": {
 		"@opentelemetry/api": "latest",
 		"@opentelemetry/api-logs": "latest",
-		"@opentelemetry/auto-instrumentations-node": "0.47.1",
+		"@opentelemetry/auto-instrumentations-node": "0.75.0",
 		"@opentelemetry/exporter-logs-otlp-http": "latest",
 		"@opentelemetry/exporter-trace-otlp-http": "latest",
 		"@opentelemetry/resources": "latest",
