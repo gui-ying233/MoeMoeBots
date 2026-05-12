@@ -16,7 +16,7 @@ jobs:
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
             - name: 准备 pnpm
-              uses: pnpm/action-setup@3e835812ef01165f4f8ae08ade56da44427ed4e0 # master
+              uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
               with:
                   version: latest
             - name: 准备 node.js
