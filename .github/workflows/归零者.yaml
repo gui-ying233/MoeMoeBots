@@ -5,6 +5,7 @@ on:
     workflow_dispatch:
 jobs:
     zero-homers:
+        environment: MoegirlPedia
         runs-on: ubuntu-latest
         continue-on-error: true
         steps:
