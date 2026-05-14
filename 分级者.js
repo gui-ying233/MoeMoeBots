@@ -146,150 +146,161 @@ const { existsSync } = require("fs");
 					for (const param of root.querySelectorAll(
 						"template#Template:游戏分级 > parameter",
 					)) {
-						switch (
-							`${param.name}-${param
-								.querySelector("parameter-value")
-								.toHtml()
-								.trim()
-								.toLowerCase()}`
-						) {
-							case "cero-ex":
-								console.log("获取 CERO 分级");
-								const ceroRank = await fetch(
-									`https://www.cero.biz/search/search.cgi?name=${escape(
-										encodingJapanese.convert(
-											encodingJapanese.stringToCode(
-												(
-													await new mw.Api({
-														api: "https://ja.wikipedia.org/w/api.php",
-													}).get({
-														action: "query",
-														format: "json",
-														list: "search",
-														srsearch: gameName,
-														srlimit: 1,
-														srqiprofile:
-															"classic_noboostlinks",
-														srinfo: "",
-														srprop: "",
-														srinterwiki: 1,
-													})
-												).query.search[0].title,
-											),
-											{
-												from: "UNICODE",
-												to: "EUC-JP",
-												type: "string",
-											},
-										),
-									)}`,
-								)
-									.then(res => res.arrayBuffer())
-									.then(buf =>
-										new TextDecoder("EUC-JP").decode(buf),
-									)
-									.then(html =>
-										new JSDOM(html).window.document
-											.querySelector(
-												"body > table > tbody > tr:last-of-type > td:last-of-type > table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > img",
-											)
-											?.alt?.trim()
-											.toUpperCase(),
-									);
-								console.log(`CERO-${ceroRank ?? "EX"}`);
-								if (!ceroRank) break;
-								param.setValue(ceroRank);
-								break;
-							case "esrb-rp":
-								console.log("获取 ESRB 分级");
-								const { found, games } = await fetch(
-									"https://www.esrb.org/wp-admin/admin-ajax.php",
-									{
-										method: "POST",
-										headers: {
-											"Content-Type":
-												"application/x-www-form-urlencoded",
-										},
-										body: `action=search_rating&args%5BsearchKeyword%5D=${await getEnName()}&args%5BsearchType%5D=All&args%5Bpg%5D=1&args%5Bplatform%5D%5B%5D=All+Platforms&args%5Brating%5D%5B%5D=E&args%5Brating%5D%5B%5D=E10%2B&args%5Brating%5D%5B%5D=T&args%5Brating%5D%5B%5D=M&args%5Brating%5D%5B%5D=AO&args%5Bdescriptor%5D%5B%5D=All+Content&args%5Bielement%5D%5B%5D=all`,
-									},
-								).then(res => res.json());
-								if (
-									!found ||
-									(games[0].title.toLowerCase() !==
-										gameName.toLowerCase() &&
-										games[0].submissionTitle.toLowerCase() !==
-											gameName.toLowerCase())
-								) {
-									console.log("ESRB-RP");
-									break;
-								}
-								const esrbRank = games[0].rating;
-								console.log(`ESRB-${esrbRank}`);
-								param.setValue(esrbRank);
-								break;
-							case "usk-rp":
-								console.log("获取 USK 分级");
-								const uskRank = await fetch(
-									`https://usk.de/en/?${new URLSearchParams({
-										s: await getEnName(),
-									})}`,
-								)
-									.then(res => res.text())
-									.then(html => {
-										return [0, 6, 12, 16, 18][
-											+[
-												...[
-													...[
-														...new JSDOM(html, {
-															virtualConsole:
-																() => {},
-														}).window.document.body.getElementsByClassName(
-															"usktitle-card-game-list-title",
-														),
-													].filter(
-														node =>
-															node.getElementsByClassName(
-																"usktitle-card-game-list-platform",
-															)[0].textContent !==
-															"(Trailer)",
-													)[0].childNodes,
-												]
-													.filter(
-														node =>
-															node.nodeType ===
-																3 &&
-															node.data
-																.trim()
-																.includes(
+						const rank = `${param.name}-${param
+							.querySelector("parameter-value")
+							.toHtml()
+							.trim()
+							.toLowerCase()}`;
+						await tracer.startActiveSpan(rank, async span => {
+							try {
+								switch (rank) {
+									case "cero-ex":
+										console.log("获取 CERO 分级");
+										const ceroRank = await fetch(
+											`https://www.cero.biz/search/search.cgi?name=${escape(
+												encodingJapanese.convert(
+													encodingJapanese.stringToCode(
+														(
+															await new mw.Api({
+																api: "https://ja.wikipedia.org/w/api.php",
+															}).get({
+																action: "query",
+																format: "json",
+																list: "search",
+																srsearch:
 																	gameName,
-																),
-													)[0]
-													.parentNode.parentNode.parentNode.getElementsByClassName(
-														"usktitle-card-game-list-icon",
-													)[0].classList,
-											]
-												.filter(cls =>
-													cls.startsWith(
-														"usktitle-card-game-list-icon-",
+																srlimit: 1,
+																srqiprofile:
+																	"classic_noboostlinks",
+																srinfo: "",
+																srprop: "",
+																srinterwiki: 1,
+															})
+														).query.search[0].title,
 													),
-												)[0]
-												.slice(29) - 1
-										];
-									})
-									.catch(e => {
-										if (e instanceof TypeError) return "RP";
-										span.recordException(e);
-										span.setStatus({
-											code: SpanStatusCode.ERROR,
-											message: e.message,
-										});
-										throw e;
-									});
-								console.log(`USK-${uskRank}`);
-								if (uskRank === "RP") break;
-								param.setValue(uskRank);
-								break;
-						}
+													{
+														from: "UNICODE",
+														to: "EUC-JP",
+														type: "string",
+													},
+												),
+											)}`,
+										)
+											.then(res => res.arrayBuffer())
+											.then(buf =>
+												new TextDecoder(
+													"EUC-JP",
+												).decode(buf),
+											)
+											.then(html =>
+												new JSDOM(html).window.document
+													.querySelector(
+														"body > table > tbody > tr:last-of-type > td:last-of-type > table > tbody > tr:nth-of-type(2) > td:nth-of-type(4) > img",
+													)
+													?.alt?.trim()
+													.toUpperCase(),
+											);
+										console.log(`CERO-${ceroRank ?? "EX"}`);
+										if (!ceroRank) break;
+										param.setValue(ceroRank);
+										break;
+									case "esrb-rp":
+										console.log("获取 ESRB 分级");
+										const { found, games } = await fetch(
+											"https://www.esrb.org/wp-admin/admin-ajax.php",
+											{
+												method: "POST",
+												headers: {
+													"Content-Type":
+														"application/x-www-form-urlencoded",
+												},
+												body: `action=search_rating&args%5BsearchKeyword%5D=${await getEnName()}&args%5BsearchType%5D=All&args%5Bpg%5D=1&args%5Bplatform%5D%5B%5D=All+Platforms&args%5Brating%5D%5B%5D=E&args%5Brating%5D%5B%5D=E10%2B&args%5Brating%5D%5B%5D=T&args%5Brating%5D%5B%5D=M&args%5Brating%5D%5B%5D=AO&args%5Bdescriptor%5D%5B%5D=All+Content&args%5Bielement%5D%5B%5D=all`,
+											},
+										).then(res => res.json());
+										if (
+											!found ||
+											(games[0].title.toLowerCase() !==
+												gameName.toLowerCase() &&
+												games[0].submissionTitle.toLowerCase() !==
+													gameName.toLowerCase())
+										) {
+											console.log("ESRB-RP");
+											break;
+										}
+										const esrbRank = games[0].rating;
+										console.log(`ESRB-${esrbRank}`);
+										param.setValue(esrbRank);
+										break;
+									case "usk-rp":
+										console.log("获取 USK 分级");
+										const uskRank = await fetch(
+											`https://usk.de/en/?${new URLSearchParams(
+												{
+													s: await getEnName(),
+												},
+											)}`,
+										)
+											.then(res => res.text())
+											.then(html => {
+												return [0, 6, 12, 16, 18][
+													+[
+														...[
+															...[
+																...new JSDOM(
+																	html,
+																	{
+																		virtualConsole:
+																			() => {},
+																	},
+																).window.document.body.getElementsByClassName(
+																	"usktitle-card-game-list-title",
+																),
+															].filter(
+																node =>
+																	node.getElementsByClassName(
+																		"usktitle-card-game-list-platform",
+																	)[0]
+																		.textContent !==
+																	"(Trailer)",
+															)[0].childNodes,
+														]
+															.filter(
+																node =>
+																	node.nodeType ===
+																		3 &&
+																	node.data
+																		.trim()
+																		.includes(
+																			gameName,
+																		),
+															)[0]
+															.parentNode.parentNode.parentNode.getElementsByClassName(
+																"usktitle-card-game-list-icon",
+															)[0].classList,
+													]
+														.filter(cls =>
+															cls.startsWith(
+																"usktitle-card-game-list-icon-",
+															),
+														)[0]
+														.slice(29) - 1
+												];
+											});
+										console.log(`USK-${uskRank}`);
+										if (uskRank === "RP") break;
+										param.setValue(uskRank);
+										break;
+								}
+							} catch (e) {
+								span.recordException(e);
+								span.setStatus({
+									code: SpanStatusCode.ERROR,
+									message: e.message,
+								});
+							} finally {
+								span.end();
+							}
+						});
 					}
 					const edit = async (retry = 0) => {
 						if (retry >= 3) return;
