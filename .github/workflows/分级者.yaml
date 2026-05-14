@@ -5,12 +5,13 @@ on:
     workflow_dispatch:
 jobs:
     ranker:
+        environment: MoegirlPedia
         runs-on: ubuntu-latest
         steps:
             - name: Harden the runner (Audit all outbound calls)
               uses: step-security/harden-runner@9ca718d3bf646d6534007c269a635b3e54cadf99 # v2.19.2
               with:
-                egress-policy: audit
+                  egress-policy: audit
 
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
