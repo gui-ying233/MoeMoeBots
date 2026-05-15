@@ -18,7 +18,7 @@ jobs:
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
             - name: 准备 pnpm
-              uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
+              uses: step-security/action-setup@0ad50dc56a23060fa78b14cfcf0677c4e14b42bc # main
               with:
                   version: latest
                   cache: true

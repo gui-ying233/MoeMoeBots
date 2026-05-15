@@ -29,7 +29,7 @@ jobs:
                   path: QQHash
                   token: ${{ secrets.QQHASH_PAT }}
             - name: 准备 pnpm
-              uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
+              uses: step-security/action-setup@0ad50dc56a23060fa78b14cfcf0677c4e14b42bc # main
               with:
                   version: latest
                   cache: true
