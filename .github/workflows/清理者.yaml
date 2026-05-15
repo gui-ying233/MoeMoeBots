@@ -8,7 +8,7 @@ permissions:
 jobs:
     cleaner:
         environment: MoegirlPedia
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-slim
         steps:
             - name: Harden the runner (Audit all outbound calls)
               uses: step-security/harden-runner@9ca718d3bf646d6534007c269a635b3e54cadf99 # v2.19.2
