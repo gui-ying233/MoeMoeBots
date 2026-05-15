@@ -17,20 +17,17 @@ jobs:
 
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
-            - name: 准备 pnpm
-              uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
-              with:
-                  version: latest
-                  cache: true
-                  run_install: false
             - name: 准备 node.js
               uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
               with:
                   node-version: 20
                   cache: pnpm
                   check-latest: true
-            - name: 安装 pnpm 依赖
-              run: pnpm install
+            - name: 准备 pnpm
+              uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
+              with:
+                  version: latest
+                  cache: true
             - name: 准备 Tailscale
               uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
               with:
