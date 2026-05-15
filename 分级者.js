@@ -243,59 +243,63 @@ const { existsSync } = require("fs");
 											break;
 										case "usk-rp":
 											console.log("获取 USK 分级");
-											const uskRank = await fetch(
-												`https://usk.de/en/?${new URLSearchParams(
-													{
-														s: await getEnName(),
-													},
-												)}`,
-											)
-												.then(res => res.text())
-												.then(html => {
-													return [0, 6, 12, 16, 18][
-														+[
-															...[
-																...[
-																	...new JSDOM(
-																		html,
-																		{
-																			virtualConsole:
-																				() => {},
-																		},
-																	).window.document.body.getElementsByClassName(
-																		"usktitle-card-game-list-title",
-																	),
-																].filter(
-																	node =>
-																		node.getElementsByClassName(
-																			"usktitle-card-game-list-platform",
-																		)[0]
-																			.textContent !==
-																		"(Trailer)",
-																)[0].childNodes,
-															]
-																.filter(
-																	node =>
-																		node.nodeType ===
-																			3 &&
-																		node.data
-																			.trim()
-																			.includes(
-																				gameName,
+											const uskRank =
+												(await fetch(
+													`https://usk.de/en/?${new URLSearchParams(
+														{
+															s: await getEnName(),
+														},
+													)}`,
+												)
+													.then(res => res.text())
+													.then(
+														html =>
+															[0, 6, 12, 16, 18][
+																+[
+																	...([
+																		...[
+																			...new JSDOM(
+																				html,
+																			).window.document.body.getElementsByClassName(
+																				"usktitle-card-game-list-title",
 																			),
-																)[0]
-																.parentNode.parentNode.parentNode.getElementsByClassName(
-																	"usktitle-card-game-list-icon",
-																)[0].classList,
-														]
-															.filter(cls =>
-																cls.startsWith(
-																	"usktitle-card-game-list-icon-",
-																),
-															)[0]
-															.slice(29) - 1
-													];
-												});
+																		].filter(
+																			node =>
+																				node.getElementsByClassName(
+																					"usktitle-card-game-list-platform",
+																				)[0]
+																					.textContent !==
+																				"(Trailer)",
+																		)[0]
+																			.childNodes,
+																	]
+																		.filter(
+																			node =>
+																				node.nodeType ===
+																					3 &&
+																				node.data
+																					.trim()
+																					.includes(
+																						gameName,
+																					),
+																		)[0]
+																		?.parentNode.parentNode.parentNode.getElementsByClassName(
+																			"usktitle-card-game-list-icon",
+																		)[0]
+																		.classList ??
+																		""),
+																]
+																	.filter(
+																		cls =>
+																			cls.startsWith(
+																				"usktitle-card-game-list-icon-",
+																			),
+																	)[0]
+																	?.slice(
+																		29,
+																	) - 1
+															],
+													)) ?? "RP";
 											console.log(`USK-${uskRank}`);
 											if (uskRank === "RP") break;
 											param.setValue(uskRank);
@@ -307,6 +311,7 @@ const { existsSync } = require("fs");
 										code: SpanStatusCode.ERROR,
 										message: e.message,
 									});
+									console.error(e);
 								} finally {
 									span.end();
 								}
