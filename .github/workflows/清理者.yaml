@@ -25,7 +25,7 @@ jobs:
             - name: 准备 node.js
               uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
               with:
-                  node-version: 20
+                  node-version: 24
                   cache: pnpm
                   check-latest: true
             - name: 安装 pnpm 依赖
