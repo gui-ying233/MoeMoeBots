@@ -32,11 +32,13 @@ jobs:
               uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # master
               with:
                   version: latest
+                  cache: true
             - name: 准备 node.js
               uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
               with:
                   node-version: 20
                   cache: pnpm
+                  check-latest: true
                   cache-dependency-path: MoeMoeBots/pnpm-lock.yaml
             - name: 安装依赖
               run: |
