@@ -16,7 +16,7 @@ jobs:
             - name: Harden the runner (Audit all outbound calls)
               uses: step-security/harden-runner@9ca718d3bf646d6534007c269a635b3e54cadf99 # v2.19.2
               with:
-                egress-policy: audit
+                  egress-policy: audit
 
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
@@ -42,10 +42,7 @@ jobs:
                   check-latest: true
                   cache-dependency-path: MoeMoeBots/pnpm-lock.yaml
             - name: 安装依赖
-              run: |
-                  sudo apt-get install -y hashcat &
-                  cd MoeMoeBots && pnpm install &
-                  wait
+              run: cd MoeMoeBots && pnpm install
             - name: 准备 Tailscale
               uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
               with:
