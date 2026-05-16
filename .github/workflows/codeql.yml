@@ -12,67 +12,67 @@
 name: "CodeQL"
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: ["main"]
-  schedule:
-    - cron: "0 0 * * 1"
+    push:
+        branches: ["main"]
+    pull_request:
+        # The branches below must be a subset of the branches above
+        branches: ["main"]
+    schedule:
+        - cron: "0 0 * * 1"
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
+    analyze:
+        name: Analyze
+        runs-on: ubuntu-latest
+        permissions:
+            actions: read
+            contents: read
+            security-events: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["javascript"]
-        # CodeQL supports [ $supported-codeql-languages ]
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
+        strategy:
+            fail-fast: false
+            matrix:
+                language: ["javascript"]
+                # CodeQL supports [ $supported-codeql-languages ]
+                # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
-    steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # v2.19.3
-        with:
-          egress-policy: audit
+        steps:
+            - name: Harden the runner (Audit all outbound calls)
+              uses: step-security/harden-runner@ab7a9404c0f3da075243ca237b5fac12c98deaa5 # main
+              with:
+                  egress-policy: audit
 
-      - name: Checkout repository
-        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+            - name: Checkout repository
+              uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
 
-      # Initializes the CodeQL tools for scanning.
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
-        with:
-          languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
+            # Initializes the CodeQL tools for scanning.
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@b71f5aebfc5cee7388c9d7b75e6e36f47787eb9a # main
+              with:
+                  languages: ${{ matrix.language }}
+                  # If you wish to specify custom queries, you can do so here or in a config file.
+                  # By default, queries listed here will override any specified in a config file.
+                  # Prefix the list here with "+" to use these queries and those in the config file.
 
-      # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
-      # If this step fails, then you should remove it and run the build manually (see below)
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
+            # Autobuild attempts to build any compiled languages  (C/C++, C#, or Java).
+            # If this step fails, then you should remove it and run the build manually (see below)
+            - name: Autobuild
+              uses: github/codeql-action/autobuild@b71f5aebfc5cee7388c9d7b75e6e36f47787eb9a # main
 
-      # ℹ️ Command-line programs to run using the OS shell.
-      # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+            # ℹ️ Command-line programs to run using the OS shell.
+            # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
-      #   If the Autobuild fails above, remove it and uncomment the following three lines.
-      #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
+            #   If the Autobuild fails above, remove it and uncomment the following three lines.
+            #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
 
-      # - run: |
-      #   echo "Run, Build Application using script"
-      #   ./location_of_script_within_repo/buildscript.sh
+            # - run: |
+            #   echo "Run, Build Application using script"
+            #   ./location_of_script_within_repo/buildscript.sh
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@68bde559dea0fdcac2102bfdf6230c5f70eb485e # v4.35.4
-        with:
-          category: "/language:${{matrix.language}}"
+            - name: Perform CodeQL Analysis
+              uses: github/codeql-action/analyze@b71f5aebfc5cee7388c9d7b75e6e36f47787eb9a # main
+              with:
+                  category: "/language:${{matrix.language}}"
