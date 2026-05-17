@@ -21,17 +21,16 @@ jobs:
                   mode: firewall
             - name: 签出
               uses: actions/checkout@900f2210b1d28bbbd0bd22d17926b9e224e8f231 # main
+            - name: 准备 node.js
+              uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
+              with:
+                  node-version: 20
+                  check-latest: true
             - name: 准备 pnpm
               uses: step-security/action-setup@0ad50dc56a23060fa78b14cfcf0677c4e14b42bc # main
               with:
                   version: 10
                   cache: true
-            - name: 准备 node.js
-              uses: actions/setup-node@670825a89dc0abd596e7a3abd0f5e3f6e5faf37c # main
-              with:
-                  node-version: 20
-                  cache: pnpm
-                  check-latest: true
             - name: 安装 pnpm 依赖
               run: sfw pnpm install
             - name: 准备 Tailscale
