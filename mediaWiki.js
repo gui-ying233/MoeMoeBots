@@ -171,10 +171,19 @@ class Api {
 							}),
 						),
 					);
+					const MAE = res.headers.get("Mediawiki-Api-Error");
+					if (MAE) {
+						span.recordException("Mediawiki-Api-Error");
+						span.setStatus({
+							code: SpanStatusCode.ERROR,
+							message: MAE,
+						});
+					}
 					return res.headers.get("content-type")?.split(";")[0] ===
 						"application/json"
-						? span.setStatus({ code: SpanStatusCode.OK }) &&
-								res.json()
+						? span.setStatus({
+								code: SpanStatusCode[MAE ? "ERROR" : "OK"],
+							}) && res.json()
 						: res.text();
 				} catch (e) {
 					span.recordException(e);
