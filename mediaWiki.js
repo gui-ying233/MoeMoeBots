@@ -181,9 +181,11 @@ class Api {
 					}
 					return res.headers.get("content-type")?.split(";")[0] ===
 						"application/json"
-						? span.setStatus({
-								code: SpanStatusCode[MAE ? "ERROR" : "OK"],
-							}) && res.json()
+						? (MAE
+								? span.setStatus({
+										code: SpanStatusCode.OK,
+									})
+								: span) && res.json()
 						: res.text();
 				} catch (e) {
 					span.recordException(e);
