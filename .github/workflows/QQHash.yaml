@@ -44,7 +44,7 @@ jobs:
                   cache: true
                   cache_dependency_path: MoeMoeBots/pnpm-lock.yaml
             - name: 安装依赖
-              run: cd MoeMoeBots && sfw pnpm install
+              run: cd MoeMoeBots && sfw pnpm install --prod
             - name: 准备 Tailscale
               uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
               with:

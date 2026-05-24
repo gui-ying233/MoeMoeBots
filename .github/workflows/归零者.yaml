@@ -32,7 +32,7 @@ jobs:
                   version: 10
                   cache: true
             - name: 安装 pnpm 依赖
-              run: sfw pnpm install
+              run: sfw pnpm install --prod
             - name: 准备 Tailscale
               uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
               with:
