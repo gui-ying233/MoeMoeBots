@@ -5,7 +5,6 @@
  * @import { ApiResponse } "types-mediawiki/mw/Api"
  * @import { RestResponse } "types-mediawiki/mw/Rest"
  * @import { ApiLoginParams, ApiLogoutParams, ApiTokenType, UnknownApiParams, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
- * @import "types-mediawiki/mw/Rest"
  * @import { Tracer, Span, SpanContext, SpanStatusCode } "@opentelemetry/api"
  * @import { ATTR_HTTP_RESPONSE_HEADER } "@opentelemetry/semantic-conventions"
  */
