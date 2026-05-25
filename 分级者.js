@@ -162,7 +162,8 @@ const { existsSync } = require("fs");
 												`https://www.cero.biz/search/search.cgi?name=${escape(
 													encodingJapanese.convert(
 														encodingJapanese.stringToCode(
-															(
+															setSpanAttributes(
+																span,
 																await new mw.Api(
 																	{
 																		api: "https://ja.wikipedia.org/w/api.php",
@@ -179,7 +180,7 @@ const { existsSync } = require("fs");
 																	srinfo: "",
 																	srprop: "",
 																	srinterwiki: 1,
-																})
+																}),
 															).query.search[0]
 																.title,
 														),
