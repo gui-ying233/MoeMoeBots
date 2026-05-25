@@ -27,8 +27,5 @@
 		"@opentelemetry/sdk-logs": "latest",
 		"@opentelemetry/sdk-node": "latest",
 		"@opentelemetry/semantic-conventions": "latest"
-	},
-	"devDependencies": {
-		"@dotenvx/dotenvx": "latest"
 	}
 }
