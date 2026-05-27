@@ -10,9 +10,6 @@ const {
 		MOEGIRL_JA_BOTPASSWORD,
 		MOEGIRL_LIBRARY_BOTUSERNAME,
 		MOEGIRL_LIBRARY_BOTPASSWORD,
-		MOEGIRL_MOEGIRLSSOUSERID,
-		MOEGIRL_MOEGIRLSSOUSERNAME,
-		MOEGIRL_MOEGIRLSSOTOKEN,
 		MOEGIRL_UK_BOTUSERNAME,
 		MOEGIRL_UK_BOTPASSWORD,
 		MOEGIRL_ICU_BOTUSERNAME,
@@ -28,71 +25,42 @@ module.exports = {
 		rest: "https://zh.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	mzh: {
 		api: "https://mzh.moegirl.org.cn/api.php",
 		rest: "https://mzh.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	mobile: {
 		api: "https://mobile.moegirl.org.cn/api.php",
 		rest: "https://mobile.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
 		botPassword: MOEGIRL_ZH_BOTUSERNAME,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	cm: {
 		api: "https://commons.moegirl.org.cn/api.php",
 		rest: "https://commons.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_CM_BOTUSERNAME,
 		botPassword: MOEGIRL_CM_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-			moegirlSSOUserName: encodeURIComponent(MOEGIRL_MOEGIRLSSOUSERNAME),
-		},
 	},
 	en: {
 		api: "https://en.moegirl.org.cn/api.php",
 		rest: "https://en.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_EN_BOTUSERNAME,
 		botPassword: MOEGIRL_EN_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	ja: {
 		api: "https://ja.moegirl.org.cn/api.php",
 		rest: "https://ja.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_JA_BOTUSERNAME,
 		botPassword: MOEGIRL_JA_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	library: {
 		api: "https://library.moegirl.org.cn/api.php",
 		rest: "https://library.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_LIBRARY_BOTUSERNAME,
 		botPassword: MOEGIRL_LIBRARY_BOTPASSWORD,
-		cookie: {
-			moegirlSSOUserID: MOEGIRL_MOEGIRLSSOUSERID,
-			moegirlSSOToken: MOEGIRL_MOEGIRLSSOTOKEN,
-		},
 	},
 	uk: {
 		api: "https://moegirl.uk/api.php",
