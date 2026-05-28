@@ -171,6 +171,13 @@ class Api {
 						),
 					);
 					const MAE = res.headers.get("Mediawiki-Api-Error");
+					if (res.status >= 400) {
+						span.recordException(res.statusText ?? res.status);
+						span.setStatus({
+							code: SpanStatusCode.ERROR,
+							message: res.statusText ?? res.status,
+						});
+					}
 					if (MAE) {
 						span.recordException("Mediawiki-Api-Error");
 						span.setStatus({
@@ -180,7 +187,7 @@ class Api {
 					}
 					return res.headers.get("content-type")?.split(";")[0] ===
 						"application/json"
-						? (MAE
+						? (MAE && res.ok
 								? span.setStatus({
 										code: SpanStatusCode.OK,
 									})
