@@ -418,6 +418,11 @@ class Api {
 			this.#span,
 			async span => {
 				try {
+					const url = new URL(this.#api);
+					if (parameters.origin) {
+						url.searchParams.set("origin", parameters.origin);
+						delete parameters.origin;
+					}
 					if (parameters.action === "upload" && parameters.file) {
 						await tracer.startActiveSpan(
 							"mediaWiki.Api.post.upload",
@@ -467,8 +472,7 @@ class Api {
 															async () => {
 																const r =
 																	await fetch(
-																		this
-																			.#api,
+																		url.href,
 																		{
 																			...this.#cookies2string(
 																				this
@@ -569,7 +573,7 @@ class Api {
 							},
 						);
 					}
-					return await fetch(this.#api, {
+					return await fetch(url.href, {
 						...this.#cookies2string(this.#init.post),
 						body: new URLSearchParams({
 							...this.#parameters,
