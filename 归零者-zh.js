@@ -25,41 +25,30 @@ const {
 									retry,
 								);
 							let r;
-							try {
-								r = setSpanAttributes(
-									span,
-									await api.post({
-										action: "edit",
-										nocreate: true,
-										tags: "Bot",
-										bot: true,
-										token: await api.getToken(
-											"csrf",
-											retry,
-										),
-										title: "Help:沙盒/json",
-										text: '{"_addText":"{{沙盒顶部}}"}',
-										summary:
-											"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox.json|个人测试区]]作测试，或者翻阅历史记录。",
-									}),
-								);
-								if (!r) throw new Error(r);
-								if (r?.error) {
-									span.setStatus({
-										code: SpanStatusCode.ERROR,
-										message: JSON.stringify(r.error),
-									});
-									console.error(r.error);
-									span.end();
-									return await edit(++retry);
-								}
-							} catch (e) {
-								span.recordException(e);
+							r = setSpanAttributes(
+								span,
+								await api.post({
+									action: "edit",
+									nocreate: true,
+									tags: "Bot",
+									bot: true,
+									token: await api.getToken("csrf", retry),
+									title: "Help:沙盒/json",
+									text: '{"_addText":"{{沙盒顶部}}"}',
+									summary:
+										"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox.json|个人测试区]]作测试，或者翻阅历史记录。",
+								}),
+							);
+							if (!r) throw new Error(r);
+							if (r?.error) {
 								span.setStatus({
 									code: SpanStatusCode.ERROR,
-									message: e.message,
+									message: JSON.stringify(r.error),
 								});
-								return console.error(e);
+								console.error(r.error);
+								if (retry >= 2)
+									throw new Error(JSON.stringify(r.error));
+								return await edit(++retry);
 							}
 							console.table(r.edit);
 							if (r.edit.nochange !== true)
@@ -72,13 +61,13 @@ const {
 								code: SpanStatusCode.ERROR,
 								message: e.message,
 							});
-							console.error(e);
+							throw e;
 						} finally {
 							span.end();
 						}
 					});
 				};
-				edit();
+				await edit();
 				span.setStatus({ code: SpanStatusCode.OK });
 			} catch (e) {
 				span.recordException(e);

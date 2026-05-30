@@ -170,7 +170,7 @@ class Api {
 							}),
 						),
 					);
-					const MAE = res.headers.get("Mediawiki-Api-Error");
+					const MAE = res.headers.get("MediaWiki-API-Error");
 					if (res.status >= 400) {
 						span.recordException(res.statusText ?? res.status);
 						span.setStatus({
@@ -179,7 +179,11 @@ class Api {
 						});
 					}
 					if (MAE) {
-						span.recordException("Mediawiki-Api-Error");
+						span.recordException(
+							Object.assign(new Error(MAE), {
+								name: "MediaWiki-API-Error",
+							}),
+						);
 						span.setStatus({
 							code: SpanStatusCode.ERROR,
 							message: MAE,

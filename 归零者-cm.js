@@ -25,39 +25,28 @@ const {
 									retry,
 								);
 							let r;
-							try {
-								r = setSpanAttributes(
-									span,
-									await api.post({
-										action: "edit",
-										text: "",
-										nocreate: true,
-										tags: "Bot",
-										bot: true,
-										token: await api.getToken(
-											"csrf",
-											retry,
-										),
-										...page,
-									}),
-								);
-								if (!r) throw new Error(r);
-								if (r?.error) {
-									span.setStatus({
-										code: SpanStatusCode.ERROR,
-										message: JSON.stringify(r.error),
-									});
-									console.error(r.error);
-									span.end();
-									return await edit(page, ++retry);
-								}
-							} catch (e) {
-								span.recordException(e);
+							r = setSpanAttributes(
+								span,
+								await api.post({
+									action: "edit",
+									text: "",
+									nocreate: true,
+									tags: "Bot",
+									bot: true,
+									token: await api.getToken("csrf", retry),
+									...page,
+								}),
+							);
+							if (!r) throw new Error(r);
+							if (r?.error) {
 								span.setStatus({
 									code: SpanStatusCode.ERROR,
-									message: e.message,
+									message: JSON.stringify(r.error),
 								});
-								return console.error(e);
+								console.error(r.error);
+								if (retry >= 2)
+									throw new Error(JSON.stringify(r.error));
+								return await edit(page, ++retry);
 							}
 							console.table(r.edit);
 							if (r.edit.nochange !== true)
@@ -70,7 +59,7 @@ const {
 								code: SpanStatusCode.ERROR,
 								message: e.message,
 							});
-							console.error(e);
+							throw e;
 						} finally {
 							span.end();
 						}
