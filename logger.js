@@ -11,8 +11,12 @@ const { resourceFromAttributes } = require("@opentelemetry/resources");
 const { ATTR_SERVICE_NAME } = require("@opentelemetry/semantic-conventions");
 const { trace, SpanStatusCode } = require("@opentelemetry/api");
 Object.assign(global, { trace, SpanStatusCode });
-global.ATTR_HTTP_RESPONSE_HEADER =
-	require("@opentelemetry/semantic-conventions").ATTR_HTTP_RESPONSE_HEADER;
+const {
+	ATTR_HTTP_RESPONSE_HEADER,
+	ATTR_HTTP_RESPONSE_STATUS_CODE,
+} = require("@opentelemetry/semantic-conventions");
+global.ATTR_HTTP_RESPONSE_HEADER = ATTR_HTTP_RESPONSE_HEADER;
+global.ATTR_HTTP_RESPONSE_STATUS_CODE = ATTR_HTTP_RESPONSE_STATUS_CODE;
 
 /** @type {string: any} */
 const pack = require("./package.json");

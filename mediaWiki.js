@@ -6,7 +6,7 @@
  * @import { RestResponse } "types-mediawiki/mw/Rest"
  * @import { ApiLoginParams, ApiLogoutParams, ApiTokenType, UnknownApiParams, ApiParams, ApiFormatJsonParams } "types-mediawiki-api"
  * @import { Tracer, Span, SpanContext, SpanStatusCode } "@opentelemetry/api"
- * @import { ATTR_HTTP_RESPONSE_HEADER } "@opentelemetry/semantic-conventions"
+ * @import { ATTR_HTTP_RESPONSE_HEADER, ATTR_HTTP_RESPONSE_STATUS_CODE } "@opentelemetry/semantic-conventions"
  */
 
 /** @type { Tracer } */
@@ -20,7 +20,9 @@ const tracer = global.trace?.getTracer(
 const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
 /** @type { ATTR_HTTP_RESPONSE_HEADER } */
 const ATTR_HTTP_RESPONSE_HEADER =
-	global.ATTR_HTTP_RESPONSE_HEADER ?? (key => key);
+		global.ATTR_HTTP_RESPONSE_HEADER ?? (key => key),
+	ATTR_HTTP_RESPONSE_STATUS_CODE =
+		global.ATTR_HTTP_RESPONSE_STATUS_CODE ?? "";
 
 /** @type {string: any} */
 const pack = require("./package.json");
@@ -169,6 +171,10 @@ class Api {
 								return k;
 							}),
 						),
+					);
+					span.setAttribute(
+						ATTR_HTTP_RESPONSE_STATUS_CODE,
+						res.status,
 					);
 					const MAE = res.headers.get("MediaWiki-API-Error");
 					if (res.status >= 400) {
@@ -863,6 +869,10 @@ class Rest {
 								return k;
 							}),
 						),
+					);
+					span.setAttribute(
+						ATTR_HTTP_RESPONSE_STATUS_CODE,
+						res.status,
 					);
 					return res.headers.get("content-type").split(";")[0] ===
 						"application/json"

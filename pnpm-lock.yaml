@@ -16,7 +16,7 @@ importers:
         version: 29.1.1
       wikiparser-node:
         specifier: latest
-        version: 1.41.0
+        version: 1.42.0
     devDependencies:
       types-mediawiki:
         specifier: latest
@@ -1045,8 +1045,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==, tarball: https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz}
 
-  js-yaml@4.1.1:
-    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==, tarball: https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.1.tgz}
+  js-yaml@4.2.0:
+    resolution: {integrity: sha512-ePWsvanv0DWuDRsW8dnt+R4jQ31SCRCQ7hhNcPXZPsoBZiemuZNYGf7adZdqX2D86j6rvKp3RpCxVTSb8WQlOw==, tarball: https://registry.npmjs.org/js-yaml/-/js-yaml-4.2.0.tgz}
     hasBin: true
 
   jsdom@29.1.1:
@@ -1089,8 +1089,8 @@ packages:
   long@5.3.2:
     resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==, tarball: https://registry.npmjs.org/long/-/long-5.3.2.tgz}
 
-  lru-cache@11.5.0:
-    resolution: {integrity: sha512-5YgH9UJd7wVb9hIouI2adWpgqrrICkt070Dnj8EUY1+B4B2P9eRLPAkAAo6NICA7CEhOIeBHl46u9zSNpNu7zA==, tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.0.tgz}
+  lru-cache@11.5.1:
+    resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==, tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.1.tgz}
     engines: {node: 20 || >=22}
 
   mathml-tag-names@4.0.0:
@@ -1212,8 +1212,8 @@ packages:
     resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==, tarball: https://registry.npmjs.org/prismjs/-/prismjs-1.30.0.tgz}
     engines: {node: '>=6'}
 
-  protobufjs@7.6.1:
-    resolution: {integrity: sha512-4K0myLaWL5EteuSAro91EGFgcfVgxb64Jx+7oDAY6GOkXD4M69yuSEljNcInGVCA5sOPxmZ/EqDLj2x0Q0+Ygg==, tarball: https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.1.tgz}
+  protobufjs@7.6.2:
+    resolution: {integrity: sha512-N9EiLovGEQOJSPF26Ij7qUGvahfEnq0eeYZ02aigIedkmz1qZSwjnP9SBITHJuF/6MYbIW4HDN8zdYjsjqJKXQ==, tarball: https://registry.npmjs.org/protobufjs/-/protobufjs-7.6.2.tgz}
     engines: {node: '>=12.0.0'}
 
   punycode@2.3.1:
@@ -1315,11 +1315,11 @@ packages:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==, tarball: https://registry.npmjs.org/table/-/table-6.9.0.tgz}
     engines: {node: '>=10.0.0'}
 
-  tldts-core@7.4.0:
-    resolution: {integrity: sha512-/mb9kRld+x1sIMXxWNOAp5m6C+D4GrAORWlJkOJ5dElvxdN1eutz/o7qHLp9gFvDF4Y3/L2xeScoxz6AbEo8rQ==, tarball: https://registry.npmjs.org/tldts-core/-/tldts-core-7.4.0.tgz}
+  tldts-core@7.4.2:
+    resolution: {integrity: sha512-nwEyF4vl4RSJjwSjBUmOSxc3BFPoIFdlRthJ6e+5v9P3bHNsoD06UjuqMUspqp7vsEZ1beaHi1km+optiE17yA==, tarball: https://registry.npmjs.org/tldts-core/-/tldts-core-7.4.2.tgz}
 
-  tldts@7.4.0:
-    resolution: {integrity: sha512-yHBe+zVfzNZ3QfTPW/Z6KK1G2t340gFjMHqI/4KKSt/abzYydzuCnpqdaF5gCCABby+9Yfbj59oR5F2Fd5CBzg==, tarball: https://registry.npmjs.org/tldts/-/tldts-7.4.0.tgz}
+  tldts@7.4.2:
+    resolution: {integrity: sha512-kCwffuaH8ntKtygnWe1b4BJKWiCUH30n5KfoTr6IchcXOwR7chAOFJxFrH3vjANafUYrIA4a7SDL+nn7SiR4Sw==, tarball: https://registry.npmjs.org/tldts/-/tldts-7.4.2.tgz}
     hasBin: true
 
   to-regex-range@5.0.1:
@@ -1401,8 +1401,8 @@ packages:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==, tarball: https://registry.npmjs.org/which/-/which-1.3.1.tgz}
     hasBin: true
 
-  wikiparser-node@1.41.0:
-    resolution: {integrity: sha512-RwOEyQ0ebPxR/mTHS8qDeTCKnWDGu6QjEzWnt0h1a28Xwohgtw6Fhn2RUGs24VMB9ip19Jt7TjUtOPygbUNsDA==, tarball: https://registry.npmjs.org/wikiparser-node/-/wikiparser-node-1.41.0.tgz}
+  wikiparser-node@1.42.0:
+    resolution: {integrity: sha512-a7w2LUnmg6KObEhID2yw1Wmx0zqog7C+O6FSXP3B339IIUnTeUh5SH/jN0W/l7BCLP3xOfU5H3bytOTUenYQsQ==, tarball: https://registry.npmjs.org/wikiparser-node/-/wikiparser-node-1.42.0.tgz}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
 
@@ -1551,7 +1551,7 @@ snapshots:
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
-      protobufjs: 7.6.1
+      protobufjs: 7.6.2
       yargs: 17.7.2
     optional: true
 
@@ -2517,7 +2517,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.1
-      js-yaml: 4.1.1
+      js-yaml: 4.2.0
       parse-json: 5.2.0
 
   css-functions-list@3.3.3: {}
@@ -2727,7 +2727,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@4.1.1:
+  js-yaml@4.2.0:
     dependencies:
       argparse: 2.0.1
 
@@ -2743,7 +2743,7 @@ snapshots:
       decimal.js: 10.6.0
       html-encoding-sniffer: 6.0.0
       is-potential-custom-element-name: 1.0.1
-      lru-cache: 11.5.0
+      lru-cache: 11.5.1
       parse5: 8.0.1
       saxes: 6.0.0
       symbol-tree: 3.2.4
@@ -2785,7 +2785,7 @@ snapshots:
   long@5.3.2:
     optional: true
 
-  lru-cache@11.5.0: {}
+  lru-cache@11.5.1: {}
 
   mathml-tag-names@4.0.0: {}
 
@@ -2901,7 +2901,7 @@ snapshots:
   prismjs@1.30.0:
     optional: true
 
-  protobufjs@7.6.1:
+  protobufjs@7.6.2:
     dependencies:
       '@protobufjs/aspromise': 1.1.2
       '@protobufjs/base64': 1.1.2
@@ -3045,11 +3045,11 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  tldts-core@7.4.0: {}
+  tldts-core@7.4.2: {}
 
-  tldts@7.4.0:
+  tldts@7.4.2:
     dependencies:
-      tldts-core: 7.4.0
+      tldts-core: 7.4.2
 
   to-regex-range@5.0.1:
     dependencies:
@@ -3057,7 +3057,7 @@ snapshots:
 
   tough-cookie@6.0.1:
     dependencies:
-      tldts: 7.4.0
+      tldts: 7.4.2
 
   tr46@6.0.0:
     dependencies:
@@ -3136,7 +3136,7 @@ snapshots:
     dependencies:
       isexe: 2.0.0
 
-  wikiparser-node@1.41.0:
+  wikiparser-node@1.42.0:
     dependencies:
       '@bhsd/cm-util': 2.0.1
       '@bhsd/common': 2.2.1
