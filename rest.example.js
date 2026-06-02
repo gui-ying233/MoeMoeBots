@@ -10,7 +10,13 @@ const {
 	await tracer.startActiveSpan(
 		__filename.slice(__dirname.length + 1),
 		async span => {
-			const rest = new mw.Rest(require("./config").mobile);
+			const api = new mw.Api(require("./config").mzh);
+			await api.login();
+			const rest = new mw.Rest(
+				Object.assign(require("./config").mzh, {
+					cookie: api.cookie,
+				}),
+			);
 			try {
 				console.log(
 					setSpanAttributes(

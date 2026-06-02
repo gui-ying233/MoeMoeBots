@@ -81,7 +81,7 @@ class Api {
 	/** @type { { string: string } } */
 	#defaultCookie = {};
 	/** @type { { string: string } } */
-	#cookies = {};
+	#cookie = {};
 	/** @type { { links: [{ context:SpanContext }] } } */
 	#span;
 	/**
@@ -104,7 +104,7 @@ class Api {
 				api.hash = "";
 				api.search = "";
 				this.#api = api.href;
-				this.#cookies = cookie;
+				this.#cookie = cookie;
 				const headers = {
 					referer: api.href,
 					"user-agent": `${pack.name || ""}/${pack.version || ""} (+${
@@ -113,7 +113,7 @@ class Api {
 						pack.bugs?.url ||
 						""
 					}; ${pack.bugs?.email || ""}) `,
-					cookie: this.#cookies,
+					cookie: this.#cookie,
 				};
 				this.#init = {
 					get: { headers },
@@ -121,7 +121,7 @@ class Api {
 				};
 				this.#botUsername = botUsername;
 				this.#botPassword = botPassword;
-				this.#defaultCookie = { ...this.#cookies };
+				this.#defaultCookie = { ...this.#cookie };
 				setSpanAttributes(
 					span,
 					{
@@ -167,7 +167,7 @@ class Api {
 						JSON.stringify(
 							res.headers.getSetCookie().map(c => {
 								const k = c.split("=")[0];
-								this.#cookies[k] = c.split(/[=;]/)[1];
+								this.#cookie[k] = c.split(/[=;]/)[1];
 								return k;
 							}),
 						),
@@ -726,10 +726,10 @@ class Api {
 					token = token ?? (await this.getToken("csrf"));
 					const r = await this.post({ action: "logout", token });
 					this.#tokens = null;
-					Object.keys(this.#cookies).forEach(
-						k => delete this.#cookies[k],
+					Object.keys(this.#cookie).forEach(
+						k => delete this.#cookie[k],
 					);
-					Object.assign(this.#cookies, this.#defaultCookie);
+					Object.assign(this.#cookie, this.#defaultCookie);
 					if (typeof r !== "object") new TypeError(r);
 					setSpanAttributes(span, r);
 					if (!Object.keys(r).length)
@@ -751,6 +751,10 @@ class Api {
 			},
 		);
 	}
+
+	get cookie() {
+		return this.#cookie;
+	}
 }
 
 /** @class Rest */
@@ -762,7 +766,7 @@ class Rest {
 	/** @type { { string: string } } */
 	#defaultCookie = {};
 	/** @type { { string: string } } */
-	#cookies = {};
+	#cookie = {};
 	/** @type { { links: [{ context:SpanContext }] } } */
 	#span;
 	/**
@@ -783,7 +787,7 @@ class Rest {
 				rest.hash = "";
 				rest.search = "";
 				this.#rest = rest.href;
-				this.#cookies = cookie;
+				this.#cookie = cookie;
 				const userAgent = `${pack.name || ""}/${pack.version || ""} (+${
 					pack.homepage ||
 					pack.repository?.url ||
@@ -794,7 +798,7 @@ class Rest {
 					referer: rest.href,
 					"user-agent": userAgent,
 					"Api-User-Agent": userAgent,
-					cookie: this.#cookies,
+					cookie: this.#cookie,
 				};
 				this.#init = {
 					head: { headers: { ...headers }, method: "HEAD" },
@@ -821,7 +825,7 @@ class Rest {
 						method: "DELETE",
 					},
 				};
-				this.#defaultCookie = { ...this.#cookies };
+				this.#defaultCookie = { ...this.#cookie };
 				setSpanAttributes(
 					span,
 					{
@@ -865,7 +869,7 @@ class Rest {
 						JSON.stringify(
 							res.headers.getSetCookie().map(c => {
 								const k = c.split("=")[0];
-								this.#cookies[k] = c.split(/[=;]/)[1];
+								this.#cookie[k] = c.split(/[=;]/)[1];
 								return k;
 							}),
 						),
@@ -965,7 +969,7 @@ class Rest {
 							JSON.stringify(
 								res.headers.getSetCookie().map(c => {
 									const k = c.split("=")[0];
-									this.#cookies[k] = c.split(/[=;]/)[1];
+									this.#cookie[k] = c.split(/[=;]/)[1];
 									return k;
 								}),
 							),
@@ -1170,6 +1174,10 @@ class Rest {
 				}
 			},
 		);
+	}
+
+	get cookie() {
+		return this.#cookie;
 	}
 }
 
