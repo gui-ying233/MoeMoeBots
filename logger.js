@@ -64,19 +64,6 @@ console.log = function (...args) {
 	});
 	originalConsole.log.apply(this, args);
 };
-console.table = function (...args) {
-	const body = args
-		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
-		)
-		.join(" ");
-	logger.emit({
-		severityNumber: SeverityNumber.INFO,
-		severityText: "TABLE",
-		body,
-	});
-	originalConsole.table.apply(this, args);
-};
 console.info = function (...args) {
 	const body = args
 		.map(arg =>
@@ -84,11 +71,24 @@ console.info = function (...args) {
 		)
 		.join(" ");
 	logger.emit({
-		severityNumber: SeverityNumber.INFO,
+		severityNumber: SeverityNumber.INFO2,
 		severityText: "INFO",
 		body,
 	});
 	originalConsole.info.apply(this, args);
+};
+console.table = function (...args) {
+	const body = args
+		.map(arg =>
+			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+		)
+		.join(" ");
+	logger.emit({
+		severityNumber: SeverityNumber.INFO3,
+		severityText: "TABLE",
+		body,
+	});
+	originalConsole.table.apply(this, args);
 };
 console.warn = function (...args) {
 	const body = args
