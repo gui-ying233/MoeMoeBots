@@ -77,19 +77,6 @@ console.info = function (...args) {
 	});
 	originalConsole.info.apply(this, args);
 };
-console.table = function (...args) {
-	const body = args
-		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
-		)
-		.join(" ");
-	logger.emit({
-		severityNumber: SeverityNumber.INFO3,
-		severityText: "TABLE",
-		body,
-	});
-	originalConsole.table.apply(this, args);
-};
 console.warn = function (...args) {
 	const body = args
 		.map(arg =>
