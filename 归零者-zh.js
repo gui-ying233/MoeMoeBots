@@ -33,7 +33,7 @@ const {
 									tags: "Bot",
 									bot: true,
 									token: await api.getToken("csrf", retry),
-									title: "Help:沙盒/json",
+									title: "Draft:沙盒/json",
 									text: '{"_addText":"{{沙盒顶部}}"}',
 									summary:
 										"沙盒清理作业，若想保留较长时间，可以在[[Special:我的用户页/Sandbox.json|个人测试区]]作测试，或者翻阅历史记录。",
