@@ -1,13 +1,14 @@
 "use strict";
+/**
+ * @import { ATTR_HTTP_REQUEST_RESEND_COUNT } "@opentelemetry/semantic-conventions"
+ */
+
 const {
 	mw,
 	tracer,
 	SpanStatusCode,
 	setSpanAttributes,
 } = require("./mediaWiki");
-const {
-	ATTR_HTTP_REQUEST_RESEND_COUNT,
-} = require("@opentelemetry/semantic-conventions");
 
 (async () => {
 	await tracer.startActiveSpan(

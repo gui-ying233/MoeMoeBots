@@ -16,9 +16,7 @@ const tracer = global.trace?.getTracer(
 	startActiveSpan: (...args) =>
 		(args[2] ?? args[1])(new Proxy({}, { get: () => () => true })),
 };
-/** @type { SpanStatusCode } */
 const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
-/** @type { ATTR_HTTP_RESPONSE_HEADER } */
 const ATTR_HTTP_RESPONSE_HEADER =
 		global.ATTR_HTTP_RESPONSE_HEADER ?? (key => key),
 	ATTR_HTTP_RESPONSE_STATUS_CODE =

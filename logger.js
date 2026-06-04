@@ -13,6 +13,7 @@ const {
 	ATTR_SERVICE_NAME,
 	ATTR_HTTP_RESPONSE_HEADER,
 	ATTR_HTTP_RESPONSE_STATUS_CODE,
+	ATTR_HTTP_REQUEST_RESEND_COUNT,
 } = require("@opentelemetry/semantic-conventions");
 const { trace, SpanStatusCode } = require("@opentelemetry/api");
 Object.assign(global, {
@@ -20,6 +21,7 @@ Object.assign(global, {
 	SpanStatusCode,
 	ATTR_HTTP_RESPONSE_HEADER,
 	ATTR_HTTP_RESPONSE_STATUS_CODE,
+	ATTR_HTTP_REQUEST_RESEND_COUNT,
 });
 const { SeverityNumber } = require("@opentelemetry/api-logs");
 /** @type {string: any} */
