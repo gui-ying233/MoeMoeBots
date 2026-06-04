@@ -34,7 +34,7 @@ jobs:
             - name: 安装 pnpm 依赖
               run: sfw pnpm install --prod
             - name: 准备 Tailscale
-              uses: tailscale/github-action@586e48b2b708c2650a83e9e6981a832a59e1119d # main
+              uses: tailscale/github-action@06afa10de8c4789722e373354c62fd95815b31ad # main
               with:
                   oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
                   oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
