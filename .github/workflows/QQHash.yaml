@@ -46,7 +46,7 @@ jobs:
             - name: 安装依赖
               run: cd MoeMoeBots && sfw pnpm install --prod
             - name: 准备 Tailscale
-              uses: tailscale/github-action@06afa10de8c4789722e373354c62fd95815b31ad # main
+              uses: tailscale/github-action@60d77a38adcd7d5f142167a6be21c33e4a2ea984 # main
               with:
                   oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
                   oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
