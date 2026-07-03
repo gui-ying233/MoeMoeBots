@@ -32,7 +32,7 @@ jobs:
                   path: QQHash
                   token: ${{ secrets.QQHASH_PAT }}
             - name: 准备 node.js
-              uses: actions/setup-node@6a61c0375d66246de94630495909f12cf8dac84d # main
+              uses: actions/setup-node@7c2c68d20d402ed6a201ada70a81341941093140 # main
               with:
                   node-version: 20
                   check-latest: true
