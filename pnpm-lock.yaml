@@ -16,7 +16,7 @@ importers:
         version: 29.1.1
       wikiparser-node:
         specifier: latest
-        version: 1.44.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0))(stylelint@17.12.0)(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
+        version: 1.45.0(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0))(stylelint@17.12.0)(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2)
     devDependencies:
       types-mediawiki:
         specifier: latest
@@ -87,12 +87,12 @@ packages:
       monaco-editor:
         optional: true
 
-  '@bhsd/common@2.2.1':
-    resolution: {integrity: sha512-sRR1wV9EBZaZMxgfqnGGHpyh6NfUPQ4Smp5dCdrSrOo+gci5FtDRAGcYSkzPQ1B76fShrpSxFqzhgezwy9Xclw==}
+  '@bhsd/common@3.0.0':
+    resolution: {integrity: sha512-wbHAu+vsnMujhj5m6CrGjj/mLykFfBQpjoGMbN/UMEoy1kIoqqvhtqq1TmcdaNinUURS2DgJkcbtoXjCiJgxmg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
 
-  '@bhsd/nodejs@1.0.1':
-    resolution: {integrity: sha512-s4rgoY0eW4jL1sodTl/b95cNVMUzm2VuP7mC6rCiq76sVeOp4MMaWl4iKAxGjmCauVAnVAwMMGL6B1DiK5ljYA==}
+  '@bhsd/nodejs@1.1.0':
+    resolution: {integrity: sha512-6Cful6zeTpW5kXiuu86nxNfgPa3qjlQBHcgMOOMQLynO9DA2srSzTxvK+i18BLiy146QjjLFtW7L0T1O/VI++w==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
 
   '@bhsd/stylelint-util@1.1.0':
@@ -848,10 +848,6 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  color-name@2.0.2:
-    resolution: {integrity: sha512-9vEt7gE16EW7Eu7pvZnR0abW9z6ufzhXxGXZEVU9IqPdlsUiMwJeJfRtq0zePUmnbHGT9zajca7mX8zgoayo4A==}
-    engines: {node: '>=12.20'}
-
   colord@2.9.3:
     resolution: {integrity: sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw==}
 
@@ -884,6 +880,10 @@ packages:
     resolution: {integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg==}
     engines: {node: '>=4'}
     hasBin: true
+
+  culori@4.0.2:
+    resolution: {integrity: sha512-1+BhOB8ahCn4O0cep0Sh2l9KCOfOdY+BXJnKMHFFzDEouSr/el18QwXEMRlOj9UY5nCeA8UN3a/82rUWRBeyBw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
@@ -1014,8 +1014,8 @@ packages:
     resolution: {integrity: sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==}
     engines: {node: '>=6'}
 
-  globby@16.2.0:
-    resolution: {integrity: sha512-QrJia2qDf5BB/V6HYlDTs0I0lBahyjLzpGQg3KT7FnCdTonAyPy2RtY802m2k4ALx6Dp752f82WsOczEVr3l6Q==}
+  globby@16.2.1:
+    resolution: {integrity: sha512-JmsqJalahxxgW8V2ecSQ2G7UjPlI9cpKdrkG9KoNiXhd/YslXOTEB0cViENWUznuovIuNT+FkMbraDGjr4FCUg==}
     engines: {node: '>=20'}
 
   globjoin@0.1.4:
@@ -1512,15 +1512,15 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  wikiparser-node@1.44.0:
-    resolution: {integrity: sha512-KsLcTi09RWESPqLcwT0n2g+Pz4Fp1FUK3ufcqIsZnW9KMmtX1mq69nhBLohsZ+tWhzrt8rHDucdRwwR4eKJ5hw==}
+  wikiparser-node@1.45.0:
+    resolution: {integrity: sha512-aFMfcRoEMCUca/JC36MZH9oD8QEhkzKDkfVWKWaZUF5eAq9aoTrYyHFBFNqm69NXU+jOm0a+xD4xw8oPHCHtnw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
-      color-name: '>=2.0.0'
+      ajv: '>=8.0.0'
+      ajv-errors: '>=3.0.0'
       katex: '>=0.14.0'
       mathoid-texvcjs: '>=0.4.0'
-      mediawiki-expr: '*'
       prism-wiki: '>=1.0.0'
       prismjs: ^1.0.0
       stylelint: '>=16.0.0'
@@ -1528,13 +1528,13 @@ packages:
       vscode-html-languageservice: '>=3.1.0'
       vscode-json-languageservice: '>=3.2.0'
     peerDependenciesMeta:
-      color-name:
+      ajv:
+        optional: true
+      ajv-errors:
         optional: true
       katex:
         optional: true
       mathoid-texvcjs:
-        optional: true
-      mediawiki-expr:
         optional: true
       prism-wiki:
         optional: true
@@ -1623,9 +1623,11 @@ snapshots:
     optionalDependencies:
       monaco-editor: 0.53.0
 
-  '@bhsd/common@2.2.1': {}
+  '@bhsd/common@3.0.0':
+    dependencies:
+      culori: 4.0.2
 
-  '@bhsd/nodejs@1.0.1': {}
+  '@bhsd/nodejs@1.1.0': {}
 
   '@bhsd/stylelint-util@1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0))':
     dependencies:
@@ -2693,9 +2695,6 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  color-name@2.0.2:
-    optional: true
-
   colord@2.9.3: {}
 
   commander@14.0.3:
@@ -2723,6 +2722,8 @@ snapshots:
       source-map-js: 1.2.1
 
   cssesc@3.0.0: {}
+
+  culori@4.0.2: {}
 
   data-uri-to-buffer@4.0.1:
     optional: true
@@ -2866,7 +2867,7 @@ snapshots:
       kind-of: 6.0.3
       which: 1.3.1
 
-  globby@16.2.0:
+  globby@16.2.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       fast-glob: 3.3.3
@@ -3271,7 +3272,7 @@ snapshots:
       fastest-levenshtein: 1.0.16
       file-entry-cache: 11.1.5
       global-modules: 2.0.0
-      globby: 16.2.0
+      globby: 16.2.1
       globjoin: 0.1.4
       html-tags: 5.1.0
       ignore: 7.0.5
@@ -3415,16 +3416,16 @@ snapshots:
       isexe: 2.0.0
     optional: true
 
-  wikiparser-node@1.44.0(color-name@2.0.2)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0))(stylelint@17.12.0)(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
+  wikiparser-node@1.45.0(ajv@8.20.0)(mathoid-texvcjs@0.6.0)(monaco-editor@0.53.0)(prism-wiki@2.1.1)(prismjs@1.30.0)(stylelint-config-recommended@18.0.0(stylelint@17.12.0))(stylelint@17.12.0)(vscode-css-languageservice@6.3.10)(vscode-html-languageservice@5.6.2)(vscode-json-languageservice@5.7.2):
     dependencies:
       '@bhsd/cm-util': 2.2.0(monaco-editor@0.53.0)
-      '@bhsd/common': 2.2.1
-      '@bhsd/nodejs': 1.0.1
+      '@bhsd/common': 3.0.0
+      '@bhsd/nodejs': 1.1.0
       '@bhsd/stylelint-util': 1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.12.0))
       entities: 8.0.0
       vscode-languageserver-types: 3.18.0
     optionalDependencies:
-      color-name: 2.0.2
+      ajv: 8.20.0
       mathoid-texvcjs: 0.6.0
       prism-wiki: 2.1.1
       prismjs: 1.30.0
