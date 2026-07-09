@@ -23,23 +23,40 @@ Object.assign(global, {
 	ATTR_HTTP_RESPONSE_STATUS_CODE,
 	ATTR_HTTP_REQUEST_RESEND_COUNT,
 });
-const { SeverityNumber } = require("@opentelemetry/api-logs");
+const { logs, SeverityNumber } = require("@opentelemetry/api-logs");
 /** @type {string: any} */
 const pack = require("./package.json");
-const {
-	LoggerProvider,
-	BatchLogRecordProcessor,
-} = require("@opentelemetry/sdk-logs");
+const { BatchLogRecordProcessor } = require("@opentelemetry/sdk-logs");
 const resource = resourceFromAttributes({
 	[ATTR_SERVICE_NAME]: pack.name,
 });
-const loggerProvider = new LoggerProvider({
-	resource,
-	processors: [new BatchLogRecordProcessor(new OTLPLogExporter({}))],
-});
-const logger = loggerProvider.getLogger(pack.name, pack.version);
-
 const originalConsole = { ...console };
+const sdk = new NodeSDK({
+	traceExporter: new OTLPTraceExporter({}),
+	logRecordProcessors: [
+		new BatchLogRecordProcessor({
+			exporter: new OTLPLogExporter({}),
+		}),
+	],
+	instrumentations: [getNodeAutoInstrumentations()],
+	resource,
+});
+const originalShutdown = sdk.shutdown.bind(sdk);
+let shutdownPromise;
+sdk.shutdown = async function () {
+	if (shutdownPromise) return shutdownPromise;
+	shutdownPromise = originalShutdown(...arguments).catch(console.error);
+};
+process.on("SIGTERM", () => {
+	sdk.shutdown()
+		.then(() => originalConsole.log("OpenTelemetry terminated"))
+		.finally(() => process.exit(0));
+});
+global.sdk = sdk;
+
+sdk.start();
+
+const logger = logs.getLogger(pack.name, pack.version);
 console.debug = function (...args) {
 	const body = args
 		.map(arg =>
@@ -105,28 +122,3 @@ console.error = function (...args) {
 	});
 	originalConsole.error.apply(this, args);
 };
-
-const sdk = new NodeSDK({
-	traceExporter: new OTLPTraceExporter({}),
-	instrumentations: [getNodeAutoInstrumentations()],
-	resource,
-});
-const originalShutdown = sdk.shutdown;
-sdk.shutdown = async function () {
-	return await Promise.allSettled([
-		loggerProvider
-			.shutdown()
-			.catch(error => console.log("Error terminating logging", error)),
-		originalShutdown
-			.apply(this, arguments)
-			.catch(error => console.log("Error terminating tracing", error)),
-	]);
-};
-process.on("SIGTERM", () => {
-	sdk.shutdown()
-		.then(() => console.log("Tracing terminated"))
-		.finally(() => process.exit(0));
-});
-global.sdk = sdk;
-
-sdk.start();
