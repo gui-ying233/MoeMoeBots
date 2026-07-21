@@ -19,7 +19,7 @@ jobs:
               with:
                   mode: firewall
             - name: 签出
-              uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # main
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # main
             - name: 准备 node.js
               uses: actions/setup-node@b789df37d6b7526a863bf51b65df64f3f56ffe4f # main
               with:
