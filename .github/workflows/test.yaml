@@ -1,0 +1,52 @@
+name: test
+on:
+    workflow_dispatch:
+permissions:
+    contents: read
+jobs:
+    test:
+        environment: MoegirlPedia
+        runs-on: ubuntu-latest
+        steps:
+            - name: Harden the runner (Audit all outbound calls)
+              uses: step-security/harden-runner@bf7454d06d71f1098171f2acdf0cd4708d7b5920 # main
+              with:
+                  egress-policy: audit
+            - name: 准备 Socket Firewall
+              uses: socketdev/action@ba6de6cc0565af1f42295590380973573297e31f # main
+              with:
+                  mode: firewall
+            - name: 签出
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # main
+            - name: 准备 node.js
+              uses: actions/setup-node@32f57ac043e003bc1b07edcb2b9102bbbf3e92f1 # main
+              with:
+                  node-version: 20
+                  check-latest: true
+            - name: 准备 pnpm
+              uses: step-security/action-setup@7734f5522f614a4cf2820ad19aa26717c7abfd96 # main
+              with:
+                  version: 10
+                  cache: true
+            - name: 安装 pnpm 依赖
+              run: sfw pnpm install --prod
+            - name: 准备 Tailscale
+              uses: tailscale/github-action@780049a30b6ff5c378a9e7b389d15ece7a204888 # main
+              with:
+                  oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+                  oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+                  tags: tag:ci
+                  version: latest
+            - name: 运行清理者
+              env:
+                  MOEGIRL_ZH_BOTUSERNAME: ${{ vars.MOEGIRL_ZH_BOTUSERNAME }}
+                  MOEGIRL_ZH_BOTPASSWORD: ${{ secrets.MOEGIRL_ZH_BOTPASSWORD }}
+                  MOEGIRL_MZH_BOTUSERNAME: ${{ vars.MOEGIRL_MZH_BOTUSERNAME }}
+                  MOEGIRL_MZH_BOTPASSWORD: ${{ secrets.MOEGIRL_MZH_BOTPASSWORD }}
+                  MOEGIRL_MOEGIRLSSOUSERID: ${{ vars.MOEGIRL_MOEGIRLSSOUSERID }}
+                  OTEL_TRACES_EXPORTER: ${{ vars.OTEL_TRACES_EXPORTER }}
+                  OTEL_EXPORTER_OTLP_ENDPOINT: ${{ vars.OTEL_EXPORTER_OTLP_ENDPOINT }}
+                  OTEL_EXPORTER_OTLP_INSECURE: ${{ vars.OTEL_EXPORTER_OTLP_INSECURE }}
+                  OTEL_NODE_RESOURCE_DETECTORS: ${{ vars.OTEL_NODE_RESOURCE_DETECTORS }}
+                  OTEL_SERVICE_NAME: ${{ vars.OTEL_SERVICE_NAME }}
+              run: node --experimental-websocket 清理者
