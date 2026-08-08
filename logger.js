@@ -43,9 +43,12 @@ const sdk = new NodeSDK({
 });
 const originalShutdown = sdk.shutdown.bind(sdk);
 let shutdownPromise;
-sdk.shutdown = async function () {
-	if (shutdownPromise) return shutdownPromise;
-	shutdownPromise = originalShutdown(...arguments).catch(console.error);
+sdk.shutdown = function () {
+	if (!shutdownPromise)
+		shutdownPromise = originalShutdown(...arguments).catch(error => {
+			originalConsole.error(error);
+		});
+	return shutdownPromise;
 };
 process.on("SIGTERM", () => {
 	sdk.shutdown()
