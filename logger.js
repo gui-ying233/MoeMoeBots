@@ -63,7 +63,9 @@ const logger = logs.getLogger(pack.name, pack.version);
 console.debug = function (...args) {
 	const body = args
 		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+			typeof arg === "object"
+				? JSON.stringify(arg, Object.getOwnPropertyNames(arg))
+				: String(arg),
 		)
 		.join(" ");
 	logger.emit({
@@ -76,7 +78,9 @@ console.debug = function (...args) {
 console.log = function (...args) {
 	const body = args
 		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+			typeof arg === "object"
+				? JSON.stringify(arg, Object.getOwnPropertyNames(arg))
+				: String(arg),
 		)
 		.join(" ");
 	logger.emit({
@@ -89,7 +93,9 @@ console.log = function (...args) {
 console.info = function (...args) {
 	const body = args
 		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+			typeof arg === "object"
+				? JSON.stringify(arg, Object.getOwnPropertyNames(arg))
+				: String(arg),
 		)
 		.join(" ");
 	logger.emit({
@@ -102,7 +108,9 @@ console.info = function (...args) {
 console.warn = function (...args) {
 	const body = args
 		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+			typeof arg === "object"
+				? JSON.stringify(arg, Object.getOwnPropertyNames(arg))
+				: String(arg),
 		)
 		.join(" ");
 	logger.emit({
@@ -115,7 +123,9 @@ console.warn = function (...args) {
 console.error = function (...args) {
 	const body = args
 		.map(arg =>
-			typeof arg === "object" ? JSON.stringify(arg) : String(arg),
+			typeof arg === "object"
+				? JSON.stringify(arg, Object.getOwnPropertyNames(arg))
+				: String(arg),
 		)
 		.join(" ");
 	logger.emit({
