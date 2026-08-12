@@ -21,7 +21,7 @@ jobs:
             - name: 签出
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # main
             - name: 准备 node.js
-              uses: actions/setup-node@e51e5fe84fc33b4c73ebe40526b2694712b5b858 # main
+              uses: actions/setup-node@12b7ff3796cabd9e0da05c556468eec2f565d246 # main
               with:
                   node-version: 20
                   check-latest: true
