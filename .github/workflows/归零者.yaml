@@ -12,7 +12,7 @@ jobs:
         continue-on-error: true
         steps:
             - name: Harden the runner (Audit all outbound calls)
-              uses: step-security/harden-runner@b09bb98e06d4d774595224525879c09bc6e98c40 # main
+              uses: step-security/harden-runner@05e31511f85b41b11d1cf0ef85d0992719546e2c # main
               with:
                   egress-policy: audit
             - name: 准备 Socket Firewall
