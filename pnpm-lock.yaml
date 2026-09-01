@@ -16,7 +16,7 @@ importers:
         version: 29.1.1
       wikiparser-node:
         specifier: latest
-        version: 1.46.3(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2))
+        version: 1.46.4(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2))
     devDependencies:
       types-mediawiki:
         specifier: latest
@@ -1449,8 +1449,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  vscode-languageserver-types@3.18.0:
-    resolution: {integrity: sha512-8TsGPNMIMiiBdkORgRSvLjuiEIiAFtO+KssmYWxQ+uSVvlf7RjK8YKCOjPzZ+YA04jXEV7+7LvkSmHkhpNS99g==}
+  vscode-languageserver-types@3.18.3:
+    resolution: {integrity: sha512-XIlzJ7Qp/jzSI1ds7/FwPAWrPeTZA7pAtlW4hdJ1J6xXWJL6dR9QYnDhJOdLzdKhUQ5Mm6mvUMw+3DcOQQasPw==}
 
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
@@ -1481,8 +1481,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  wikiparser-node@1.46.3:
-    resolution: {integrity: sha512-T9qHjUGc4gpb7aNwddt/PWSF8/zqczLn/kXf+TROVF41RZQtBVQXYZK1bmgCKMk+8U1lvGiz/ENLMCFH3CooDQ==}
+  wikiparser-node@1.46.4:
+    resolution: {integrity: sha512-lrjKRA8wFrscrhCfTD1ezwDWf27V7CEElPiZhPvDY4XQSVTXxhk3T7IBTUbaovQnvvobSzsfu33BUXi3c0Dc2w==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
@@ -3278,7 +3278,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vscode-languageserver-types@3.18.0: {}
+  vscode-languageserver-types@3.18.3: {}
 
   w3c-xmlserializer@5.0.0:
     dependencies:
@@ -3308,7 +3308,7 @@ snapshots:
       isexe: 2.0.0
     optional: true
 
-  wikiparser-node@1.46.3(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2)):
+  wikiparser-node@1.46.4(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2)):
     dependencies:
       '@bhsd/cm-util': 2.4.1
       '@bhsd/common': 4.1.0(culori@4.0.2)
@@ -3316,7 +3316,7 @@ snapshots:
       '@bhsd/stylelint-util': 1.1.0(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))
       culori: 4.0.2
       entities: 8.0.0
-      vscode-languageserver-types: 3.18.0
+      vscode-languageserver-types: 3.18.3
     optionalDependencies:
       ajv: 8.20.0
       stylelint: 17.14.1(supports-color@10.2.2)
