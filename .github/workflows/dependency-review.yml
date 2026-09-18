@@ -12,6 +12,8 @@ on: [pull_request]
 permissions:
     contents: read
 
+cache-mode: none
+
 jobs:
     dependency-review:
         runs-on: ubuntu-latest
