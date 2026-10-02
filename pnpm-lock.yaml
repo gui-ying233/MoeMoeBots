@@ -16,7 +16,7 @@ importers:
         version: 29.1.1
       wikiparser-node:
         specifier: latest
-        version: 1.47.0(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2))
+        version: 1.48.0(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2))
     devDependencies:
       types-mediawiki:
         specifier: latest
@@ -186,8 +186,8 @@ packages:
       '@noble/hashes':
         optional: true
 
-  '@grpc/grpc-js@1.14.4':
-    resolution: {integrity: sha512-k9Dj3DV/itK9D06Y8f190Qgop7/Ui+D0njFV3LHMPwPT75DpXLQohE9Wmz0QElrJnzsjB7KPWiKJbOl7IPDArQ==}
+  '@grpc/grpc-js@1.14.5':
+    resolution: {integrity: sha512-7VZM+SVdEcUUqSQeNI3zM8Qs/BhQKZndPo2h5VkYkAM8Iz0wJIa8mKV5ekQGqG8UUsnkQ0NMxIxwkIHYvj0qOw==}
     engines: {node: '>=12.10.0'}
 
   '@grpc/proto-loader@0.8.1':
@@ -1465,8 +1465,8 @@ packages:
     engines: {node: '>= 8'}
     hasBin: true
 
-  wikiparser-node@1.47.0:
-    resolution: {integrity: sha512-GZSkixX6CHF6eR6ExWC09HkSCmKKoNX/zY/xuZqF9pE29fgGts72XXFcvap6AJm3oJi6ET39cskHo3+ECVgpAw==}
+  wikiparser-node@1.48.0:
+    resolution: {integrity: sha512-RGH3zZboT3lZgTke7/80l9hYQtU8z4L6CLj0iWhfZ8D0FSGVthkmDSyMHhu9O98vlHnl2qeU6ktcErKIyuB+Zg==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
@@ -1639,7 +1639,7 @@ snapshots:
 
   '@exodus/bytes@1.15.1': {}
 
-  '@grpc/grpc-js@1.14.4':
+  '@grpc/grpc-js@1.14.5':
     dependencies:
       '@grpc/proto-loader': 0.8.1
       '@js-sdsl/ordered-map': 4.4.2
@@ -2273,7 +2273,7 @@ snapshots:
 
   '@opentelemetry/otlp-grpc-exporter-base@0.222.0(@opentelemetry/api@1.9.1)':
     dependencies:
-      '@grpc/grpc-js': 1.14.4
+      '@grpc/grpc-js': 1.14.5
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/core': 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/otlp-exporter-base': 0.222.0(@opentelemetry/api@1.9.1)
@@ -3267,7 +3267,7 @@ snapshots:
       isexe: 2.0.0
     optional: true
 
-  wikiparser-node@1.47.0(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2)):
+  wikiparser-node@1.48.0(ajv@8.20.0)(stylelint-config-recommended@18.0.0(stylelint@17.14.1(supports-color@10.2.2)))(stylelint@17.14.1(supports-color@10.2.2)):
     dependencies:
       '@bhsd/cm-util': 2.4.1
       '@bhsd/common': 4.1.0(culori@4.0.2)
