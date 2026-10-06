@@ -26,7 +26,7 @@ jobs:
                   node-version: 20
                   check-latest: true
             - name: 准备 pnpm
-              uses: step-security/action-setup@c9d80a280aaf584da8c913342a763a6de6452c7a # main
+              uses: step-security/action-setup@8beec6731697ff7a074963eaa56f6d8e02e1c399 # main
               with:
                   version: 10
                   cache: true
