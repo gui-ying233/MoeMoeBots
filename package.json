@@ -31,5 +31,14 @@
 		"@opentelemetry/sdk-logs": "latest",
 		"@opentelemetry/sdk-node": "latest",
 		"@opentelemetry/semantic-conventions": "latest"
+	},
+	"pnpm": {
+		"overrides": {
+			"fast-uri": "^3.1.8",
+			"colord": "^2.9.4",
+			"js-yaml": "^4.3.2",
+			"postcss-selector-parser": "^7.1.6",
+			"source-map-js": "^1.2.2"
+		}
 	}
 }
