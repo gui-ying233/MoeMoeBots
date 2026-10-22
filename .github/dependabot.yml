@@ -10,6 +10,27 @@ updates:
           - dependency-name: jsdom
             update-types:
                 - version-update:semver-major
+          - dependency-name: "@opentelemetry/api"
+            update-types:
+                - versions: [">=1.10.0"]
+          - dependency-name: "@opentelemetry/auto-instrumentations-node"
+            update-types:
+                - versions: [">=0.82.0"]
+        - dependency-name: "@opentelemetry/sdk-node"
+            update-types:
+                - versions: [">=0.224.0"]
+        - dependency-name: "@opentelemetry/sdk-logs"
+            update-types:
+                - versions: [">=0.224.0"]
+        - dependency-name: "@opentelemetry/exporter-logs-otlp-http"
+            update-types:
+                - versions: [">=0.224.0"]
+        - dependency-name: "@opentelemetry/exporter-trace-otlp-http"
+            update-types:
+                - versions: [">=0.224.0"]
+        - dependency-name: "@opentelemetry/resources"
+            update-types:
+                - versions: [">=3.0.0"]
     - package-ecosystem: github-actions
       directory: /
       schedule:
