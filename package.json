@@ -15,7 +15,7 @@
 	"dependencies": {
 		"encoding-japanese": "latest",
 		"jsdom": "^29.1.1",
-		"wikiparser-node": "latest"
+		"wikiparser-node": "^1.48.1"
 	},
 	"devDependencies": {
 		"types-mediawiki": "latest",
