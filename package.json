@@ -26,7 +26,7 @@
 		"@opentelemetry/api-logs": "^0.223.0",
 		"@opentelemetry/auto-instrumentations-node": "^0.81.2",
 		"@opentelemetry/exporter-logs-otlp-http": "^0.223.0",
-		"@opentelemetry/exporter-trace-otlp-http": "^0.223.0",
+		"@opentelemetry/exporter-trace-otlp-http": "^0.223.1",
 		"@opentelemetry/resources": "~2.12.1",
 		"@opentelemetry/sdk-logs": "^0.223.1",
 		"@opentelemetry/sdk-node": "^0.223.0",
