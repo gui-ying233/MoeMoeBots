@@ -60,6 +60,7 @@ const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 const { Agent, setGlobalDispatcher } = require("undici");
 setGlobalDispatcher(
 	new Agent({
+		allowH2: false,
 		connect: {
 			ecdhCurve: "X25519",
 		},
