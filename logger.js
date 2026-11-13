@@ -15,7 +15,12 @@ const {
 	ATTR_HTTP_RESPONSE_STATUS_CODE,
 	ATTR_HTTP_REQUEST_RESEND_COUNT,
 } = require("@opentelemetry/semantic-conventions");
-const { trace, SpanStatusCode } = require("@opentelemetry/api");
+const {
+	trace,
+	SpanStatusCode,
+	logs,
+	SeverityNumber,
+} = require("@opentelemetry/api");
 Object.assign(global, {
 	trace,
 	SpanStatusCode,
@@ -23,7 +28,6 @@ Object.assign(global, {
 	ATTR_HTTP_RESPONSE_STATUS_CODE,
 	ATTR_HTTP_REQUEST_RESEND_COUNT,
 });
-const { logs, SeverityNumber } = require("@opentelemetry/api-logs");
 /** @type {string: any} */
 const pack = require("./package.json");
 const { BatchLogRecordProcessor } = require("@opentelemetry/sdk-logs");
