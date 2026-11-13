@@ -57,15 +57,15 @@ const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 	return r;
 };
 
-const { Agent, setGlobalDispatcher } = require("undici");
-setGlobalDispatcher(
-	new Agent({
-		allowH2: false,
-		connect: {
-			ecdhCurve: "X25519",
-		},
-	}),
-);
+// const { Agent, setGlobalDispatcher } = require("undici");
+// setGlobalDispatcher(
+// 	new Agent({
+// 		allowH2: false,
+// 		connect: {
+// 			ecdhCurve: "X25519",
+// 		},
+// 	}),
+// );
 
 /** @class Api */
 class Api {

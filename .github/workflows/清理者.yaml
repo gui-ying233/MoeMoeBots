@@ -24,7 +24,7 @@ jobs:
             - name: 准备 node.js
               uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # main
               with:
-                  node-version: 26
+                  node-version: 24.4.1
                   check-latest: true
             - name: 准备 pnpm
               uses: step-security/action-setup@8beec6731697ff7a074963eaa56f6d8e02e1c399 # main
