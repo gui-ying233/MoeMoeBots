@@ -14,9 +14,6 @@ importers:
       jsdom:
         specifier: latest
         version: 31.0.1
-      undici:
-        specifier: latest
-        version: 8.12.4
       wikiparser-node:
         specifier: latest
         version: 2.1.0

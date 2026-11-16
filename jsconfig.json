@@ -1,9 +1,0 @@
-{
-	"compilerOptions": {
-	"typeRoots": [
-		"node_modules/@types",
-		"/Users/guiying/Library/pnpm/global/5/node_modules"
-	],
-		"types": ["types-mediawiki-api", "types-mediawiki"]
-	}
-}

@@ -15,7 +15,6 @@
 	"dependencies": {
 		"encoding-japanese": "latest",
 		"jsdom": "latest",
-		"undici": "latest",
 		"wikiparser-node": "latest"
 	},
 	"devDependencies": {
