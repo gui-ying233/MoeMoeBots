@@ -9,7 +9,7 @@
  * @import { ATTR_HTTP_RESPONSE_HEADER, ATTR_HTTP_RESPONSE_STATUS_CODE } "@opentelemetry/semantic-conventions"
  */
 
-require("node:tls").DEFAULT_ECDH_CURVE = "X25519:P-256:P-384:P-521";
+require("node:tls").DEFAULT_CIPHERS = "DEFAULT@SECLEVEL=1";
 
 /** @type { Tracer } */
 const tracer = global.trace?.getTracer(
