@@ -18,6 +18,39 @@ const encodingJapanese = require("encoding-japanese");
 const { writeFile } = require("fs/promises");
 const { existsSync } = require("fs");
 
+async function getEsrbRank(searchTitle, gameName) {
+	const query = new URLSearchParams({
+		searchKeyword: searchTitle,
+		searchType: "All",
+		pg: "1",
+	});
+	const response = await fetch(
+		`https://www.esrb.org/wp-json/esrb/v1/search?${query}`,
+	);
+	if (!response.ok) throw new Error(`ESRB 查询失败（HTTP ${response.status}）`);
+
+	const { found, html_results: html } = await response.json();
+	if (!Number.isInteger(found) || typeof html !== "string")
+		throw new Error("ESRB 查询响应格式异常");
+	if (!found) return;
+
+	const titles = JSDOM.fragment(html).querySelectorAll(".game .heading h2 a");
+	if (!titles.length) throw new Error("ESRB 查询结果缺少游戏标题");
+	const name = gameName.trim().toLowerCase();
+	const title = Array.from(titles).find(
+		link => link.textContent.trim().toLowerCase() === name,
+	);
+	if (!title) return;
+
+	const rating = title
+		.closest(".heading")
+		.querySelector("img")
+		?.getAttribute("src")
+		?.match(/(?:^|\/)(E|E10\+|T|M|AO)\.svg(?:[?#]|$)/)?.[1];
+	if (!rating) throw new Error("ESRB 查询结果缺少有效分级");
+	return rating;
+}
+
 (async () => {
 	await tracer.startActiveSpan(
 		__filename.slice(__dirname.length + 1),
@@ -217,30 +250,12 @@ const { existsSync } = require("fs");
 											break;
 										case "esrb-rp":
 											console.log("获取 ESRB 分级");
-											const { found, games } =
-												await fetch(
-													"https://www.esrb.org/wp-admin/admin-ajax.php",
-													{
-														method: "POST",
-														headers: {
-															"Content-Type":
-																"application/x-www-form-urlencoded",
-														},
-														body: `action=search_rating&args%5BsearchKeyword%5D=${await getEnName()}&args%5BsearchType%5D=All&args%5Bpg%5D=1&args%5Bplatform%5D%5B%5D=All+Platforms&args%5Brating%5D%5B%5D=E&args%5Brating%5D%5B%5D=E10%2B&args%5Brating%5D%5B%5D=T&args%5Brating%5D%5B%5D=M&args%5Brating%5D%5B%5D=AO&args%5Bdescriptor%5D%5B%5D=All+Content&args%5Bielement%5D%5B%5D=all`,
-													},
-												).then(res => res.json());
-											if (
-												!found ||
-												(games[0].title.toLowerCase() !==
-													gameName.toLowerCase() &&
-													games[0].submissionTitle.toLowerCase() !==
-														gameName.toLowerCase())
-											) {
-												console.log("ESRB-RP");
-												break;
-											}
-											const esrbRank = games[0].rating;
-											console.log(`ESRB-${esrbRank}`);
+											const esrbRank = await getEsrbRank(
+												await getEnName(),
+												gameName,
+											);
+											console.log(`ESRB-${esrbRank ?? "RP"}`);
+											if (!esrbRank) break;
 											param.setValue(esrbRank);
 											break;
 										case "usk-rp":
