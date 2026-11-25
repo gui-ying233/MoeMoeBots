@@ -36,7 +36,7 @@ module.exports = {
 		api: "https://mobile.moegirl.org.cn/api.php",
 		rest: "https://mobile.moegirl.org.cn/rest.php/v1/",
 		botUsername: MOEGIRL_ZH_BOTUSERNAME,
-		botPassword: MOEGIRL_ZH_BOTUSERNAME,
+		botPassword: MOEGIRL_ZH_BOTPASSWORD,
 	},
 	cm: {
 		api: "https://commons.moegirl.org.cn/api.php",
