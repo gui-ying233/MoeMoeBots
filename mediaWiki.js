@@ -6,7 +6,10 @@
  * @import { ApiLoginParams, ApiLogoutParams, ApiTokenType, UnknownApiParams, ApiParams, ApiFormatJsonParams } from "types-mediawiki-api"
  * @import { Tracer, Span, SpanOptions } from "@opentelemetry/api"
  * @typedef { Record<string, string> } Cookies
- * @typedef { { cookie: Cookies; generation: number; defaults: Cookies; expires: Map<string, { value: string; at: number }> } } Session
+ * @typedef { Record<`${ApiTokenType}token`, string> } Tokens
+ * @typedef { { cookie: string; value: Tokens | Promise<Tokens> | null } } TokenCache
+ * @typedef { { query?: TokenCache; cache?: TokenCache; token?: string } } TokenRequest
+ * @typedef { { cookie: Cookies; generation: number; defaults: Cookies; expires: Map<string, { value: string; at: number }>; tokens: Map<string, TokenCache> } } Session
  * @typedef { { response: Response; data: any; apiError: string | null; generation: number } } WikiResponse
  * @typedef { Omit<RequestInit, "headers"> & { headers: { referer: string; "user-agent": string; "Api-User-Agent"?: string; "Content-Type"?: string; cookie: Cookies } } } WikiRequestInit
  * @typedef { URLSearchParams | string | Record<string, string | readonly string[]> | Iterable<[string, string]> | ReadonlyArray<[string, string]> } RestQuery
@@ -16,13 +19,20 @@ const { ReadStream } = require("node:fs");
 const { basename } = require("node:path");
 const { setTimeout } = require("node:timers/promises");
 require("node:tls").DEFAULT_CIPHERS = "DEFAULT@SECLEVEL=1";
+const { Agent, getGlobalDispatcher } = require("undici");
+
+const noOpSpan = new Proxy(
+	{},
+	{
+		get: (_, key) => () => key !== "isRecording",
+	},
+);
 
 /** @type { Tracer } */
 const tracer = global.trace?.getTracer(
 	__filename.slice(__dirname.length + 1),
 ) ?? {
-	startActiveSpan: (...args) =>
-		(args[2] ?? args[1])(new Proxy({}, { get: () => () => true })),
+	startActiveSpan: (...args) => (args[2] ?? args[1])(noOpSpan),
 };
 const SpanStatusCode = global.SpanStatusCode ?? { UNSET: 0, OK: 1, ERROR: 2 };
 const ATTR_HTTP_RESPONSE_HEADER =
@@ -47,6 +57,8 @@ const userAgent = `${pack.name || ""}/${pack.version || ""} (+${
  * @returns { T }
  */
 const setSpanAttributes = (span, r, path = ["mw-response"]) => {
+	if (span.isRecording?.() === false || typeof r !== "object" || r === null)
+		return r;
 	const seen = new Set();
 	/**
 	 * @param { unknown } value
@@ -60,7 +72,9 @@ const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 			if (v === null || v === undefined) continue;
 			const key = k.toLowerCase();
 			const name = `${prefix}.${k}`;
-			if (key.endsWith("cookie"))
+			if (key === "dispatcher" && prefix === "params.headers")
+				span.setAttribute(name, "custom");
+			else if (key.endsWith("cookie"))
 				span.setAttribute(
 					name,
 					typeof v === "object"
@@ -121,26 +135,57 @@ const recordSpanError = (span, error) => {
 	span.recordException(exception);
 };
 
+const defaultDispatcher = tracer.startActiveSpan(
+	"mediaWiki.defaultDispatcher",
+	span => {
+		try {
+			const globalDispatcher = getGlobalDispatcher();
+			if (globalDispatcher.constructor.name !== "Agent") {
+				span.setAttribute("mediawiki.http.dispatcher", "global");
+				span.setStatus({ code: SpanStatusCode.OK });
+				return undefined;
+			}
+			const agent = new Agent({ keepAliveTimeout: 30e3 });
+			span.setAttribute("mediawiki.http.dispatcher", "shared");
+			span.setStatus({ code: SpanStatusCode.OK });
+			return { agent, globalDispatcher };
+		} catch (e) {
+			recordSpanError(span, e);
+			return undefined;
+		} finally {
+			span.end();
+		}
+	},
+);
+
 /** @type { WeakMap<Cookies, Session> } */
 const sessions = new WeakMap();
 const postWithResponse = Symbol();
+const tokenQuery = Symbol();
 
 /** @param { Cookies } cookie */
 const getSession = cookie =>
 	tracer.startActiveSpan("mediaWiki.getSession", span => {
 		try {
 			let session = sessions.get(cookie);
-			span.setAttribute("mediawiki.session.reused", session !== undefined);
+			span.setAttribute(
+				"mediawiki.session.reused",
+				session !== undefined,
+			);
 			if (!session) {
 				session = {
 					cookie,
 					generation: 0,
 					defaults: { ...cookie },
 					expires: new Map(),
+					tokens: new Map(),
 				};
 				sessions.set(cookie, session);
 			}
-			span.setAttribute("mediawiki.session.generation", session.generation);
+			span.setAttribute(
+				"mediawiki.session.generation",
+				session.generation,
+			);
 			setSpanAttributes(span, { cookie }, ["params"]);
 			span.setStatus({ code: SpanStatusCode.OK });
 			return session;
@@ -180,21 +225,24 @@ const pruneCookies = ({ cookie, defaults, expires, generation }) =>
 	});
 
 /**
- * @param { Headers } headers
+ * @param { string[] } cookieHeaders
  * @param { Session } session
- * @param { number } generation
+ * @param { number | undefined } generation
  * @returns { string[] }
  */
-const readCookies = (headers, session, generation) =>
+const readCookies = (cookieHeaders, session, generation) =>
 	tracer.startActiveSpan("mediaWiki.readCookies", span => {
 		try {
 			const names = [];
 			const expired = [];
 			const current = generation === session.generation;
-			span.setAttribute("mediawiki.session.generation", session.generation);
+			span.setAttribute(
+				"mediawiki.session.generation",
+				session.generation,
+			);
 			const { cookie, defaults, expires } = session;
 			const now = Date.now();
-			for (const header of headers.getSetCookie()) {
+			for (const header of cookieHeaders) {
 				const [pair, ...attributes] = header.split(";");
 				const separator = pair.indexOf("=");
 				if (separator < 0) continue;
@@ -236,7 +284,10 @@ const readCookies = (headers, session, generation) =>
 			}
 			span.setAttribute("mediawiki.cookie.names", names);
 			span.setAttribute("mediawiki.cookie.expired_names", expired);
-			span.setAttribute("mediawiki.cookie.applied", current && names.length > 0);
+			span.setAttribute(
+				"mediawiki.cookie.applied",
+				current && names.length > 0,
+			);
 			span.setStatus({ code: SpanStatusCode.OK });
 			return names;
 		} catch (e) {
@@ -270,8 +321,10 @@ const setResponseStatus = (span, res, apiError) => {
  * @param { string[] } cookieNames
  */
 const setResponseHeaders = (span, headers, cookieNames) => {
+	if (span.isRecording?.() === false) return;
 	for (const [k, v] of headers)
-		if (k !== "set-cookie") span.setAttribute(ATTR_HTTP_RESPONSE_HEADER(k), v);
+		if (k !== "set-cookie")
+			span.setAttribute(ATTR_HTTP_RESPONSE_HEADER(k), v);
 	span.setAttribute(
 		ATTR_HTTP_RESPONSE_HEADER("set-cookie"),
 		JSON.stringify(cookieNames),
@@ -295,12 +348,6 @@ class Api {
 		utf8: true,
 		formatversion: 2,
 	};
-	/** @type { Record<`${ApiTokenType}token`, string> | Promise<Record<`${ApiTokenType}token`, string>> | null } */
-	#tokens = null;
-	/** @type { string } */
-	#tokenCookie;
-	/** @type { number } */
-	#tokenGeneration;
 	/** @type { Session } */
 	#session;
 	/** @type { SpanOptions } */
@@ -311,15 +358,21 @@ class Api {
 	constructor({ api, botUsername, botPassword, cookie = {} }) {
 		tracer.startActiveSpan("mediaWiki.Api.constructor", span => {
 			try {
-				setSpanAttributes(span, { api, botUsername, botPassword, cookie }, [
-					"params",
-				]);
+				setSpanAttributes(
+					span,
+					{ api, botUsername, botPassword, cookie },
+					["params"],
+				);
 				const url = new URL(api);
 				url.hash = "";
 				url.search = "";
 				this.#api = url.href;
 				this.#session = getSession(cookie);
-				const headers = { referer: url.href, "user-agent": userAgent, cookie };
+				const headers = {
+					referer: url.href,
+					"user-agent": userAgent,
+					cookie,
+				};
 				this.#init = {
 					get: { headers },
 					post: { headers, method: "POST" },
@@ -359,16 +412,21 @@ class Api {
 			span => {
 				try {
 					setSpanAttributes(span, parameters, ["params"]);
-					const result = Object.fromEntries(
-						Object.entries({ ...this.#parameters, ...parameters })
-							.filter(
-								([k, v]) =>
-									k === "format" ||
-									k === "formatversion" ||
-									(v !== false && v != null),
-							)
-							.map(([k, v]) => [k, Array.isArray(v) ? v.join("|") : v]),
-					);
+					const result = Object.create(null);
+					const entries = Object.entries({
+						...this.#parameters,
+						...parameters,
+					});
+					for (const [key, value] of entries) {
+						if (
+							key === "format" ||
+							key === "formatversion" ||
+							(value !== false && value != null)
+						)
+							result[key] = Array.isArray(value)
+								? value.join("|")
+								: value;
+					}
 					setSpanAttributes(span, result, ["params"]);
 					span.setStatus({ code: SpanStatusCode.OK });
 					return result;
@@ -384,7 +442,7 @@ class Api {
 
 	/**
 	 * @param { WikiRequestInit } init
-	 * @returns { RequestInit }
+	 * @returns { RequestInit & { headers: Record<string, string> } }
 	 */
 	#cookies2string(init) {
 		return tracer.startActiveSpan(
@@ -392,12 +450,21 @@ class Api {
 			this.#span,
 			span => {
 				try {
-					pruneCookies(this.#session);
+					if (this.#session.expires.size) pruneCookies(this.#session);
 					const cookie = Object.entries(this.#session.cookie)
 						.map(([name, value]) => `${name}=${value}`)
 						.join("; ");
 					setSpanAttributes(span, init, ["init"]);
-					const result = { ...init, headers: { ...init.headers, cookie } };
+					const result = {
+						...init,
+						headers: { ...init.headers, cookie },
+					};
+					if (
+						defaultDispatcher &&
+						getGlobalDispatcher() ===
+							defaultDispatcher.globalDispatcher
+					)
+						result.dispatcher = defaultDispatcher.agent;
 					span.setStatus({ code: SpanStatusCode.OK });
 					return result;
 				} catch (e) {
@@ -413,9 +480,10 @@ class Api {
 	/**
 	 * @param { Response } response
 	 * @param { number } generation
+	 * @param { TokenRequest } [tokenRequest]
 	 * @returns { Promise<WikiResponse> }
 	 */
-	#parseRes(response, generation) {
+	#parseRes(response, generation, tokenRequest) {
 		return tracer.startActiveSpan(
 			"mediaWiki.Api.#parseRes",
 			this.#span,
@@ -423,25 +491,82 @@ class Api {
 				try {
 					let apiError = response.headers.get("MediaWiki-API-Error");
 					setResponseStatus(span, response, apiError);
-					const cookieNames = readCookies(response.headers, this.#session, generation);
+					const session = this.#session;
+					const setCookies = response.headers.getSetCookie();
+					const query = tokenRequest?.query;
+					/** @type { number | undefined } */
+					let cookieGeneration = generation;
+					if (
+						query &&
+						setCookies.length &&
+						generation === session.generation
+					) {
+						const cookie = Object.entries(session.cookie)
+							.map(([name, value]) => `${name}=${value}`)
+							.join("; ");
+						if (
+							query !== session.tokens.get(this.#api) ||
+							query.cookie !== cookie
+						)
+							cookieGeneration = undefined;
+					}
+					const cookieNames = setCookies.length
+						? readCookies(setCookies, session, cookieGeneration)
+						: [];
+					if (
+						query &&
+						setCookies.length &&
+						cookieGeneration === session.generation
+					)
+						query.cookie = Object.entries(session.cookie)
+							.map(([name, value]) => `${name}=${value}`)
+							.join("; ");
 					setResponseHeaders(span, response.headers, cookieNames);
 					const contentType = response.headers
 						.get("content-type")
-						?.split(";")[0].trim().toLowerCase();
-					const json = contentType === "application/json" &&
+						?.split(";")[0]
+						.trim()
+						.toLowerCase();
+					const json =
+						contentType === "application/json" &&
 						![204, 205, 304].includes(response.status);
-					span.setAttribute("mediawiki.response.body_type", json ? "json" : "text");
+					span.setAttribute(
+						"mediawiki.response.body_type",
+						json ? "json" : "text",
+					);
 					const data = json
 						? /** @type { ApiResponse } */ (await response.json())
 						: await response.text();
-					if (!apiError && data && typeof data === "object") {
-						const code = data?.error?.code ?? data?.errors?.[0]?.code;
+					const error =
+						typeof data === "object" ? data?.error : undefined;
+					const errors =
+						typeof data === "object" ? data?.errors : undefined;
+					const code = error?.code ?? errors?.[0]?.code;
+					if (!apiError) {
 						if (typeof code === "string" && code) apiError = code;
-						else if (data?.error || data?.errors?.length)
+						else if (error || errors?.length)
 							apiError = "MediaWiki-API-Error";
-						if (apiError) setResponseStatus(span, response, apiError);
+						if (apiError)
+							setResponseStatus(span, response, apiError);
 					}
-					if (apiError) span.setAttribute("mediawiki.api.error_code", apiError);
+					const cache = tokenRequest?.cache;
+					if (
+						(apiError === "badtoken" || code === "badtoken") &&
+						generation === session.generation &&
+						cache &&
+						cache === session.tokens.get(this.#api) &&
+						cache.value &&
+						!(cache.value instanceof Promise) &&
+						Object.values(cache.value).includes(tokenRequest.token)
+					) {
+						session.tokens.delete(this.#api);
+						span.setAttribute(
+							"mediawiki.token.cache_invalidated",
+							true,
+						);
+					}
+					if (apiError)
+						span.setAttribute("mediawiki.api.error_code", apiError);
 					return { response, data, apiError, generation };
 				} catch (e) {
 					recordSpanError(span, e);
@@ -454,7 +579,7 @@ class Api {
 	}
 
 	/**
-	 * @param { ApiParams } parameters
+	 * @param { ApiParams & { [tokenQuery]?: TokenCache } } parameters
 	 * @returns { Promise<ApiResponse | string> }
 	 */
 	async get(parameters) {
@@ -466,16 +591,37 @@ class Api {
 					setSpanAttributes(span, parameters, ["params"]);
 					span.setAttribute("http.request.method", "GET");
 					const query = new URLSearchParams(
-						/** @type { Record<string, string> } */ (this.#listToPipe(parameters)),
+						/** @type { Record<string, string> } */ (
+							this.#listToPipe(parameters)
+						),
 					);
 					const init = this.#cookies2string(this.#init.get);
 					const generation = this.#session.generation;
-					const response = await fetch(
-						`${this.#api}?${query}`,
-						init,
+					const queryCache = parameters[tokenQuery];
+					if (queryCache) queryCache.cookie = init.headers.cookie;
+					const token =
+						typeof parameters.token === "string"
+							? parameters.token
+							: undefined;
+					const cache =
+						token === undefined
+							? undefined
+							: this.#session.tokens.get(this.#api);
+					const tokenRequest = queryCache
+						? { query: queryCache }
+						: cache
+							? { cache, token }
+							: undefined;
+					const response = await fetch(`${this.#api}?${query}`, init);
+					span.setAttribute(
+						ATTR_HTTP_RESPONSE_STATUS_CODE,
+						response.status,
 					);
-					span.setAttribute(ATTR_HTTP_RESPONSE_STATUS_CODE, response.status);
-					const { data, apiError } = await this.#parseRes(response, generation);
+					const { data, apiError } = await this.#parseRes(
+						response,
+						generation,
+						tokenRequest,
+					);
 					setResponseStatus(span, response, apiError);
 					return data;
 				} catch (e) {
@@ -503,56 +649,68 @@ class Api {
 					if (typeof type !== "string") throw new TypeError("types");
 
 					const key = `${type}token`;
-					const { generation } = this.#session;
-					span.setAttribute("mediawiki.session.generation", generation);
-					let tokens = this.#tokenGeneration === generation ? this.#tokens : null;
-					if (tokens instanceof Promise) span.setAttribute("mediawiki.token.cache", "pending");
-					else {
-						pruneCookies(this.#session);
-						const cookie = Object.entries(this.#session.cookie)
-							.map(([name, value]) => `${name}=${value}`)
-							.join("; ");
-						if (
-							newToken ||
-							this.#tokenCookie !== cookie ||
-							!tokens?.[key] ||
-							tokens[key] === "+\\"
-						) {
-							span.setAttribute("mediawiki.token.cache", "miss");
-							const request = this.get({
-								action: "query",
-								meta: "tokens",
-								type: [
-									"createaccount",
-									"csrf",
-									"login",
-									"patrol",
-									"rollback",
-									"userrights",
-									"watch",
-								],
-							}).then(r => {
-								setSpanAttributes(span, r);
-								const result = typeof r === "object" ? r?.query?.tokens : undefined;
-								if (!result || typeof result !== "object")
-									throw new TypeError("tokens");
+					const session = this.#session;
+					span.setAttribute(
+						"mediawiki.session.generation",
+						session.generation,
+					);
+					if (session.expires.size) pruneCookies(session);
+					const cookie = Object.entries(session.cookie)
+						.map(([name, value]) => `${name}=${value}`)
+						.join("; ");
+					const cached = session.tokens.get(this.#api);
+					let tokens =
+						cached?.cookie === cookie ? cached.value : null;
+					if (tokens instanceof Promise)
+						span.setAttribute("mediawiki.token.cache", "pending");
+					else if (
+						newToken ||
+						!tokens?.[key] ||
+						tokens[key] === "+\\"
+					) {
+						span.setAttribute("mediawiki.token.cache", "miss");
+						/** @type { TokenCache } */
+						const entry = { cookie, value: null };
+						const request = this.get({
+							[tokenQuery]: entry,
+							action: "query",
+							meta: "tokens",
+							type: [
+								"createaccount",
+								"csrf",
+								"login",
+								"patrol",
+								"rollback",
+								"userrights",
+								"watch",
+							],
+						}).then(r => {
+							setSpanAttributes(span, r);
+							const result =
+								typeof r === "object"
+									? r?.query?.tokens
+									: undefined;
+							if (!result || typeof result !== "object")
+								throw new TypeError("tokens");
+							return result;
+						});
+						entry.value = tokens = request.then(
+							result => {
+								if (session.tokens.get(this.#api) === entry)
+									session.tokens.set(this.#api, {
+										cookie: entry.cookie,
+										value: result,
+									});
 								return result;
-							});
-							const pending = request.then(
-								result => {
-									if (this.#tokens === pending) this.#tokens = result;
-									return result;
-								},
-								e => {
-									if (this.#tokens === pending) this.#tokens = null;
-									throw e;
-								},
-							);
-							this.#tokenGeneration = generation;
-							this.#tokenCookie = cookie;
-							this.#tokens = tokens = pending;
-						} else span.setAttribute("mediawiki.token.cache", "hit");
-					}
+							},
+							e => {
+								if (session.tokens.get(this.#api) === entry)
+									session.tokens.delete(this.#api);
+								throw e;
+							},
+						);
+						session.tokens.set(this.#api, entry);
+					} else span.setAttribute("mediawiki.token.cache", "hit");
 					const token = (await tokens)[key];
 					span.setStatus({ code: SpanStatusCode.OK });
 					return token;
@@ -578,8 +736,11 @@ class Api {
 			async span => {
 				try {
 					const { file, filesize, stash, ...params } = parameters;
-					setSpanAttributes(span, { ...params, filesize, stash }, ["params"]);
-					if (!(file instanceof ReadStream)) throw new TypeError("file");
+					setSpanAttributes(span, { ...params, filesize, stash }, [
+						"params",
+					]);
+					if (!(file instanceof ReadStream))
+						throw new TypeError("file");
 					delete params.offset;
 					delete params.filekey;
 					delete params.sessionkey;
@@ -595,40 +756,102 @@ class Api {
 							this.#span,
 							async span => {
 								try {
-									span.setAttribute("http.request.method", "POST");
+									span.setAttribute(
+										"http.request.method",
+										"POST",
+									);
 									for (let attempt = 0; ; attempt++) {
-										const values = this.#listToPipe({ ...fields, token });
-										setSpanAttributes(span, values, ["params"]);
+										const values = this.#listToPipe({
+											...fields,
+											token,
+										});
+										setSpanAttributes(span, values, [
+											"params",
+										]);
 										let body;
 										if (part) {
 											body = new FormData();
-											for (const [key, value] of Object.entries(values))
+											for (const [
+												key,
+												value,
+											] of Object.entries(values))
 												body.append(key, value);
 											body.append(...part);
-											span.setAttribute("mediawiki.upload.part_size", part[1].size);
+											span.setAttribute(
+												"mediawiki.upload.part_size",
+												part[1].size,
+											);
 										} else {
 											body = new URLSearchParams(
-												/** @type { Record<string, string> } */ (values),
+												/** @type { Record<string, string> } */ (
+													values
+												),
 											);
 										}
 
-										const init = this.#cookies2string(this.#init.post);
-										const generation = this.#session.generation;
-										if (attempt) span.setAttribute(ATTR_HTTP_REQUEST_RESEND_COUNT, attempt);
-										const response = await fetch(url, { ...init, body });
-										span.setAttribute(ATTR_HTTP_RESPONSE_STATUS_CODE, response.status);
-										const reply = await this.#parseRes(response, generation);
-										const badToken = reply.apiError === "badtoken" ||
-											(reply.data?.error?.code ?? reply.data?.errors?.[0]?.code) === "badtoken";
+										const init = this.#cookies2string(
+											this.#init.post,
+										);
+										const generation =
+											this.#session.generation;
+										const usedToken =
+											typeof token === "string"
+												? token
+												: undefined;
+										const cache =
+											usedToken === undefined
+												? undefined
+												: this.#session.tokens.get(
+														this.#api,
+													);
+										if (attempt)
+											span.setAttribute(
+												ATTR_HTTP_REQUEST_RESEND_COUNT,
+												attempt,
+											);
+										const response = await fetch(url, {
+											...init,
+											body,
+										});
+										span.setAttribute(
+											ATTR_HTTP_RESPONSE_STATUS_CODE,
+											response.status,
+										);
+										const reply = await this.#parseRes(
+											response,
+											generation,
+											cache
+												? { cache, token: usedToken }
+												: undefined,
+										);
+										const badToken =
+											reply.apiError === "badtoken" ||
+											(reply.data?.error?.code ??
+												reply.data?.errors?.[0]
+													?.code) === "badtoken";
 										if (attempt || !badToken) {
-											setResponseStatus(span, response, reply.apiError);
-											setSpanAttributes(span, { result: reply.data?.upload?.result }, ["upload"]);
+											setResponseStatus(
+												span,
+												response,
+												reply.apiError,
+											);
+											setSpanAttributes(
+												span,
+												{
+													result: reply.data?.upload
+														?.result,
+												},
+												["upload"],
+											);
 											return reply;
 										}
 
-										span.addEvent("mediawiki.upload.retry", { "error.type": "badtoken" });
+										span.addEvent(
+											"mediawiki.upload.retry",
+											{ "error.type": "badtoken" },
+										);
 										console.warn("badtoken");
-										token = await this.getToken("csrf", true);
+										token = await this.getToken("csrf");
 									}
 								} catch (e) {
 									recordSpanError(span, e);
@@ -640,20 +863,34 @@ class Api {
 						);
 
 					try {
-						const size = filesize == null ? undefined : Number(filesize);
-						if (size !== undefined && (!Number.isSafeInteger(size) || size < 0))
+						const size =
+							filesize == null ? undefined : Number(filesize);
+						if (
+							size !== undefined &&
+							(!Number.isSafeInteger(size) || size < 0)
+						)
 							throw new RangeError("filesize");
 						if (!params.filename && file.path)
 							params.filename = basename(file.path.toString());
 
-						if (size === undefined || size <= file.readableHighWaterMark) {
+						if (
+							size === undefined ||
+							size <= file.readableHighWaterMark
+						) {
 							const chunks = [];
 							for await (const chunk of file) chunks.push(chunk);
 							const blob = new Blob(chunks);
 							if (size !== undefined && size !== blob.size)
 								throw new RangeError("filesize");
-							const reply = await send({ ...params, filesize, stash }, ["file", blob]);
-							setResponseStatus(span, reply.response, reply.apiError);
+							const reply = await send(
+								{ ...params, filesize, stash },
+								["file", blob],
+							);
+							setResponseStatus(
+								span,
+								reply.response,
+								reply.apiError,
+							);
 							return reply;
 						}
 
@@ -682,13 +919,21 @@ class Api {
 											},
 											["chunk", blob],
 										);
-										setResponseStatus(span, reply.response, reply.apiError);
+										setResponseStatus(
+											span,
+											reply.response,
+											reply.apiError,
+										);
 										const upload = reply.data?.upload;
 										const expected =
 											next === size
-												? ["Success", "Poll"].includes(upload?.result)
-												: upload?.result === "Continue" &&
-													Number(upload.offset) === next;
+												? ["Success", "Poll"].includes(
+														upload?.result,
+													)
+												: upload?.result ===
+														"Continue" &&
+													Number(upload.offset) ===
+														next;
 										if (
 											reply.response.ok &&
 											!reply.apiError &&
@@ -696,7 +941,11 @@ class Api {
 											expected
 										)
 											return reply;
-										throw new Error(JSON.stringify(reply.data?.error ?? reply.data));
+										throw new Error(
+											JSON.stringify(
+												reply.data?.error ?? reply.data,
+											),
+										);
 									} catch (e) {
 										recordSpanError(span, e);
 										throw e;
@@ -708,7 +957,8 @@ class Api {
 							offset = next;
 							filekey = reply.data.upload.filekey;
 						}
-						if (!reply || offset !== size) throw new RangeError("filesize");
+						if (!reply || offset !== size)
+							throw new RangeError("filesize");
 
 						for (
 							let i = 0;
@@ -725,7 +975,11 @@ class Api {
 								checkstatus: true,
 								filekey,
 							});
-							setResponseStatus(span, reply.response, reply.apiError);
+							setResponseStatus(
+								span,
+								reply.response,
+								reply.apiError,
+							);
 						}
 
 						if (
@@ -734,10 +988,15 @@ class Api {
 							reply.data?.upload?.result !== "Success" ||
 							!reply.data.upload.filekey
 						)
-							throw new Error(JSON.stringify(reply.data?.error ?? reply.data));
+							throw new Error(
+								JSON.stringify(reply.data?.error ?? reply.data),
+							);
 
 						if (stash === false || stash == null) {
-							reply = await send({ ...params, filekey: reply.data.upload.filekey });
+							reply = await send({
+								...params,
+								filekey: reply.data.upload.filekey,
+							});
 						}
 						setResponseStatus(span, reply.response, reply.apiError);
 						return reply;
@@ -791,13 +1050,34 @@ class Api {
 						reply = await this.#upload(url.href, parameters);
 					else {
 						const body = new URLSearchParams(
-							/** @type { Record<string, string> } */ (this.#listToPipe(parameters)),
+							/** @type { Record<string, string> } */ (
+								this.#listToPipe(parameters)
+							),
 						);
 						const init = this.#cookies2string(this.#init.post);
 						const generation = this.#session.generation;
-						const response = await fetch(url.href, { ...init, body });
-						span.setAttribute(ATTR_HTTP_RESPONSE_STATUS_CODE, response.status);
-						reply = await this.#parseRes(response, generation);
+						const submittedToken = fields.token ?? fields.lgtoken;
+						const token =
+							typeof submittedToken === "string"
+								? submittedToken
+								: undefined;
+						const cache =
+							token === undefined
+								? undefined
+								: this.#session.tokens.get(this.#api);
+						const response = await fetch(url.href, {
+							...init,
+							body,
+						});
+						span.setAttribute(
+							ATTR_HTTP_RESPONSE_STATUS_CODE,
+							response.status,
+						);
+						reply = await this.#parseRes(
+							response,
+							generation,
+							cache ? { cache, token } : undefined,
+						);
 					}
 					setResponseStatus(span, reply.response, reply.apiError);
 					return mode === postWithResponse ? reply : reply.data;
@@ -829,9 +1109,11 @@ class Api {
 						reply = await this.post(
 							{
 								action: "login",
-								...setSpanAttributes(span, { lgname, lgpassword, lgtoken }, [
-									"params",
-								]),
+								...setSpanAttributes(
+									span,
+									{ lgname, lgpassword, lgtoken },
+									["params"],
+								),
 							},
 							postWithResponse,
 						);
@@ -843,23 +1125,38 @@ class Api {
 							reply.data?.login?.result !== "NeedToken"
 						)
 							break;
-						lgtoken = reply.data.login.token ?? (await this.getToken("login", true));
+						lgtoken =
+							reply.data.login.token ??
+							(await this.getToken("login", true));
 					}
 
 					const r = setSpanAttributes(span, reply.data);
-					if (reply.response.ok && !reply.apiError && r?.login?.result === "Success") {
+					if (
+						reply.response.ok &&
+						!reply.apiError &&
+						r?.login?.result === "Success"
+					) {
 						const current = reply.generation === session.generation;
 						span.setAttribute("mediawiki.session.applied", current);
 						if (current) {
 							session.generation++;
-							this.#tokens = null;
+							session.tokens.clear();
 						}
-						span.setAttribute("mediawiki.session.generation", session.generation);
+						span.setAttribute(
+							"mediawiki.session.generation",
+							session.generation,
+						);
 						span.setStatus({ code: SpanStatusCode.OK });
 						return r;
 					}
 					throw new Error(
-						JSON.stringify(r?.login?.reason ?? r?.login?.result ?? r?.login ?? r?.error ?? r),
+						JSON.stringify(
+							r?.login?.reason ??
+								r?.login?.result ??
+								r?.login ??
+								r?.error ??
+								r,
+						),
 					);
 				} catch (e) {
 					recordSpanError(span, e);
@@ -908,11 +1205,21 @@ class Api {
 			async span => {
 				try {
 					token = token ?? (await this.getToken("csrf"));
-					const { response, data: r, apiError, generation } =
-						await this.post({ action: "logout", token }, postWithResponse);
+					const {
+						response,
+						data: r,
+						apiError,
+						generation,
+					} = await this.post(
+						{ action: "logout", token },
+						postWithResponse,
+					);
 					setSpanAttributes(span, r);
-					const empty = r === "" ||
-						(r !== null && typeof r === "object" && !Object.keys(r).length);
+					const empty =
+						r === "" ||
+						(r !== null &&
+							typeof r === "object" &&
+							!Object.keys(r).length);
 					if (!response.ok || apiError || !empty)
 						throw new Error(JSON.stringify(r?.error ?? r));
 
@@ -920,14 +1227,18 @@ class Api {
 					const current = generation === session.generation;
 					span.setAttribute("mediawiki.session.applied", current);
 					if (current) {
-						pruneCookies(session);
+						if (session.expires.size) pruneCookies(session);
 						session.generation++;
 						session.expires.clear();
-						this.#tokens = null;
-						for (const name of Object.keys(session.cookie)) delete session.cookie[name];
+						session.tokens.clear();
+						for (const name of Object.keys(session.cookie))
+							delete session.cookie[name];
 						Object.assign(session.cookie, session.defaults);
 					}
-					span.setAttribute("mediawiki.session.generation", session.generation);
+					span.setAttribute(
+						"mediawiki.session.generation",
+						session.generation,
+					);
 					span.setStatus({ code: SpanStatusCode.OK });
 					return r;
 				} catch (e) {
@@ -941,20 +1252,24 @@ class Api {
 	}
 
 	get cookie() {
-		return tracer.startActiveSpan("mediaWiki.Api.cookie", this.#span, span => {
-			try {
-				pruneCookies(this.#session);
-				const { cookie } = this.#session;
-				setSpanAttributes(span, { cookie }, ["this"]);
-				span.setStatus({ code: SpanStatusCode.OK });
-				return cookie;
-			} catch (e) {
-				recordSpanError(span, e);
-				throw e;
-			} finally {
-				span.end();
-			}
-		});
+		return tracer.startActiveSpan(
+			"mediaWiki.Api.cookie",
+			this.#span,
+			span => {
+				try {
+					if (this.#session.expires.size) pruneCookies(this.#session);
+					const { cookie } = this.#session;
+					setSpanAttributes(span, { cookie }, ["this"]);
+					span.setStatus({ code: SpanStatusCode.OK });
+					return cookie;
+				} catch (e) {
+					recordSpanError(span, e);
+					throw e;
+				} finally {
+					span.end();
+				}
+			},
+		);
 	}
 }
 
@@ -986,7 +1301,10 @@ class Rest {
 					"Api-User-Agent": userAgent,
 					cookie,
 				};
-				const jsonHeaders = { ...headers, "Content-Type": "application/json" };
+				const jsonHeaders = {
+					...headers,
+					"Content-Type": "application/json",
+				};
 				this.#init = {
 					head: { headers, method: "HEAD" },
 					get: { headers },
@@ -1024,12 +1342,21 @@ class Rest {
 			this.#span,
 			span => {
 				try {
-					pruneCookies(this.#session);
+					if (this.#session.expires.size) pruneCookies(this.#session);
 					const cookie = Object.entries(this.#session.cookie)
 						.map(([name, value]) => `${name}=${value}`)
 						.join("; ");
 					setSpanAttributes(span, init, ["init"]);
-					const result = { ...init, headers: { ...init.headers, cookie } };
+					const result = {
+						...init,
+						headers: { ...init.headers, cookie },
+					};
+					if (
+						defaultDispatcher &&
+						getGlobalDispatcher() ===
+							defaultDispatcher.globalDispatcher
+					)
+						result.dispatcher = defaultDispatcher.agent;
 					span.setStatus({ code: SpanStatusCode.OK });
 					return result;
 				} catch (e) {
@@ -1054,14 +1381,23 @@ class Rest {
 			async span => {
 				try {
 					setResponseStatus(span, response);
-					const cookieNames = readCookies(response.headers, this.#session, generation);
+					const setCookies = response.headers.getSetCookie();
+					const cookieNames = setCookies.length
+						? readCookies(setCookies, this.#session, generation)
+						: [];
 					setResponseHeaders(span, response.headers, cookieNames);
 					const contentType = response.headers
 						.get("content-type")
-						?.split(";")[0].trim().toLowerCase();
-					const json = contentType === "application/json" &&
+						?.split(";")[0]
+						.trim()
+						.toLowerCase();
+					const json =
+						contentType === "application/json" &&
 						![204, 205, 304].includes(response.status);
-					span.setAttribute("mediawiki.response.body_type", json ? "json" : "text");
+					span.setAttribute(
+						"mediawiki.response.body_type",
+						json ? "json" : "text",
+					);
 					return json ? await response.json() : await response.text();
 				} catch (e) {
 					recordSpanError(span, e);
@@ -1087,7 +1423,9 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, query }, ["params"]);
 					const search = new URLSearchParams(
-						/** @type { ConstructorParameters<typeof URLSearchParams>[0] } */ (query),
+						/** @type { ConstructorParameters<typeof URLSearchParams>[0] } */ (
+							query
+						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
 					const defaults = this.#cookies2string(this.#init.head);
@@ -1097,11 +1435,17 @@ class Rest {
 						...defaults,
 						...overrides,
 					};
-					span.setAttribute("http.request.method", init.method ?? "GET");
+					span.setAttribute(
+						"http.request.method",
+						init.method ?? "GET",
+					);
 					const generation = this.#session.generation;
 					const response = await fetch(url, init);
 					setResponseStatus(span, response);
-					const cookieNames = readCookies(response.headers, this.#session, generation);
+					const setCookies = response.headers.getSetCookie();
+					const cookieNames = setCookies.length
+						? readCookies(setCookies, this.#session, generation)
+						: [];
 					setResponseHeaders(span, response.headers, cookieNames);
 					return response;
 				} catch (e) {
@@ -1128,7 +1472,9 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, query }, ["params"]);
 					const search = new URLSearchParams(
-						/** @type { ConstructorParameters<typeof URLSearchParams>[0] } */ (query),
+						/** @type { ConstructorParameters<typeof URLSearchParams>[0] } */ (
+							query
+						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
 					const defaults = this.#cookies2string(this.#init.get);
@@ -1138,7 +1484,10 @@ class Rest {
 						...defaults,
 						...overrides,
 					};
-					span.setAttribute("http.request.method", init.method ?? "GET");
+					span.setAttribute(
+						"http.request.method",
+						init.method ?? "GET",
+					);
 					const generation = this.#session.generation;
 					const response = await fetch(url, init);
 					setResponseStatus(span, response);
@@ -1175,7 +1524,10 @@ class Rest {
 						...overrides,
 						body: JSON.stringify(body),
 					};
-					span.setAttribute("http.request.method", init.method ?? "GET");
+					span.setAttribute(
+						"http.request.method",
+						init.method ?? "GET",
+					);
 					const generation = this.#session.generation;
 					const response = await fetch(url, init);
 					setResponseStatus(span, response);
@@ -1212,7 +1564,10 @@ class Rest {
 						...overrides,
 						body: JSON.stringify(body),
 					};
-					span.setAttribute("http.request.method", init.method ?? "GET");
+					span.setAttribute(
+						"http.request.method",
+						init.method ?? "GET",
+					);
 					const generation = this.#session.generation;
 					const response = await fetch(url, init);
 					setResponseStatus(span, response);
@@ -1249,7 +1604,10 @@ class Rest {
 						...overrides,
 						body: JSON.stringify(body),
 					};
-					span.setAttribute("http.request.method", init.method ?? "GET");
+					span.setAttribute(
+						"http.request.method",
+						init.method ?? "GET",
+					);
 					const generation = this.#session.generation;
 					const response = await fetch(url, init);
 					setResponseStatus(span, response);
@@ -1265,20 +1623,24 @@ class Rest {
 	}
 
 	get cookie() {
-		return tracer.startActiveSpan("mediaWiki.Rest.cookie", this.#span, span => {
-			try {
-				pruneCookies(this.#session);
-				const { cookie } = this.#session;
-				setSpanAttributes(span, { cookie }, ["this"]);
-				span.setStatus({ code: SpanStatusCode.OK });
-				return cookie;
-			} catch (e) {
-				recordSpanError(span, e);
-				throw e;
-			} finally {
-				span.end();
-			}
-		});
+		return tracer.startActiveSpan(
+			"mediaWiki.Rest.cookie",
+			this.#span,
+			span => {
+				try {
+					if (this.#session.expires.size) pruneCookies(this.#session);
+					const { cookie } = this.#session;
+					setSpanAttributes(span, { cookie }, ["this"]);
+					span.setStatus({ code: SpanStatusCode.OK });
+					return cookie;
+				} catch (e) {
+					recordSpanError(span, e);
+					throw e;
+				} finally {
+					span.end();
+				}
+			},
+		);
 	}
 }
 
