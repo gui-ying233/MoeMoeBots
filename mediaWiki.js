@@ -19,7 +19,7 @@ const { ReadStream } = require("node:fs");
 const { basename } = require("node:path");
 const { setTimeout } = require("node:timers/promises");
 require("node:tls").DEFAULT_CIPHERS = "DEFAULT@SECLEVEL=1";
-const { Agent, getGlobalDispatcher } = require("undici");
+const { Agent } = require("undici");
 
 const noOpSpan = new Proxy(
 	{},
@@ -72,9 +72,7 @@ const setSpanAttributes = (span, r, path = ["mw-response"]) => {
 			if (v === null || v === undefined) continue;
 			const key = k.toLowerCase();
 			const name = `${prefix}.${k}`;
-			if (key === "dispatcher" && prefix === "params.headers")
-				span.setAttribute(name, "custom");
-			else if (key.endsWith("cookie"))
+			if (key.endsWith("cookie"))
 				span.setAttribute(
 					name,
 					typeof v === "object"
@@ -135,23 +133,17 @@ const recordSpanError = (span, error) => {
 	span.recordException(exception);
 };
 
-const defaultDispatcher = tracer.startActiveSpan(
+const dispatcher = tracer.startActiveSpan(
 	"mediaWiki.defaultDispatcher",
 	span => {
 		try {
-			const globalDispatcher = getGlobalDispatcher();
-			if (globalDispatcher.constructor.name !== "Agent") {
-				span.setAttribute("mediawiki.http.dispatcher", "global");
-				span.setStatus({ code: SpanStatusCode.OK });
-				return undefined;
-			}
 			const agent = new Agent({ keepAliveTimeout: 30e3 });
 			span.setAttribute("mediawiki.http.dispatcher", "shared");
 			span.setStatus({ code: SpanStatusCode.OK });
-			return { agent, globalDispatcher };
+			return agent;
 		} catch (e) {
 			recordSpanError(span, e);
-			return undefined;
+			throw e;
 		} finally {
 			span.end();
 		}
@@ -442,7 +434,7 @@ class Api {
 
 	/**
 	 * @param { WikiRequestInit } init
-	 * @returns { RequestInit & { headers: Record<string, string> } }
+	 * @returns { RequestInit & { headers: Record<string, string>; dispatcher: Agent } }
 	 */
 	#cookies2string(init) {
 		return tracer.startActiveSpan(
@@ -458,13 +450,8 @@ class Api {
 					const result = {
 						...init,
 						headers: { ...init.headers, cookie },
+						dispatcher,
 					};
-					if (
-						defaultDispatcher &&
-						getGlobalDispatcher() ===
-							defaultDispatcher.globalDispatcher
-					)
-						result.dispatcher = defaultDispatcher.agent;
 					span.setStatus({ code: SpanStatusCode.OK });
 					return result;
 				} catch (e) {
@@ -1351,12 +1338,6 @@ class Rest {
 						...init,
 						headers: { ...init.headers, cookie },
 					};
-					if (
-						defaultDispatcher &&
-						getGlobalDispatcher() ===
-							defaultDispatcher.globalDispatcher
-					)
-						result.dispatcher = defaultDispatcher.agent;
 					span.setStatus({ code: SpanStatusCode.OK });
 					return result;
 				} catch (e) {
@@ -1367,6 +1348,20 @@ class Rest {
 				}
 			},
 		);
+	}
+
+	/**
+	 * @param { WikiRequestInit } init
+	 * @param { RequestInit } options
+	 * @param { Span } span
+	 */
+	#requestInit(init, options, span) {
+		const defaults = this.#cookies2string(init);
+		/** @type { RequestInit & { dispatcher?: unknown } } */
+		const overrides = { ...options };
+		delete overrides.dispatcher;
+		setSpanAttributes(span, overrides, ["params", "headers"]);
+		return { ...defaults, ...overrides, dispatcher };
 	}
 
 	/**
@@ -1428,13 +1423,7 @@ class Rest {
 						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
-					const defaults = this.#cookies2string(this.#init.head);
-					const overrides = { ...headers };
-					setSpanAttributes(span, overrides, ["params", "headers"]);
-					const init = {
-						...defaults,
-						...overrides,
-					};
+					const init = this.#requestInit(this.#init.head, headers, span);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1477,13 +1466,7 @@ class Rest {
 						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
-					const defaults = this.#cookies2string(this.#init.get);
-					const overrides = { ...headers };
-					setSpanAttributes(span, overrides, ["params", "headers"]);
-					const init = {
-						...defaults,
-						...overrides,
-					};
+					const init = this.#requestInit(this.#init.get, headers, span);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1516,14 +1499,8 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const defaults = this.#cookies2string(this.#init.post);
-					const overrides = { ...headers };
-					setSpanAttributes(span, overrides, ["params", "headers"]);
-					const init = {
-						...defaults,
-						...overrides,
-						body: JSON.stringify(body),
-					};
+					const init = this.#requestInit(this.#init.post, headers, span);
+					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1556,14 +1533,8 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const defaults = this.#cookies2string(this.#init.put);
-					const overrides = { ...headers };
-					setSpanAttributes(span, overrides, ["params", "headers"]);
-					const init = {
-						...defaults,
-						...overrides,
-						body: JSON.stringify(body),
-					};
+					const init = this.#requestInit(this.#init.put, headers, span);
+					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1596,14 +1567,8 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const defaults = this.#cookies2string(this.#init.delete);
-					const overrides = { ...headers };
-					setSpanAttributes(span, overrides, ["params", "headers"]);
-					const init = {
-						...defaults,
-						...overrides,
-						body: JSON.stringify(body),
-					};
+					const init = this.#requestInit(this.#init.delete, headers, span);
+					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
