@@ -137,7 +137,11 @@ const dispatcher = tracer.startActiveSpan(
 	"mediaWiki.defaultDispatcher",
 	span => {
 		try {
-			const agent = new Agent({ keepAliveTimeout: 30e3 });
+			const agent = new Agent({
+				keepAliveTimeout: 30e3,
+				allowH2: true,
+				connect: { preferH2: true },
+			});
 			span.setAttribute("mediawiki.http.dispatcher", "shared");
 			span.setStatus({ code: SpanStatusCode.OK });
 			return agent;
@@ -662,15 +666,7 @@ class Api {
 							[tokenQuery]: entry,
 							action: "query",
 							meta: "tokens",
-							type: [
-								"createaccount",
-								"csrf",
-								"login",
-								"patrol",
-								"rollback",
-								"userrights",
-								"watch",
-							],
+							type: "*",
 						}).then(r => {
 							setSpanAttributes(span, r);
 							const result =
@@ -1423,7 +1419,11 @@ class Rest {
 						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
-					const init = this.#requestInit(this.#init.head, headers, span);
+					const init = this.#requestInit(
+						this.#init.head,
+						headers,
+						span,
+					);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1466,7 +1466,11 @@ class Rest {
 						),
 					);
 					const url = `${this.#rest}${path}?${search}`;
-					const init = this.#requestInit(this.#init.get, headers, span);
+					const init = this.#requestInit(
+						this.#init.get,
+						headers,
+						span,
+					);
 					span.setAttribute(
 						"http.request.method",
 						init.method ?? "GET",
@@ -1499,7 +1503,11 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const init = this.#requestInit(this.#init.post, headers, span);
+					const init = this.#requestInit(
+						this.#init.post,
+						headers,
+						span,
+					);
 					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
@@ -1533,7 +1541,11 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const init = this.#requestInit(this.#init.put, headers, span);
+					const init = this.#requestInit(
+						this.#init.put,
+						headers,
+						span,
+					);
 					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
@@ -1567,7 +1579,11 @@ class Rest {
 				try {
 					setSpanAttributes(span, { path, body }, ["params"]);
 					const url = `${this.#rest}${path}`;
-					const init = this.#requestInit(this.#init.delete, headers, span);
+					const init = this.#requestInit(
+						this.#init.delete,
+						headers,
+						span,
+					);
 					init.body = JSON.stringify(body);
 					span.setAttribute(
 						"http.request.method",
